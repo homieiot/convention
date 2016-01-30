@@ -46,6 +46,11 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>IP of the device on the local network</td>
   </tr>
   <tr>
+    <td>$signal</td>
+    <td>Device → Controller</td>
+    <td>Integer representing the Wi-Fi signal quality in percentage if applicable</td>
+  </tr>
+  <tr>
     <td>$fwname</td>
     <td>Device → Controller</td>
     <td>Name of the firmware running on the device. This name MAY be composed of lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`</td>
@@ -73,6 +78,7 @@ For example, a device with an ID of `686f6d6965` with a temperature and an humid
 devices/686f6d6965/$online → true
 devices/686f6d6965/$name → Bedroom temperature sensor
 devices/686f6d6965/$localip → 192.168.0.10
+devices/686f6d6965/$signal → 72
 devices/686f6d6965/$fwname → 1.0.0
 devices/686f6d6965/$fwversion → 1.0.0
 devices/686f6d6965/$nodes → temperature:temperature,humidity:humidity
