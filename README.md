@@ -32,7 +32,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$online</td>
     <td>Device → Controller</td>
-    <td>`true` when the device is online, `false` when the device is offline (through LWT)</td>
+    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT)</td>
     <td>Yes</td>
   </tr>
   <tr>
@@ -56,7 +56,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$fwname</td>
     <td>Device → Controller</td>
-    <td>Name of the firmware running on the device. This name MAY be composed of lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`</td>
+    <td>Name of the firmware running on the device. This name MAY be composed of lowercase letters from <code>a</code> to <code>z</code>, numbers from <code>0</code> to <code>9</code>, and it MAY contain <code>-</code>, but MUST NOT start or end with a <code>-</code></td>
     <td>Yes</td>
   </tr>
   <tr>
@@ -68,7 +68,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$nodes</td>
     <td>Device → Controller</td>
-    <td>Nodes the device has, with format `id:type` separated by `,` if there are multiple nodes</td>
+    <td>Nodes the device has, with format <code>id:type</code> separated by a <code>,</code> if there are multiple nodes</td>
     <td>Yes</td>
   </tr>
   <tr>
@@ -80,7 +80,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$reset</td>
     <td>Controller → Device</td>
-    <td>`true` when the controller wants the device to reset its configuration. `false` otherwise. When the device receives a `true`, it should replace the retained message with a `false` before resetting</td>
+    <td><code>true</code> when the controller wants the device to reset its configuration. <code>false</code> otherwise. When the device receives a <code>true</code>, it should replace the retained message with a <code>false</code> before resetting</td>
     <td>Yes</td>
   </tr>
 </table>
