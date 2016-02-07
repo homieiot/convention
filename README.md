@@ -1,9 +1,7 @@
-Homie
-=====
+![Homie logo](logo.png) Homie
+=============================
 
 Homie is a very simple MQTT convention for the IoT.
-
-![Homie logo](logo.png)
 
 This repository is a *spec* defining the Homie protocol.
 
