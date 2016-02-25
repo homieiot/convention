@@ -5,8 +5,9 @@ Homie is a lightweight MQTT convention for the IoT.
 
 You can find an implementation of the Homie convention:
 
-* A server-part built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
 * A device Arduino library built for the ESP8266 at [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266)
+* An opinionated Web UI built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
+* Some Node-RED nodes for automation at [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
 
 ## Convention
 
