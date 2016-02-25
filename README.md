@@ -1,18 +1,16 @@
 ![Homie logo](logo.png) Homie
 =============================
 
-Homie is a very simple MQTT convention for the IoT.
-
-This repository contains a README defining the Homie convention.
+Homie is a lightweight MQTT convention for the IoT.
 
 You can find an implementation of the Homie convention:
 
-* A server part built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
+* A server-part built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
 * A device Arduino library built for the ESP8266 at [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266)
 
 ## Convention
 
-Homie devices communicate through MQTT. The MQTT broker listens on port **35589**, but for more flexibility, any broker on any port may be used.
+Homie devices communicate through MQTT.
 
 To efficiently parse messages, Homie defines a few rules related to topic names.
 
@@ -119,4 +117,14 @@ devices/686f6d6965/humidity/humidity → 79
 
 * `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is *settable* from the controller, in case of actuators.
 
-Any other topic is not part of Homie.
+Homie is state-based. You don't tell your smarlight to turn on, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
+
+For example, an `homielight` device exposing a `light` node would subscribe to:
+
+```
+devices/homielight/light/on/set
+```
+
+The device would then turn on or turn off the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
+
+Any other topic is not part of the Homie convention.
