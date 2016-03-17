@@ -9,6 +9,10 @@ You can find an implementation of the Homie convention:
 * An opinionated Web UI built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
 * Some Node-RED nodes for automation at [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
 
+## Background
+
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **device properties**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a temperature node and an humidity node. A node can have multiple **node properties**. The temperature node might for example expose a temperature property containing the actual temperature, and an unit property. Properties can be **settable**. For example, you don't want your `temperature` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `temperature` property to be settable in case of a thermostat.
+
 ## Convention
 
 Homie devices communicate through MQTT.
@@ -107,7 +111,7 @@ At this point, your device would understand there is an OTA update available, as
 
 ### Node properties
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, as defined in the `$nodes` device property. `property` is the property of the node that is getting updated. You can see all properties by node type at [Types of nodes](https://github.com/marvinroger/homie/wiki/Types-of-nodes).
+* `devices` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, as defined in the `$nodes` device property. `property` is the property of the node that is getting updated.
 
 For example, our `686f6d6965` above would send:
 
@@ -116,16 +120,20 @@ devices/686f6d6965/temperature/temperature → 12.07
 devices/686f6d6965/humidity/humidity → 79
 ```
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is *settable* from the controller, in case of actuators.
+* `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based. You don't tell your smarlight to turn on, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
-For example, an `homielight` device exposing a `light` node would subscribe to:
+For example, an `homielight` device exposing a `light` node would subscribe to `devices/homielight/light/on/set` and it would receive:
 
 ```
-devices/homielight/light/on/set
+devices/homielight/light/on/set ← true
 ```
 
-The device would then turn on or turn off the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
+The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
+
+```
+devices/homielight/light/on → true
+```
 
 Any other topic is not part of the Homie convention.
