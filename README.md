@@ -17,7 +17,7 @@ An instance of a physical piece of hardware (an Arduino, an ESP8266...) is calle
 
 Homie devices communicate through MQTT.
 
-To efficiently parse messages, Homie defines a few rules related to topic names.
+To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following lines will be `devices/`. You can customize this base topic if it fits better to your needs.
 
 * `devices` / **`device ID`**: this is the base topic name. Each device must have a unique device ID. This ID MAY be composed of lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
 
