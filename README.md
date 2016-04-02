@@ -51,6 +51,12 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$uptime</td>
+    <td>Device → Controller</td>
+    <td>Time elapsed in seconds since the boot of the device</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$signal</td>
     <td>Device → Controller</td>
     <td>Integer representing the Wi-Fi signal quality in percentage if applicable</td>
