@@ -84,7 +84,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>$ota</td>
     <td>Controller → Device</td>
     <td>Latest OTA version available for the device</td>
-    <td>Yes</td>
+    <td>Yes or No, depending of your implementation</td>
+  </tr>
+  <tr>
+    <td>$ota/+</td>
+    <td>Controller → Device or Device → Controller</td>
+    <td>You can use any subtopics of `$ota` for anything related to your specific OTA implementation.</td>
+    <td>Yes or No, depending of your implementation</td>
   </tr>
   <tr>
     <td>$reset</td>
