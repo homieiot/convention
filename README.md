@@ -138,7 +138,7 @@ devices/686f6d6965/$name → Bedroom temperature sensor
 devices/686f6d6965/$localip → 192.168.0.10
 devices/686f6d6965/$signal → 72
 devices/686f6d6965/$fw/name → 1.0.0
-devices/686f6d6965/$fwv/ersion → 1.0.0
+devices/686f6d6965/$fw/version → 1.0.0
 devices/686f6d6965/$nodes → temperature:temperature,humidity:humidity
 ```
 
@@ -149,7 +149,7 @@ devices/686f6d6965/$ota ← 1.0.1
 devices/686f6d6965/$reset ← false
 ```
 
-At this point, your device would understand there is an OTA update available, as `$ota` is different from `$version`.
+At this point, your device would understand there is an OTA update available, as `$ota` is different from `$fw/version`.
 
 ### Node properties
 
