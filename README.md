@@ -19,6 +19,8 @@ The nature of the Homie convention makes it safe about duplicate messages, so th
 
 ## Convention
 
+Version: **2.0.0**.
+
 Homie devices communicate through MQTT.
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `devices/`. You can however choose whatever base topic you want.
@@ -36,6 +38,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <th>Description</th>
     <th>Retained</th>
     <th>Required</th>
+  </tr>
+  <tr>
+    <td>$homie</td>
+    <td>Device → Controller</td>
+    <td>Version of the Homie convention the device conforms to</td>
+    <td>Yes</td>
+    <td>Yes</td>
   </tr>
   <tr>
     <td>$online</td>
@@ -108,25 +117,18 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>No, OTA is optional</td>
   </tr>
   <tr>
-    <td>$ota/policy</td>
+    <td>$implementation</td>
     <td>Device → Controller</td>
-    <td>Policy of your device about how the OTA works. Think of it as a way for the device to tell the controller how it is updatable. An ESP8266 won't handle an OTA the same way a computer would, for example</td>
-    <td>Yes or No, depending of your implementation</td>
-    <td>No, OTA is optional. Required if you use OTA</td>
+    <td>An identifier for the Homie implementation (example `esp8266`)</td>
+    <td>Yes</td>
+    <td>Yes</td>
   </tr>
   <tr>
-    <td>$ota/+</td>
+    <td>$implementation/#</td>
     <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of `$ota` for anything related to your specific OTA policy.</td>
+    <td>You can use any subtopics of `$implementation` for anything related to your specific Homie implementation.</td>
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
-  </tr>
-  <tr>
-    <td>$reset</td>
-    <td>Controller → Device</td>
-    <td><code>true</code> when the controller wants the device to reset its configuration. <code>false</code> otherwise. When the device receives a <code>true</code>, it should replace the retained message with a <code>false</code> before resetting</td>
-    <td>Yes</td>
-    <td>Yes</td>
   </tr>
 </table>
 
