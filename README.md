@@ -1,5 +1,7 @@
-![Homie logo](logo.png) Homie
-=============================
+![Homie banner](banner.png)
+
+Homie
+=====
 
 Homie is a lightweight MQTT convention for the IoT.
 
@@ -25,11 +27,11 @@ Homie devices communicate through MQTT.
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `devices/`. You can however choose whatever base topic you want.
 
-* `devices` / **`device ID`**: this is the base topic name. Each device must have a unique device ID. This ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
+* `devices` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID. This ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
 
 ### Device properties
 
-* `devices` / **`device ID`** / `$` **`device property`**: a property starting with a `$` at the third level of the path is related to the device. The property MUST be one of these:
+* `devices` / **`device ID`** / `$` **`device property`**: a topic starting with a `$` after the base topic of a device represents a device property. A device property MUST be one of these:
 
 <table>
   <tr>
@@ -77,7 +79,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$uptime/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the `$uptime/value` is refreshed</td>
+    <td>Interval in seconds at which the <code>$uptime/value</code> is refreshed</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -119,14 +121,14 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
-    <td>An identifier for the Homie implementation (example `esp8266`)</td>
+    <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
     <td>$implementation/#</td>
     <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of `$implementation` for anything related to your specific Homie implementation.</td>
+    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
