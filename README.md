@@ -150,7 +150,6 @@ And it would receive:
 
 ```
 devices/686f6d6965/$ota ← 1.0.1
-devices/686f6d6965/$reset ← false
 ```
 
 At this point, your device would understand there is an OTA update available, as `$ota` is different from `$fw/version`.
