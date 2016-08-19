@@ -105,13 +105,6 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$nodes</td>
-    <td>Device → Controller</td>
-    <td>Nodes the device has, with format <code>id:type</code> separated by a <code>,</code> if there are multiple nodes</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
     <td>$ota</td>
     <td>Controller → Device</td>
     <td>Latest OTA version available for the device</td>
@@ -156,12 +149,43 @@ At this point, your device would understand there is an OTA update available, as
 
 ### Node properties
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, as defined in the `$nodes` device property. `property` is the property of the node that is getting updated.
+* `devices` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node. `property` is the property of the node that is getting updated.
+
+Properties starting with a `$` are special properties. It must be one of the following:
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Direction</th>
+    <th>Description</th>
+    <th>Retained</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>$type</td>
+    <td>Device → Controller</td>
+    <td>Type of the node</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$properties</td>
+    <td>Device → Controller</td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For settable properties, add <code>:settable</settable> to the <code>id</code></td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+</table>
 
 For example, our `686f6d6965` above would send:
 
 ```
+devices/686f6d6965/temperature/$type → temperature
+devices/686f6d6965/temperature/$properties → degrees
 devices/686f6d6965/temperature/degrees → 12.07
+
+devices/686f6d6965/humidity/$type → humidity
+devices/686f6d6965/humidity/$properties → percentage
 devices/686f6d6965/humidity/percentage → 79
 ```
 
