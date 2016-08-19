@@ -136,7 +136,6 @@ devices/686f6d6965/$localip → 192.168.0.10
 devices/686f6d6965/$signal → 72
 devices/686f6d6965/$fw/name → 1.0.0
 devices/686f6d6965/$fw/version → 1.0.0
-devices/686f6d6965/$nodes → temperature:temperature,humidity:humidity
 ```
 
 And it would receive:
@@ -181,7 +180,8 @@ For example, our `686f6d6965` above would send:
 
 ```
 devices/686f6d6965/temperature/$type → temperature
-devices/686f6d6965/temperature/$properties → degrees
+devices/686f6d6965/temperature/$properties → degrees,unit
+devices/686f6d6965/temperature/unit → c
 devices/686f6d6965/temperature/degrees → 12.07
 
 devices/686f6d6965/humidity/$type → humidity
