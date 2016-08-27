@@ -13,7 +13,7 @@ You can find an implementation of the Homie convention:
 
 ## Background
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **device properties**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **node properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **device properties**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **node properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
 
 ## QoS and retained messages
 
@@ -170,7 +170,7 @@ Properties starting with a `$` are special properties. It must be one of the fol
   <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For settable properties, add <code>:settable</settable> to the <code>id</code></td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>. For settable properties, add <code>:settable</settable> to the <code>id</code></td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -189,20 +189,30 @@ devices/686f6d6965/humidity/$properties → percentage
 devices/686f6d6965/humidity/percentage → 79
 ```
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
-
-Homie is state-based. You don't tell your smarlight to turn on, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
-
-For example, an `homielight` device exposing a `light` node would subscribe to `devices/homielight/light/on/set` and it would receive:
+A LED strip would look like this. Note that the topic for a range properties is the name of the property followed by a `_` and the index getting updated:
 
 ```
-devices/homielight/light/on/set ← true
+devices/ledstrip-device/ledstrip/$type → ledstrip
+devices/ledstrip-device/ledstrip/$properties → led[1-3]:settable
+devices/ledstrip-device/ledstrip/led_1 → on
+devices/ledstrip-device/ledstrip/led_2 → off
+devices/ledstrip-device/ledstrip/led_3 → on
+```
+
+* `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
+
+Homie is state-based. You don't tell your smarlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
+
+For example, an `homie-light` device exposing a `light` node would subscribe to `devices/homie-light/light/on/set` and it would receive:
+
+```
+devices/homie-light/light/on/set ← true
 ```
 
 The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
 
 ```
-devices/homielight/light/on → true
+devices/homie-light/light/on → true
 ```
 
 Any other topic is not part of the Homie convention.
