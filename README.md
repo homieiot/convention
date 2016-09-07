@@ -17,13 +17,13 @@ An instance of a physical piece of hardware (an Arduino, an ESP8266...) is calle
 
 ## QoS and retained messages
 
+Homie devices communicate through MQTT.
+
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**. All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 ## Convention
 
 Version: **2.0.0**.
-
-Homie devices communicate through MQTT.
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `devices/`. You can however choose whatever base topic you want.
 
@@ -213,6 +213,18 @@ The device would then turn on the light, and update its `on` state. This provide
 
 ```
 devices/homie-light/light/on → true
+```
+
+### Broadcast channel
+
+Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
+
+* `devices` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier
+
+For example, you might want to broadcast an `alert` event with the alert reason as the payload. Devices are then free to react or not. In our case, every buzzer of your home automation system would start buzzing.
+
+```
+devices/$broadcast/alert ← Intruder detected
 ```
 
 Any other topic is not part of the Homie convention.
