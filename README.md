@@ -25,13 +25,13 @@ The nature of the Homie convention makes it safe about duplicate messages, so th
 
 Version: **2.0.0**.
 
-To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `devices/`. You can however choose whatever base topic you want.
+To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
 
-* `devices` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID. This ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
+* `homie` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID. This ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
 
 ### Device properties
 
-* `devices` / **`device ID`** / `$` **`device property`**: a topic starting with a `$` after the base topic of a device represents a device property. A device property MUST be one of these:
+* `homie` / **`device ID`** / `$` **`device property`**: a topic starting with a `$` after the base topic of a device represents a device property. A device property MUST be one of these:
 
 <table>
   <tr>
@@ -130,25 +130,25 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
 For example, a device with an ID of `686f6d6965` with a temperature and an humidity sensor would send:
 
 ```
-devices/686f6d6965/$online → true
-devices/686f6d6965/$name → Bedroom temperature sensor
-devices/686f6d6965/$localip → 192.168.0.10
-devices/686f6d6965/$signal → 72
-devices/686f6d6965/$fw/name → 1.0.0
-devices/686f6d6965/$fw/version → 1.0.0
+homie/686f6d6965/$online → true
+homie/686f6d6965/$name → Bedroom temperature sensor
+homie/686f6d6965/$localip → 192.168.0.10
+homie/686f6d6965/$signal → 72
+homie/686f6d6965/$fw/name → 1.0.0
+homie/686f6d6965/$fw/version → 1.0.0
 ```
 
 And it would receive:
 
 ```
-devices/686f6d6965/$ota ← 1.0.1
+homie/686f6d6965/$ota ← 1.0.1
 ```
 
 At this point, your device would understand there is an OTA update available, as `$ota` is different from `$fw/version`.
 
 ### Node properties
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node. `property` is the property of the node that is getting updated.
+* `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node. `property` is the property of the node that is getting updated.
 
 Properties starting with a `$` are special properties. It must be one of the following:
 
@@ -179,52 +179,52 @@ Properties starting with a `$` are special properties. It must be one of the fol
 For example, our `686f6d6965` above would send:
 
 ```
-devices/686f6d6965/temperature/$type → temperature
-devices/686f6d6965/temperature/$properties → degrees,unit
-devices/686f6d6965/temperature/unit → c
-devices/686f6d6965/temperature/degrees → 12.07
+homie/686f6d6965/temperature/$type → temperature
+homie/686f6d6965/temperature/$properties → degrees,unit
+homie/686f6d6965/temperature/unit → c
+homie/686f6d6965/temperature/degrees → 12.07
 
-devices/686f6d6965/humidity/$type → humidity
-devices/686f6d6965/humidity/$properties → percentage
-devices/686f6d6965/humidity/percentage → 79
+homie/686f6d6965/humidity/$type → humidity
+homie/686f6d6965/humidity/$properties → percentage
+homie/686f6d6965/humidity/percentage → 79
 ```
 
 A LED strip would look like this. Note that the topic for a range properties is the name of the property followed by a `_` and the index getting updated:
 
 ```
-devices/ledstrip-device/ledstrip/$type → ledstrip
-devices/ledstrip-device/ledstrip/$properties → led[1-3]:settable
-devices/ledstrip-device/ledstrip/led_1 → on
-devices/ledstrip-device/ledstrip/led_2 → off
-devices/ledstrip-device/ledstrip/led_3 → on
+homie/ledstrip-device/ledstrip/$type → ledstrip
+homie/ledstrip-device/ledstrip/$properties → led[1-3]:settable
+homie/ledstrip-device/ledstrip/led_1 → on
+homie/ledstrip-device/ledstrip/led_2 → off
+homie/ledstrip-device/ledstrip/led_3 → on
 ```
 
-* `devices` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
+* `homie` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based. You don't tell your smarlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
-For example, an `homie-light` device exposing a `light` node would subscribe to `devices/homie-light/light/on/set` and it would receive:
+For example, an `homie-light` device exposing a `light` node would subscribe to `homie/homie-light/light/on/set` and it would receive:
 
 ```
-devices/homie-light/light/on/set ← true
+homie/homie-light/light/on/set ← true
 ```
 
 The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
 
 ```
-devices/homie-light/light/on → true
+homie/homie-light/light/on → true
 ```
 
 ### Broadcast channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
-* `devices` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier
+* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload. Devices are then free to react or not. In our case, every buzzer of your home automation system would start buzzing.
 
 ```
-devices/$broadcast/alert ← Intruder detected
+homie/$broadcast/alert ← Intruder detected
 ```
 
 Any other topic is not part of the Homie convention.
