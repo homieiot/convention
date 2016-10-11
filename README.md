@@ -1,15 +1,17 @@
 ![Homie banner](banner.png)
 
-Homie
-=====
+The Homie convention
+====================
+
+Version: **2.0.0**.
 
 Homie is a lightweight MQTT convention for the IoT.
 
 You can find an implementation of the Homie convention:
 
-* A device Arduino library built for the ESP8266 at [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266)
-* An opinionated Web UI built with Node.js at [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
-* Some Node-RED nodes for automation at [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
+* An Arduino library built for the ESP8266: [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266)
+* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - An opinionated Web UI built with Node.js: [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
+* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - Some Node-RED nodes for automation: [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
 
 ## Background
 
@@ -21,13 +23,15 @@ Homie devices communicate through MQTT.
 
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**. All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
-## Convention
+## ID format
 
-Version: **2.0.0**.
+An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
+
+## Convention
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
 
-* `homie` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID. This ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
+* `homie` / **`device ID`**: this is the base topic of a device. Each device must have an unique device ID which adhere to the [ID format](#id-format).
 
 ### Device properties
 
@@ -148,7 +152,7 @@ At this point, your device would understand there is an OTA update available, as
 
 ### Node properties
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node. `property` is the property of the node that is getting updated.
+* `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
 
 Properties starting with a `$` are special properties. It must be one of the following:
 
@@ -170,7 +174,7 @@ Properties starting with a `$` are special properties. It must be one of the fol
   <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>. For settable properties, add <code>:settable</settable> to the <code>id</code></td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>. For settable properties, add <code>:settable</code> to the <code>id</code></td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -203,23 +207,23 @@ homie/ledstrip-device/ledstrip/led_3 → on
 
 Homie is state-based. You don't tell your smarlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
-For example, an `homie-light` device exposing a `light` node would subscribe to `homie/homie-light/light/on/set` and it would receive:
+For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/on/set` and it would receive:
 
 ```
-homie/homie-light/light/on/set ← true
+homie/kitchen-light/light/on/set ← true
 ```
 
 The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
 
 ```
-homie/homie-light/light/on → true
+homie/kitchen-light/light/on → true
 ```
 
 ### Broadcast channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
-* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier
+* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier. It must adhere to the [ID format](#id-format).
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload. Devices are then free to react or not. In our case, every buzzer of your home automation system would start buzzing.
 
