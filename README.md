@@ -1,7 +1,6 @@
 ![Homie banner](banner.png)
 
-The Homie convention
-====================
+<h1 align="center">The Homie convention</h1>
 
 Version: **2.0.0**.
 
