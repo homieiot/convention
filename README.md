@@ -116,13 +116,6 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$ota</td>
-    <td>Controller → Device</td>
-    <td>Latest OTA version available for the device</td>
-    <td>Yes or No, depending of your implementation</td>
-    <td>No, OTA is optional</td>
-  </tr>
-  <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
