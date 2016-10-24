@@ -88,9 +88,16 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$signal</td>
+    <td>$signal/value</td>
     <td>Device → Controller</td>
     <td>Integer representing the Wi-Fi signal quality in percentage if applicable</td>
+    <td>Yes</td>
+    <td>No, this is not applicable to an Ethernet connected device for example</td>
+  </tr>
+  <tr>
+    <td>$signal/interval</td>
+    <td>Device → Controller</td>
+    <td>Interval in seconds at which the <code>$signal/value</code> is refreshed</td>
     <td>Yes</td>
     <td>No, this is not applicable to an Ethernet connected device for example</td>
   </tr>
