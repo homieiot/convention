@@ -74,32 +74,25 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$uptime/value</td>
+    <td>$stats/uptime</td>
     <td>Device → Controller</td>
     <td>Time elapsed in seconds since the boot of the device</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$uptime/interval</td>
-    <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$uptime/value</code> is refreshed</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$signal/value</td>
+    <td>$stats/signal</td>
     <td>Device → Controller</td>
     <td>Integer representing the Wi-Fi signal quality in percentage if applicable</td>
     <td>Yes</td>
     <td>No, this is not applicable to an Ethernet connected device for example</td>
   </tr>
   <tr>
-    <td>$signal/interval</td>
+    <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$signal/value</code> is refreshed</td>
+    <td>Interval in seconds at which the <code>$stats/uptime</code> and <code>$stats/signal</code> are refreshed</td>
     <td>Yes</td>
-    <td>No, this is not applicable to an Ethernet connected device for example</td>
+    <td>Yes</td>
   </tr>
   <tr>
     <td>$fw/name</td>
