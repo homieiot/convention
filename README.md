@@ -142,14 +142,6 @@ homie/686f6d6965/$fw/name → 1.0.0
 homie/686f6d6965/$fw/version → 1.0.0
 ```
 
-And it would receive:
-
-```
-homie/686f6d6965/$ota ← 1.0.1
-```
-
-At this point, your device would understand there is an OTA update available, as `$ota` is different from `$fw/version`.
-
 ### Node properties
 
 * `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
