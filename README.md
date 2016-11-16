@@ -74,6 +74,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$mac</td>
+    <td>Device → Controller</td>
+    <td>Mac address of the device network interface</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$stats/uptime</td>
     <td>Device → Controller</td>
     <td>Time elapsed in seconds since the boot of the device</td>
