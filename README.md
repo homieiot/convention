@@ -55,7 +55,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$online</td>
     <td>Device → Controller</td>
-    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT)</td>
+    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT). When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
