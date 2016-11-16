@@ -76,7 +76,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$mac</td>
     <td>Device → Controller</td>
-    <td>Mac address of the device network interface. The format MUST be of the type `A1:B2:C3:D4:E5:F6`</td>
+    <td>Mac address of the device network interface. The format MUST be of the type <code>A1:B2:C3:D4:E5:F6</code></td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
