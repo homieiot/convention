@@ -109,6 +109,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$fw/checksum</td>
+    <td>Device → Controller</td>
+    <td>MD5 checksum of the firmware running on the device</td>
+    <td>Yes</td>
+    <td>No, depending of your implementation</td>
+  </tr>
+  <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
