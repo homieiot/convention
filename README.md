@@ -2,6 +2,8 @@
 
 <h1 align="center">The Homie convention</h1>
 
+**Please note this v2 branch is a work-in-progress. It might change before the final release.**
+
 Version: **2.0.0**.
 
 Homie is a lightweight MQTT convention for the IoT.
