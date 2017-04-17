@@ -206,7 +206,7 @@ homie/ledstrip-device/ledstrip/led_3 → on
 
 * `homie` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
-Homie is state-based. You don't tell your smarlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
+Homie is state-based. You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/on/set` and it would receive:
 
