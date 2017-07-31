@@ -4,7 +4,7 @@
 
 **Please note this v2 branch is a work-in-progress. It might change before the final release.**
 
-Version: **2.0.0**.
+Version: **2.1.0**.
 
 Homie is a lightweight MQTT convention for the IoT.
 
@@ -174,6 +174,13 @@ Properties starting with a `$` are special properties. It must be one of the fol
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$name</td>
+    <td>Device → Controller</td>
+    <td>Friendly name of the Node</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
     <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
@@ -218,6 +225,8 @@ An attribute describes various aspects of a property and therefore makes it auto
             <code>%</code> Percent<br>
             <code>m</code> Meter<br>
             <code>ft</code> Feet<br>
+            <code>Pa</code> Pascal<br>
+            <code>psi</code> PSI<br>
             <code>#</code> Count or Amount
         </td>
         <td>Yes</td>
@@ -227,7 +236,7 @@ An attribute describes various aspects of a property and therefore makes it auto
        <td>$datatype</td>
        <td>Device → Controller</td>
        <td>Describes the format of data.</td>
-       <td><code>integer</code>, <code>float</code>, <code>boolean</code>, <code>string</code>, <code>enum</code> </td>
+       <td><code>integer</code>, <code>float</code>, <code>boolean</code> (<code>true</code> or <code>false</code>), <code>string</code>, <code>enum</code> </td>
        <td>Yes</td>
        <td>Yes</td>
     </tr>
@@ -247,8 +256,8 @@ An attribute describes various aspects of a property and therefore makes it auto
        <td>Yes</td>
        <td>Yes</td>
     </tr>
-    
-    
+
+
 </table>
 
 
