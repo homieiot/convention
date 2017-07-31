@@ -154,7 +154,7 @@ homie/686f6d6965/$fw/version → 1.0.0
 
 ### Node properties
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
+* `homie` / **`device ID`** / **`node ID`** / **`property`** / **`attribute`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
 
 Properties starting with a `$` are special properties. It must be one of the following:
 
@@ -176,22 +176,99 @@ Properties starting with a `$` are special properties. It must be one of the fol
   <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>. For settable properties, add <code>:settable</code> to the <code>id</code></td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
 </table>
+
+#### Attributes
+An attribute describes various aspects of a property and therefore makes it auto-discoverable by any other device. A property can be described using the following attributes:
+<table>
+    <tr>
+        <th>Attribute</th>
+        <th>Direction</th>
+        <th>Description</th>
+        <th>Valid values</th>
+        <th>Retained</th>
+        <th>Required</th>
+    </tr>
+    <tr>
+        <td>$settable</td>
+        <td>Device → Controller</td>
+        <td>Specifies whether the property is settable (<code>true</code>) or readonly (<code>false</code>)</td>
+        <td><code>true</code>,<code>false</code></td>
+        <td>Yes</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>$unit</td>
+        <td>Device → Controller</td>
+        <td>A string containing the unit of this property. You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.</td>
+        <td>
+            Recommended: <br>
+            <code>°C</code> Degree Celsius<br>
+            <code>°F</code> Degree Fahrenheit<br>
+            <code>°</code> Degree<br>
+            <code>L</code> Liter<br>
+            <code>gal</code> Galon<br>
+            <code>V</code> Volts<br>
+            <code>W</code> Watt<br>
+            <code>A</code> Ampere<br>
+            <code>%</code> Percent<br>
+            <code>m</code> Meter<br>
+            <code>ft</code> Feet<br>
+            <code>#</code> Count or Amount
+        </td>
+        <td>Yes</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+       <td>$datatype</td>
+       <td>Device → Controller</td>
+       <td>Describes the format of data.</td>
+       <td><code>integer</code>, <code>float</code>, <code>boolean</code>, <code>string</code>, <code>enum</code> </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+    <tr>
+       <td>$range</td>
+       <td>Device → Controller</td>
+       <td>
+        Describes what are valid values for this property.
+       </td>
+       <td>
+             <ul>
+                <li><code>from:to</code> Describes a range of values e.g. <code>10:15</code>. <br>Valid for datatypes <code>integer</code>, <code>float</code> </li>
+                <li><code>value,value,value</code> for enumerating all valid values. Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>. <br>Valid for datatypes <code>enum</code> </li>
+                <li><code>/regex/</code> to provide a regex that can be used to match the value. e.g. <code>/[A-Z][0-9]+/g</code>. <br>Valid for datatype <code>string</code></li>
+            </ul>
+       </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+    
+    
+</table>
+
 
 For example, our `686f6d6965` above would send:
 
 ```
 homie/686f6d6965/temperature/$type → temperature
 homie/686f6d6965/temperature/$properties → degrees,unit
-homie/686f6d6965/temperature/unit → c
+homie/686f6d6965/temperature/degrees/$settable → false
+homie/686f6d6965/temperature/degrees/$unit → C
+homie/686f6d6965/temperature/degrees/$datatype → float
+homie/686f6d6965/temperature/degrees/$range → -20.0:60
 homie/686f6d6965/temperature/degrees → 12.07
 
 homie/686f6d6965/humidity/$type → humidity
 homie/686f6d6965/humidity/$properties → percentage
+homie/686f6d6965/humidity/percentage/$settable → false
+homie/686f6d6965/humidity/percentage/$unit → %
+homie/686f6d6965/humidity/percentage/$datatype → integer
+homie/686f6d6965/humidity/percentage/$range → 0:100
 homie/686f6d6965/humidity/percentage → 79
 ```
 
@@ -199,9 +276,24 @@ A LED strip would look like this. Note that the topic for a range properties is 
 
 ```
 homie/ledstrip-device/ledstrip/$type → ledstrip
-homie/ledstrip-device/ledstrip/$properties → led[1-3]:settable
+homie/ledstrip-device/ledstrip/$properties → led[1-3]
+
+homie/ledstrip-device/ledstrip/led_1/$settable → true
+homie/ledstrip-device/ledstrip/led_1/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_1/$datatype → enum
+homie/ledstrip-device/ledstrip/led_1/$range → on,off
 homie/ledstrip-device/ledstrip/led_1 → on
+
+homie/ledstrip-device/ledstrip/led_2/$settable → true
+homie/ledstrip-device/ledstrip/led_2/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_2/$datatype → enum
+homie/ledstrip-device/ledstrip/led_2/$range → on,off
 homie/ledstrip-device/ledstrip/led_2 → off
+
+homie/ledstrip-device/ledstrip/led_3/$settable → true
+homie/ledstrip-device/ledstrip/led_3/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_3/$datatype → enum
+homie/ledstrip-device/ledstrip/led_3/$range → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
 ```
 
