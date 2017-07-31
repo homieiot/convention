@@ -18,7 +18,7 @@ You can find an implementation of the Homie convention:
 
 ## Background
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **device properties**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **node properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **attributes**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
 
 ## QoS and retained messages
 
@@ -35,14 +35,17 @@ An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
 
 * `homie` / **`device ID`**: this is the base topic of a device. Each device must have an unique device ID which adhere to the [ID format](#id-format).
+* Attributes are topics that are prefixed with a `$`. These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
-### Device properties
 
-* `homie` / **`device ID`** / `$` **`device property`**: a topic starting with a `$` after the base topic of a device represents a device property. A device property MUST be one of these:
+### Device attributes
+
+* `homie` / **`device ID`** / `$` **`device attribute`**: a topic starting with a `$` after the base topic of a device represents a device attribute. A device attribute MUST be one of these:
+
 
 <table>
   <tr>
-    <th>Property</th>
+    <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
     <th>Retained</th>
@@ -139,6 +142,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
+  <tr>
+    <td>$nodes</td>
+    <td>Device → Controller</td>
+    <td>Nodes the device exposes, with format `id` separated by a `,` if there are multiple nodes. For ranges, define the range after the `id`, within `[]` and separated by a `-`.</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
 </table>
 
 For example, a device with an ID of `686f6d6965` with a temperature and an humidity sensor would send:
@@ -152,15 +162,14 @@ homie/686f6d6965/$fw/name → 1.0.0
 homie/686f6d6965/$fw/version → 1.0.0
 ```
 
-### Node properties
+### Node attributes
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`** / **`attribute`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
-
-Properties starting with a `$` are special properties. It must be one of the following:
+* `homie` / **`device ID`** / **`node ID`** / **`node attribute`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format).
+* A node is made discoverable via its node attributes. It must be one of the following:
 
 <table>
   <tr>
-    <th>Property</th>
+    <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
     <th>Retained</th>
@@ -189,11 +198,12 @@ Properties starting with a `$` are special properties. It must be one of the fol
   </tr>
 </table>
 
-#### Attributes
-An attribute describes various aspects of a property and therefore makes it auto-discoverable by any other device. A property can be described using the following attributes:
+### Property attributes
+* `homie` / **`device ID`** / **`node ID`** / **`property`** / **`property attribute`**: `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
+* A property is made discoverable via its property attributes. It must be one of the following:
 <table>
     <tr>
-        <th>Attribute</th>
+        <th>Topic</th>
         <th>Direction</th>
         <th>Description</th>
         <th>Valid values</th>
@@ -241,6 +251,14 @@ An attribute describes various aspects of a property and therefore makes it auto
        <td>Yes</td>
     </tr>
     <tr>
+       <td>$name</td>
+       <td>Device → Controller</td>
+       <td>Friendly name of the property.</td>
+       <td>Any String </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+    <tr>
        <td>$range</td>
        <td>Device → Controller</td>
        <td>
@@ -250,7 +268,7 @@ An attribute describes various aspects of a property and therefore makes it auto
              <ul>
                 <li><code>from:to</code> Describes a range of values e.g. <code>10:15</code>. <br>Valid for datatypes <code>integer</code>, <code>float</code> </li>
                 <li><code>value,value,value</code> for enumerating all valid values. Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>. <br>Valid for datatypes <code>enum</code> </li>
-                <li><code>/regex/</code> to provide a regex that can be used to match the value. e.g. <code>/[A-Z][0-9]+/g</code>. <br>Valid for datatype <code>string</code></li>
+                <li><code>regex:/pattern/flags</code> to provide a regex that can be used to match the value. e.g. <code>regex:/[A-Z][0-9]+/g</code>. <br>Valid for datatype <code>string</code></li>
             </ul>
        </td>
        <td>Yes</td>
@@ -288,19 +306,22 @@ homie/ledstrip-device/ledstrip/$type → ledstrip
 homie/ledstrip-device/ledstrip/$properties → led[1-3]
 
 homie/ledstrip-device/ledstrip/led_1/$settable → true
-homie/ledstrip-device/ledstrip/led_1/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_1/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
 homie/ledstrip-device/ledstrip/led_1/$datatype → enum
 homie/ledstrip-device/ledstrip/led_1/$range → on,off
 homie/ledstrip-device/ledstrip/led_1 → on
 
 homie/ledstrip-device/ledstrip/led_2/$settable → true
-homie/ledstrip-device/ledstrip/led_2/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_2/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Green LEDs
 homie/ledstrip-device/ledstrip/led_2/$datatype → enum
 homie/ledstrip-device/ledstrip/led_2/$range → on,off
 homie/ledstrip-device/ledstrip/led_2 → off
 
 homie/ledstrip-device/ledstrip/led_3/$settable → true
-homie/ledstrip-device/ledstrip/led_3/$unit → LED Status
+homie/ledstrip-device/ledstrip/led_3/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Blue LEDs
 homie/ledstrip-device/ledstrip/led_3/$datatype → enum
 homie/ledstrip-device/ledstrip/led_3/$range → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
