@@ -18,7 +18,7 @@ You can find an implementation of the Homie convention:
 
 ## Background
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **attributes**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **attributes**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather station with two wireless sensors might expose a `temperature` node and an `humidity` node. A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `battery` property containing the battery level of the temperature sensor. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
 
 ## QoS and retained messages
 
@@ -34,7 +34,8 @@ An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
 
-* `homie` / **`device ID`**: this is the base topic of a device. Each device must have an unique device ID which adhere to the [ID format](#id-format).
+### Devices
+* `homie` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID which adhere to the [ID format](#id-format).
 * Attributes are topics that are prefixed with a `$`. These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
 
@@ -145,7 +146,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$nodes</td>
     <td>Device → Controller</td>
-    <td>Nodes the device exposes, with format `id` separated by a `,` if there are multiple nodes. For ranges, define the range after the `id`, within `[]` and separated by a `-`.</td>
+    <td>Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -201,6 +202,7 @@ homie/686f6d6965/$fw/version → 1.0.0
 ### Property attributes
 * `homie` / **`device ID`** / **`node ID`** / **`property`** / **`property attribute`**: `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
 * A property is made discoverable via its property attributes. It must be one of the following:
+
 <table>
     <tr>
         <th>Topic</th>
@@ -259,7 +261,7 @@ homie/686f6d6965/$fw/version → 1.0.0
        <td>Yes</td>
     </tr>
     <tr>
-       <td>$range</td>
+       <td>$format</td>
        <td>Device → Controller</td>
        <td>
         Describes what are valid values for this property.
@@ -287,7 +289,7 @@ homie/686f6d6965/temperature/$properties → degrees,unit
 homie/686f6d6965/temperature/degrees/$settable → false
 homie/686f6d6965/temperature/degrees/$unit → C
 homie/686f6d6965/temperature/degrees/$datatype → float
-homie/686f6d6965/temperature/degrees/$range → -20.0:60
+homie/686f6d6965/temperature/degrees/$format → -20.0:60
 homie/686f6d6965/temperature/degrees → 12.07
 
 homie/686f6d6965/humidity/$type → humidity
@@ -295,7 +297,7 @@ homie/686f6d6965/humidity/$properties → percentage
 homie/686f6d6965/humidity/percentage/$settable → false
 homie/686f6d6965/humidity/percentage/$unit → %
 homie/686f6d6965/humidity/percentage/$datatype → integer
-homie/686f6d6965/humidity/percentage/$range → 0:100
+homie/686f6d6965/humidity/percentage/$format → 0:100
 homie/686f6d6965/humidity/percentage → 79
 ```
 
@@ -309,21 +311,21 @@ homie/ledstrip-device/ledstrip/led_1/$settable → true
 homie/ledstrip-device/ledstrip/led_1/$unit →
 homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
 homie/ledstrip-device/ledstrip/led_1/$datatype → enum
-homie/ledstrip-device/ledstrip/led_1/$range → on,off
+homie/ledstrip-device/ledstrip/led_1/$format → on,off
 homie/ledstrip-device/ledstrip/led_1 → on
 
 homie/ledstrip-device/ledstrip/led_2/$settable → true
 homie/ledstrip-device/ledstrip/led_2/$unit →
 homie/ledstrip-device/ledstrip/led_1/$name → Green LEDs
 homie/ledstrip-device/ledstrip/led_2/$datatype → enum
-homie/ledstrip-device/ledstrip/led_2/$range → on,off
+homie/ledstrip-device/ledstrip/led_2/$format → on,off
 homie/ledstrip-device/ledstrip/led_2 → off
 
 homie/ledstrip-device/ledstrip/led_3/$settable → true
 homie/ledstrip-device/ledstrip/led_3/$unit →
 homie/ledstrip-device/ledstrip/led_1/$name → Blue LEDs
 homie/ledstrip-device/ledstrip/led_3/$datatype → enum
-homie/ledstrip-device/ledstrip/led_3/$range → on,off
+homie/ledstrip-device/ledstrip/led_3/$format → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
 ```
 
@@ -331,16 +333,16 @@ homie/ledstrip-device/ledstrip/led_3 → on
 
 Homie is state-based. You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
-For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/on/set` and it would receive:
+For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
 ```
-homie/kitchen-light/light/on/set ← true
+homie/kitchen-light/light/power/set ← on
 ```
 
-The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
+The device would then turn on the light, and update its `power` state. This provides pessimistic feedback, which is important for home automation.
 
 ```
-homie/kitchen-light/light/on → true
+homie/kitchen-light/light/power → true
 ```
 
 ### Broadcast channel
