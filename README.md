@@ -19,14 +19,18 @@ You can find an implementation of the Homie convention:
 ## Background
 
 An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**.
-A device has **attributes**, like the current local IP, the Wi-Fi signal, etc.
-A device can expose multiple **nodes**. For example, a weather station with two wireless sensors might expose a `temperature` node and an `humidity` node.
-A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `battery` property containing the battery level of the temperature sensor.
-Node properties can be **ranges**.
-For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently.
-Node properties can be **settable**.
+
+A device can expose multiple **nodes**. For example, a weather station with two sensors might expose a `temperature` node and an `humidity` node.
+
+A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and a `battery` property containing the battery level of the temperature sensor.
+Properties can be **arrays**.
+For example, if you have a LED strip, you can have a property `led` ranging from `1` to `10`, to control LEDs independently.
+Properties can be **settable**.
 For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it.
 However, you will want the `degrees` property to be settable in case of a thermostat.
+
+Devices, nodes and properties have specific **attributes**.
+For instance, a device will have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
 ## QoS and retained messages
 
