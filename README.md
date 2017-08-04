@@ -322,7 +322,7 @@ A property attribute MUST be one of these:
              <br>Valid for datatypes <code>enum</code>
            </li>
            <li>
-             <code>regex:/pattern/flags</code> to provide a regex that can be used to match the value. e.g. <code>regex:/[A-Z][0-9]+/g</code>.
+             <code>regex:pattern</code> to provide a regex that can be used to match the value. e.g. <code>regex:[A-Z][0-9]+</code>.
              <br>Valid for datatype <code>string</code>
            </li>
          </ul>
