@@ -45,20 +45,22 @@ An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9
 
 ## Convention
 
+### Base
+
 To efficiently parse messages, Homie defines a few rules related to topic names.
 The base topic you will see in the following convention will be `homie/`.
-You can however choose whatever base topic you want.
+If this base topic does not suit you (in case of a public broker, for example), you can choose whatever base topic you want.
 
-### Devices
+A part of a topic starting with a `$` represent an attribute. Its position in the topic define whether the attribute is a device one, node one, or property one.
+
+### Device
 
 * `homie` / **`device ID`**: this is the base topic of a device.
 Each device must have a unique device ID which adhere to the [ID format](#id-format).
-* Attributes are topics that are prefixed with a `$`.
-These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
-### Device attributes
+#### Device attributes
 
-* `homie` / **`device ID`** / `$` **`device attribute`**: a topic starting with a `$` after the base topic of a device represents a device attribute.
+* `homie` / `device ID` / `$` **`device attribute`**:
 A device attribute MUST be one of these:
 
 <table>
@@ -186,10 +188,15 @@ homie/686f6d6965/$fw/name → 1.0.0
 homie/686f6d6965/$fw/version → 1.0.0
 ```
 
-### Node attributes
+### Node
 
-* `homie` / **`device ID`** / **`node ID`** / **`node attribute`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format).
-* A node is made discoverable via its node attributes. It must be one of the following:
+* `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
+Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#id-format).
+
+#### Node attributes
+
+* `homie` / `device ID` / `node ID` / `$` **`node attribute`**:
+A node attribute MUST be one of these:
 
 <table>
   <tr>
@@ -225,10 +232,15 @@ homie/686f6d6965/$fw/version → 1.0.0
   </tr>
 </table>
 
-### Property attributes
+### Property
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`** / **`property attribute`**: `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
-* A property is made discoverable via its property attributes. It must be one of the following:
+* `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
+Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#id-format).
+
+#### Property attributes
+
+* `homie` / `device ID` / `node ID` / `property ID` / `$` **`property attribute`**:
+A property attribute MUST be one of these:
 
 <table>
     <tr>
@@ -322,10 +334,7 @@ homie/686f6d6965/$fw/version → 1.0.0
        <td>Yes</td>
        <td>Yes</td>
     </tr>
-
-
 </table>
-
 
 For example, our `686f6d6965` above would send:
 
@@ -375,10 +384,10 @@ homie/ledstrip-device/ledstrip/led_3/$format → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
 ```
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
+* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based.
-You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`.
+You don't tell your smartlight to `turn on`, but you tell it to put it's `power` state to `on`.
 This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
