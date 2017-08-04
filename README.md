@@ -18,13 +18,22 @@ You can find an implementation of the Homie convention:
 
 ## Background
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **attributes**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather station with two wireless sensors might expose a `temperature` node and an `humidity` node. A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `battery` property containing the battery level of the temperature sensor. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**.
+A device has **attributes**, like the current local IP, the Wi-Fi signal, etc.
+A device can expose multiple **nodes**. For example, a weather station with two wireless sensors might expose a `temperature` node and an `humidity` node.
+A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `battery` property containing the battery level of the temperature sensor.
+Node properties can be **ranges**.
+For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently.
+Node properties can be **settable**.
+For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it.
+However, you will want the `degrees` property to be settable in case of a thermostat.
 
 ## QoS and retained messages
 
 Homie devices communicate through MQTT.
 
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**. All messages MUST be sent as **retained**, UNLESS stated otherwise.
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
+All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 ## ID format
 
@@ -32,17 +41,21 @@ An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9
 
 ## Convention
 
-To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
+To efficiently parse messages, Homie defines a few rules related to topic names.
+The base topic you will see in the following convention will be `homie/`.
+You can however choose whatever base topic you want.
 
 ### Devices
-* `homie` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID which adhere to the [ID format](#id-format).
-* Attributes are topics that are prefixed with a `$`. These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
+* `homie` / **`device ID`**: this is the base topic of a device.
+Each device must have a unique device ID which adhere to the [ID format](#id-format).
+* Attributes are topics that are prefixed with a `$`.
+These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
 ### Device attributes
 
-* `homie` / **`device ID`** / `$` **`device attribute`**: a topic starting with a `$` after the base topic of a device represents a device attribute. A device attribute MUST be one of these:
-
+* `homie` / **`device ID`** / `$` **`device attribute`**: a topic starting with a `$` after the base topic of a device represents a device attribute.
+A device attribute MUST be one of these:
 
 <table>
   <tr>
@@ -62,7 +75,10 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$online</td>
     <td>Device → Controller</td>
-    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT). When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready</td>
+    <td>
+      <code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT).
+      When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready
+    </td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -146,7 +162,10 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$nodes</td>
     <td>Device → Controller</td>
-    <td>Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
+    <td>
+      Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
+      For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.
+    </td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -193,13 +212,17 @@ homie/686f6d6965/$fw/version → 1.0.0
   <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
+    <td>
+      Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
+      For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.
+    </td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
 </table>
 
 ### Property attributes
+
 * `homie` / **`device ID`** / **`node ID`** / **`property`** / **`property attribute`**: `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
 * A property is made discoverable via its property attributes. It must be one of the following:
 
@@ -223,7 +246,10 @@ homie/686f6d6965/$fw/version → 1.0.0
     <tr>
         <td>$unit</td>
         <td>Device → Controller</td>
-        <td>A string containing the unit of this property. You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.</td>
+        <td>
+          A string containing the unit of this property.
+          You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
+        </td>
         <td>
             Recommended: <br>
             <code>°C</code> Degree Celsius<br>
@@ -248,7 +274,13 @@ homie/686f6d6965/$fw/version → 1.0.0
        <td>$datatype</td>
        <td>Device → Controller</td>
        <td>Describes the format of data.</td>
-       <td><code>integer</code>, <code>float</code>, <code>boolean</code> (<code>true</code> or <code>false</code>), <code>string</code>, <code>enum</code> </td>
+       <td>
+         <code>integer</code>,
+         <code>float</code>,
+         <code>boolean</code> (<code>true</code> or <code>false</code>),
+         <code>string</code>,
+         <code>enum</code>
+       </td>
        <td>Yes</td>
        <td>Yes</td>
     </tr>
@@ -267,11 +299,21 @@ homie/686f6d6965/$fw/version → 1.0.0
         Describes what are valid values for this property.
        </td>
        <td>
-             <ul>
-                <li><code>from:to</code> Describes a range of values e.g. <code>10:15</code>. <br>Valid for datatypes <code>integer</code>, <code>float</code> </li>
-                <li><code>value,value,value</code> for enumerating all valid values. Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>. <br>Valid for datatypes <code>enum</code> </li>
-                <li><code>regex:/pattern/flags</code> to provide a regex that can be used to match the value. e.g. <code>regex:/[A-Z][0-9]+/g</code>. <br>Valid for datatype <code>string</code></li>
-            </ul>
+         <ul>
+           <li>
+             <code>from:to</code> Describes a range of values e.g. <code>10:15</code>.
+             <br>Valid for datatypes <code>integer</code>, <code>float</code>
+           </li>
+           <li>
+             <code>value,value,value</code> for enumerating all valid values.
+             Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>.
+             <br>Valid for datatypes <code>enum</code>
+           </li>
+           <li>
+             <code>regex:/pattern/flags</code> to provide a regex that can be used to match the value. e.g. <code>regex:/[A-Z][0-9]+/g</code>.
+             <br>Valid for datatype <code>string</code>
+           </li>
+         </ul>
        </td>
        <td>Yes</td>
        <td>Yes</td>
@@ -331,7 +373,9 @@ homie/ledstrip-device/ledstrip/led_3 → on
 
 * `homie` / **`device ID`** / **`node ID`** / **`property`** / `set`: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
-Homie is state-based. You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
+Homie is state-based.
+You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`.
+This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
@@ -339,7 +383,8 @@ For example, a `kitchen-light` device exposing a `light` node would subscribe to
 homie/kitchen-light/light/power/set ← on
 ```
 
-The device would then turn on the light, and update its `power` state. This provides pessimistic feedback, which is important for home automation.
+The device would then turn on the light, and update its `power` state.
+This provides pessimistic feedback, which is important for home automation.
 
 ```
 homie/kitchen-light/light/power → true
@@ -349,9 +394,12 @@ homie/kitchen-light/light/power → true
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
-* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier. It must adhere to the [ID format](#id-format).
+* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
+It must adhere to the [ID format](#id-format).
 
-For example, you might want to broadcast an `alert` event with the alert reason as the payload. Devices are then free to react or not. In our case, every buzzer of your home automation system would start buzzing.
+For example, you might want to broadcast an `alert` event with the alert reason as the payload.
+Devices are then free to react or not.
+In our case, every buzzer of your home automation system would start buzzing.
 
 ```
 homie/$broadcast/alert ← Intruder detected
