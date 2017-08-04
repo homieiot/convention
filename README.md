@@ -1,19 +1,12 @@
 ![Homie banner](banner.png)
 
 <h1 align="center">The Homie convention</h1>
-<p align="center">A lightweight MQTT convention for the IoT</p>
+<p align="center">Version: <b>2.1.0</b></p>
+<p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
 
 **![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) Please note this v2 branch is a work-in-progress. It might change before the final release.**
 
-Version: **2.1.0**.
-
-You can find an implementation of the Homie convention:
-
-* An Arduino library built for the ESP8266: [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266)
-* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - An opinionated Web UI built with Node.js: [marvinroger/homie-server](https://github.com/marvinroger/homie-server)
-* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - Some Node-RED nodes for automation: [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
-* A Python-implementation for Raspberry Pi & Co.: [jalmeroth/homie-python](https://github.com/jalmeroth/homie-python).
-* A Ruby-implementation including a command-line-client with OTA-Support for easy adminstration of multiple Homie-devices: [rttools/hodmin](https://github.com/rttools/hodmin)
+You can find implementations of the Homie convention on [this page](implementations.md).
 
 ------
 ------
