@@ -1,12 +1,11 @@
 ![Homie banner](banner.png)
 
 <h1 align="center">The Homie convention</h1>
+<p align="center">A lightweight MQTT convention for the IoT</p>
 
-**Please note this v2 branch is a work-in-progress. It might change before the final release.**
+**![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) Please note this v2 branch is a work-in-progress. It might change before the final release.**
 
 Version: **2.1.0**.
-
-Homie is a lightweight MQTT convention for the IoT.
 
 You can find an implementation of the Homie convention:
 
@@ -15,6 +14,9 @@ You can find an implementation of the Homie convention:
 * ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - Some Node-RED nodes for automation: [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
 * A Python-implementation for Raspberry Pi & Co.: [jalmeroth/homie-python](https://github.com/jalmeroth/homie-python).
 * A Ruby-implementation including a command-line-client with OTA-Support for easy adminstration of multiple Homie-devices: [rttools/hodmin](https://github.com/rttools/hodmin)
+
+------
+------
 
 ## Background
 
@@ -43,6 +45,9 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
 
+------
+------
+
 ## Convention
 
 ### Base
@@ -52,6 +57,8 @@ The base topic you will see in the following convention will be `homie/`.
 If this base topic does not suit you (in case of a public broker, for example), you can choose whatever base topic you want.
 
 A part of a topic starting with a `$` represent an attribute. Its position in the topic define whether the attribute is a device one, node one, or property one.
+
+------
 
 ### Device
 
@@ -117,16 +124,9 @@ A device attribute MUST be one of these:
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$stats/signal</td>
-    <td>Device → Controller</td>
-    <td>Integer representing the Wi-Fi signal quality in percentage if applicable</td>
-    <td>Yes</td>
-    <td>No, this is not applicable to an Ethernet connected device for example</td>
-  </tr>
-  <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$stats/uptime</code> and <code>$stats/signal</code> are refreshed</td>
+    <td>Interval in seconds at which the <code>$stats/uptime</code> is refreshed</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -143,13 +143,6 @@ A device attribute MUST be one of these:
     <td>Version of the firmware running on the device</td>
     <td>Yes</td>
     <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/checksum</td>
-    <td>Device → Controller</td>
-    <td>MD5 checksum of the firmware running on the device</td>
-    <td>Yes</td>
-    <td>No, depending of your implementation</td>
   </tr>
   <tr>
     <td>$implementation</td>
@@ -183,10 +176,11 @@ For example, a device with an ID of `686f6d6965` with a temperature and an humid
 homie/686f6d6965/$online → true
 homie/686f6d6965/$name → Bedroom temperature sensor
 homie/686f6d6965/$localip → 192.168.0.10
-homie/686f6d6965/$signal → 72
 homie/686f6d6965/$fw/name → 1.0.0
 homie/686f6d6965/$fw/version → 1.0.0
 ```
+
+------
 
 ### Node
 
@@ -231,6 +225,8 @@ A node attribute MUST be one of these:
     <td>Yes</td>
   </tr>
 </table>
+
+------
 
 ### Property
 
@@ -402,6 +398,8 @@ This provides pessimistic feedback, which is important for home automation.
 ```
 homie/kitchen-light/light/power → true
 ```
+
+------
 
 ### Broadcast channel
 
