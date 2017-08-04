@@ -163,7 +163,6 @@ A device attribute MUST be one of these:
     <td>Device → Controller</td>
     <td>
       Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
-      For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.
     </td>
     <td>Yes</td>
     <td>Yes</td>
@@ -219,7 +218,7 @@ A node attribute MUST be one of these:
     <td>Device → Controller</td>
     <td>
       Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
-      For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.
+      To make a property an array, append <code>[]</code> to the ID.
     </td>
     <td>Yes</td>
     <td>Yes</td>
@@ -330,6 +329,14 @@ A property attribute MUST be one of these:
        <td>Yes</td>
        <td>Yes</td>
     </tr>
+    <tr>
+       <td>$array</td>
+       <td>Device → Controller</td>
+       <td>Defines the range for an array.</td>
+       <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
+       <td>Yes</td>
+       <td>Yes, if the property is an array</td>
+    </tr>
 </table>
 
 For example, our `686f6d6965` above would send:
@@ -352,34 +359,6 @@ homie/686f6d6965/humidity/percentage/$format → 0:100
 homie/686f6d6965/humidity/percentage → 79
 ```
 
-A LED strip would look like this. Note that the topic for a range properties is the name of the property followed by a `_` and the index getting updated:
-
-```
-homie/ledstrip-device/ledstrip/$type → ledstrip
-homie/ledstrip-device/ledstrip/$properties → led[1-3]
-
-homie/ledstrip-device/ledstrip/led_1/$settable → true
-homie/ledstrip-device/ledstrip/led_1/$unit →
-homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
-homie/ledstrip-device/ledstrip/led_1/$datatype → enum
-homie/ledstrip-device/ledstrip/led_1/$format → on,off
-homie/ledstrip-device/ledstrip/led_1 → on
-
-homie/ledstrip-device/ledstrip/led_2/$settable → true
-homie/ledstrip-device/ledstrip/led_2/$unit →
-homie/ledstrip-device/ledstrip/led_1/$name → Green LEDs
-homie/ledstrip-device/ledstrip/led_2/$datatype → enum
-homie/ledstrip-device/ledstrip/led_2/$format → on,off
-homie/ledstrip-device/ledstrip/led_2 → off
-
-homie/ledstrip-device/ledstrip/led_3/$settable → true
-homie/ledstrip-device/ledstrip/led_3/$unit →
-homie/ledstrip-device/ledstrip/led_1/$name → Blue LEDs
-homie/ledstrip-device/ledstrip/led_3/$datatype → enum
-homie/ledstrip-device/ledstrip/led_3/$format → on,off
-homie/ledstrip-device/ledstrip/led_3 → on
-```
-
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based.
@@ -397,6 +376,28 @@ This provides pessimistic feedback, which is important for home automation.
 
 ```
 homie/kitchen-light/light/power → true
+```
+
+#### Array
+
+A property can be an array if you've added `[]` to its ID in the `$properties` node attribute, and if its `$array` attribute is set to the range of the array.
+A LED strip node would look like this. Note that the topic for an element of the array property is the name of the property followed by a `_` and the index getting updated:
+
+```
+homie/ledstrip-device/ledstrip/$type → ledstrip
+homie/ledstrip-device/ledstrip/$properties → led[1-3]
+
+homie/ledstrip-device/ledstrip/led/$settable → true
+homie/ledstrip-device/ledstrip/led/$unit →
+homie/ledstrip-device/ledstrip/led/$datatype → enum
+homie/ledstrip-device/ledstrip/led/$format → on,off
+
+homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
+homie/ledstrip-device/ledstrip/led_1 → on
+homie/ledstrip-device/ledstrip/led_2/$name → Green LEDs
+homie/ledstrip-device/ledstrip/led_2 → off
+homie/ledstrip-device/ledstrip/led_3/$name → Blue LEDs
+homie/ledstrip-device/ledstrip/led_3 → off
 ```
 
 ------
