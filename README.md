@@ -4,7 +4,7 @@
 
 **Please note this v2 branch is a work-in-progress. It might change before the final release.**
 
-Version: **2.0.0**.
+Version: **2.1.0**.
 
 Homie is a lightweight MQTT convention for the IoT.
 
@@ -18,7 +18,7 @@ You can find an implementation of the Homie convention:
 
 ## Background
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **device properties**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather device might expose a `temperature` node and an `humidity` node. A node can have multiple **node properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `unit` property. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
+An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**. A device has **attributes**, like the current local IP, the Wi-Fi signal, etc. A device can expose multiple **nodes**. For example, a weather station with two wireless sensors might expose a `temperature` node and an `humidity` node. A node can have multiple **properties**. The `temperature` node might for example expose a `degrees` property containing the actual temperature, and an `battery` property containing the battery level of the temperature sensor. Node properties can be **ranges**. For example, if you have a LED strip, you can have a node property `led` ranging from `1` to `10`, to control LEDs independently. Node properties can be **settable**. For example, you don't want your `degrees` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it. However, you will want the `degrees` property to be settable in case of a thermostat.
 
 ## QoS and retained messages
 
@@ -34,15 +34,19 @@ An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9
 
 To efficiently parse messages, Homie defines a few rules related to topic names. The base topic you will see in the following convention will be `homie/`. You can however choose whatever base topic you want.
 
-* `homie` / **`device ID`**: this is the base topic of a device. Each device must have an unique device ID which adhere to the [ID format](#id-format).
+### Devices
+* `homie` / **`device ID`**: this is the base topic of a device. Each device must have a unique device ID which adhere to the [ID format](#id-format).
+* Attributes are topics that are prefixed with a `$`. These sub-topics add meta-data to Devices, Nodes and Properties describing their parent topic.
 
-### Device properties
 
-* `homie` / **`device ID`** / `$` **`device property`**: a topic starting with a `$` after the base topic of a device represents a device property. A device property MUST be one of these:
+### Device attributes
+
+* `homie` / **`device ID`** / `$` **`device attribute`**: a topic starting with a `$` after the base topic of a device represents a device attribute. A device attribute MUST be one of these:
+
 
 <table>
   <tr>
-    <th>Property</th>
+    <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
     <th>Retained</th>
@@ -139,6 +143,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
+  <tr>
+    <td>$nodes</td>
+    <td>Device → Controller</td>
+    <td>Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
 </table>
 
 For example, a device with an ID of `686f6d6965` with a temperature and an humidity sensor would send:
@@ -152,15 +163,14 @@ homie/686f6d6965/$fw/name → 1.0.0
 homie/686f6d6965/$fw/version → 1.0.0
 ```
 
-### Node properties
+### Node attributes
 
-* `homie` / **`device ID`** / **`node ID`** / **`property`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format). `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
-
-Properties starting with a `$` are special properties. It must be one of the following:
+* `homie` / **`device ID`** / **`node ID`** / **`node attribute`**: `node ID` is the ID of the node, which must be unique on a per-device basis, and which adhere to the [ID format](#id-format).
+* A node is made discoverable via its node attributes. It must be one of the following:
 
 <table>
   <tr>
-    <th>Property</th>
+    <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
     <th>Retained</th>
@@ -174,24 +184,120 @@ Properties starting with a `$` are special properties. It must be one of the fol
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$name</td>
+    <td>Device → Controller</td>
+    <td>Friendly name of the Node</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>. For settable properties, add <code>:settable</code> to the <code>id</code></td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
 </table>
+
+### Property attributes
+* `homie` / **`device ID`** / **`node ID`** / **`property`** / **`property attribute`**: `property` is the property of the node that is getting updated, which must be unique on a per-node basis, and which adhere to the [ID format](#id-format).
+* A property is made discoverable via its property attributes. It must be one of the following:
+
+<table>
+    <tr>
+        <th>Topic</th>
+        <th>Direction</th>
+        <th>Description</th>
+        <th>Valid values</th>
+        <th>Retained</th>
+        <th>Required</th>
+    </tr>
+    <tr>
+        <td>$settable</td>
+        <td>Device → Controller</td>
+        <td>Specifies whether the property is settable (<code>true</code>) or readonly (<code>false</code>)</td>
+        <td><code>true</code>,<code>false</code></td>
+        <td>Yes</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>$unit</td>
+        <td>Device → Controller</td>
+        <td>A string containing the unit of this property. You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.</td>
+        <td>
+            Recommended: <br>
+            <code>°C</code> Degree Celsius<br>
+            <code>°F</code> Degree Fahrenheit<br>
+            <code>°</code> Degree<br>
+            <code>L</code> Liter<br>
+            <code>gal</code> Galon<br>
+            <code>V</code> Volts<br>
+            <code>W</code> Watt<br>
+            <code>A</code> Ampere<br>
+            <code>%</code> Percent<br>
+            <code>m</code> Meter<br>
+            <code>ft</code> Feet<br>
+            <code>Pa</code> Pascal<br>
+            <code>psi</code> PSI<br>
+            <code>#</code> Count or Amount
+        </td>
+        <td>Yes</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+       <td>$datatype</td>
+       <td>Device → Controller</td>
+       <td>Describes the format of data.</td>
+       <td><code>integer</code>, <code>float</code>, <code>boolean</code> (<code>true</code> or <code>false</code>), <code>string</code>, <code>enum</code> </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+    <tr>
+       <td>$name</td>
+       <td>Device → Controller</td>
+       <td>Friendly name of the property.</td>
+       <td>Any String </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+    <tr>
+       <td>$format</td>
+       <td>Device → Controller</td>
+       <td>
+        Describes what are valid values for this property.
+       </td>
+       <td>
+             <ul>
+                <li><code>from:to</code> Describes a range of values e.g. <code>10:15</code>. <br>Valid for datatypes <code>integer</code>, <code>float</code> </li>
+                <li><code>value,value,value</code> for enumerating all valid values. Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>. <br>Valid for datatypes <code>enum</code> </li>
+                <li><code>regex:/pattern/flags</code> to provide a regex that can be used to match the value. e.g. <code>regex:/[A-Z][0-9]+/g</code>. <br>Valid for datatype <code>string</code></li>
+            </ul>
+       </td>
+       <td>Yes</td>
+       <td>Yes</td>
+    </tr>
+
+
+</table>
+
 
 For example, our `686f6d6965` above would send:
 
 ```
 homie/686f6d6965/temperature/$type → temperature
 homie/686f6d6965/temperature/$properties → degrees,unit
-homie/686f6d6965/temperature/unit → c
+homie/686f6d6965/temperature/degrees/$settable → false
+homie/686f6d6965/temperature/degrees/$unit → C
+homie/686f6d6965/temperature/degrees/$datatype → float
+homie/686f6d6965/temperature/degrees/$format → -20.0:60
 homie/686f6d6965/temperature/degrees → 12.07
 
 homie/686f6d6965/humidity/$type → humidity
 homie/686f6d6965/humidity/$properties → percentage
+homie/686f6d6965/humidity/percentage/$settable → false
+homie/686f6d6965/humidity/percentage/$unit → %
+homie/686f6d6965/humidity/percentage/$datatype → integer
+homie/686f6d6965/humidity/percentage/$format → 0:100
 homie/686f6d6965/humidity/percentage → 79
 ```
 
@@ -199,9 +305,27 @@ A LED strip would look like this. Note that the topic for a range properties is 
 
 ```
 homie/ledstrip-device/ledstrip/$type → ledstrip
-homie/ledstrip-device/ledstrip/$properties → led[1-3]:settable
+homie/ledstrip-device/ledstrip/$properties → led[1-3]
+
+homie/ledstrip-device/ledstrip/led_1/$settable → true
+homie/ledstrip-device/ledstrip/led_1/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
+homie/ledstrip-device/ledstrip/led_1/$datatype → enum
+homie/ledstrip-device/ledstrip/led_1/$format → on,off
 homie/ledstrip-device/ledstrip/led_1 → on
+
+homie/ledstrip-device/ledstrip/led_2/$settable → true
+homie/ledstrip-device/ledstrip/led_2/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Green LEDs
+homie/ledstrip-device/ledstrip/led_2/$datatype → enum
+homie/ledstrip-device/ledstrip/led_2/$format → on,off
 homie/ledstrip-device/ledstrip/led_2 → off
+
+homie/ledstrip-device/ledstrip/led_3/$settable → true
+homie/ledstrip-device/ledstrip/led_3/$unit →
+homie/ledstrip-device/ledstrip/led_1/$name → Blue LEDs
+homie/ledstrip-device/ledstrip/led_3/$datatype → enum
+homie/ledstrip-device/ledstrip/led_3/$format → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
 ```
 
@@ -209,16 +333,16 @@ homie/ledstrip-device/ledstrip/led_3 → on
 
 Homie is state-based. You don't tell your smartlight to `turn on`, but you tell it to put it's `on` state to `true`. This especially fits well with MQTT, because of retained message.
 
-For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/on/set` and it would receive:
+For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
 ```
-homie/kitchen-light/light/on/set ← true
+homie/kitchen-light/light/power/set ← on
 ```
 
-The device would then turn on the light, and update its `on` state. This provides pessimistic feedback, which is important for home automation.
+The device would then turn on the light, and update its `power` state. This provides pessimistic feedback, which is important for home automation.
 
 ```
-homie/kitchen-light/light/on → true
+homie/kitchen-light/light/power → true
 ```
 
 ### Broadcast channel
