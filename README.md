@@ -86,19 +86,19 @@ A device attribute MUST be one of these:
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$name</td>
+    <td>Device → Controller</td>
+    <td>Friendly name of the device</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$online</td>
     <td>Device → Controller</td>
     <td>
       <code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT).
       When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready
     </td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$name</td>
-    <td>Device → Controller</td>
-    <td>Friendly name of the device</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -145,6 +145,15 @@ A device attribute MUST be one of these:
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$nodes</td>
+    <td>Device → Controller</td>
+    <td>
+      Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
+    </td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
@@ -158,25 +167,22 @@ A device attribute MUST be one of these:
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
-  <tr>
-    <td>$nodes</td>
-    <td>Device → Controller</td>
-    <td>
-      Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
-    </td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with a temperature and an humidity sensor would send:
+For example, a device with an ID of `686f6d6965` with a `base` and a `windsensor` node would send:
 
 ```
-homie/686f6d6965/$online → true
-homie/686f6d6965/$name → Bedroom temperature sensor
+homie/686f6d6965/$homie → 2.1.0
+homie/686f6d6965/$name → Weather station
 homie/686f6d6965/$localip → 192.168.0.10
-homie/686f6d6965/$fw/name → 1.0.0
+homie/686f6d6965/$mac → DE:AD:BE:EF:FE:ED
+homie/686f6d6965/$stats/uptime → 120
+homie/686f6d6965/$stats/interval → 60
+homie/686f6d6965/$fw/name → weatherstation-firmware
 homie/686f6d6965/$fw/version → 1.0.0
+homie/686f6d6965/$nodes → base,windsensor
+homie/686f6d6965/$implementation → esp8266
+homie/686f6d6965/$online → true
 ```
 
 ------
@@ -200,16 +206,16 @@ A node attribute MUST be one of these:
     <th>Required</th>
   </tr>
   <tr>
-    <td>$type</td>
+    <td>$name</td>
     <td>Device → Controller</td>
-    <td>Type of the node</td>
+    <td>Friendly name of the Node</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$name</td>
+    <td>$type</td>
     <td>Device → Controller</td>
-    <td>Friendly name of the Node</td>
+    <td>Type of the node</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -224,6 +230,14 @@ A node attribute MUST be one of these:
     <td>Yes</td>
   </tr>
 </table>
+
+For example, our `base` node would send:
+
+```
+homie/686f6d6965/base/$name → Weather station base information
+homie/686f6d6965/base/$type → weatherbase
+homie/686f6d6965/base/$properties → temperature,humidity
+```
 
 ------
 
@@ -245,6 +259,14 @@ A property attribute MUST be one of these:
         <th>Valid values</th>
         <th>Retained</th>
         <th>Required</th>
+    </tr>
+    <tr>
+       <td>$name</td>
+       <td>Device → Controller</td>
+       <td>Friendly name of the property.</td>
+       <td>Any String </td>
+       <td>Yes</td>
+       <td>Yes</td>
     </tr>
     <tr>
         <td>$settable</td>
@@ -296,14 +318,6 @@ A property attribute MUST be one of these:
        <td>Yes</td>
     </tr>
     <tr>
-       <td>$name</td>
-       <td>Device → Controller</td>
-       <td>Friendly name of the property.</td>
-       <td>Any String </td>
-       <td>Yes</td>
-       <td>Yes</td>
-    </tr>
-    <tr>
        <td>$format</td>
        <td>Device → Controller</td>
        <td>
@@ -339,24 +353,14 @@ A property attribute MUST be one of these:
     </tr>
 </table>
 
-For example, our `686f6d6965` above would send:
+For example, our `temperature` property would send:
 
 ```
-homie/686f6d6965/temperature/$type → temperature
-homie/686f6d6965/temperature/$properties → degrees,unit
-homie/686f6d6965/temperature/degrees/$settable → false
-homie/686f6d6965/temperature/degrees/$unit → C
-homie/686f6d6965/temperature/degrees/$datatype → float
-homie/686f6d6965/temperature/degrees/$format → -20.0:60
-homie/686f6d6965/temperature/degrees → 12.07
-
-homie/686f6d6965/humidity/$type → humidity
-homie/686f6d6965/humidity/$properties → percentage
-homie/686f6d6965/humidity/percentage/$settable → false
-homie/686f6d6965/humidity/percentage/$unit → %
-homie/686f6d6965/humidity/percentage/$datatype → integer
-homie/686f6d6965/humidity/percentage/$format → 0:100
-homie/686f6d6965/humidity/percentage → 79
+homie/686f6d6965/base/temperature/$name → Temperature
+homie/686f6d6965/base/temperature/$settable → false
+homie/686f6d6965/base/temperature/$unit → °C
+homie/686f6d6965/base/temperature/$datatype → float
+homie/686f6d6965/base/temperature/$format → -20:50
 ```
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
@@ -385,8 +389,10 @@ A LED strip node would look like this. Note that the topic for an element of the
 
 ```
 homie/ledstrip-device/ledstrip/$type → ledstrip
+homie/ledstrip-device/ledstrip/$name → LED strip
 homie/ledstrip-device/ledstrip/$properties → led[1-3]
 
+homie/ledstrip-device/ledstrip/led/$name → LEDs
 homie/ledstrip-device/ledstrip/led/$settable → true
 homie/ledstrip-device/ledstrip/led/$unit →
 homie/ledstrip-device/ledstrip/led/$datatype → enum
@@ -399,6 +405,8 @@ homie/ledstrip-device/ledstrip/led_2 → off
 homie/ledstrip-device/ledstrip/led_3/$name → Blue LEDs
 homie/ledstrip-device/ledstrip/led_3 → off
 ```
+
+Note that you can name each element in your array individually ("Green LEDs", etc.).
 
 ------
 
