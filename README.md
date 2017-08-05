@@ -11,6 +11,20 @@ You can find implementations of the Homie convention on [this page](implementati
 ------
 ------
 
+## Motivation
+
+The Homie convention thrives to be a communication definition on top of MQTT between IoT devices and controling entities.
+
+> [MQTT](http://mqtt.org) is a machine-to-machine (M2M)/"Internet of Things" connectivity protocol.
+> It was designed as an extremely lightweight publish/subscribe messaging transport.
+
+MQTT supports easy and unrestricted message-based communication.
+However, MQTT doesn't define the structure and content of these messages and their relation.
+An IoT device publishes data and provides interaction possibilities but a controlling entity will need to be specifically configured to be able to interface with the device.
+
+The Homie convention defines a standardized way of how IoT devices and services announce themselves and their data on the communication channel.
+The Homie convention is thereby a crucial aspect in the support of automatic discovery, configuration and usage of devices and services over the MQTT protocol.
+
 ## Background
 
 An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**.
