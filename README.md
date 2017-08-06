@@ -56,20 +56,18 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 **Devices:**
 An instance of a physical piece of hardware is called a *device*.
-
-Examples: A weather station, an Arduino, an ESP8266, a coffee machine
+For example, a weather station, an Arduino/ESP8266 or a coffee machine.
 
 **Nodes:**
 A *device* can expose multiple *nodes*.
 Nodes are independent or logically separable parts of a device.
-
-Examples: A weather station might expose an `outdoor-probe` node and a `windsensor` node.
+For example, a weather station might expose an `outdoor-probe` node and a `windsensor` node.
 
 **Properties:**
 A *node* can have multiple *properties*.
 Properties represent basic characteristics of the node/device, often given as numbers or finite states.
-
-Examples: The `outdoor-probe` node might expose a `temperature` property and a `humidity` property. The `windsensor` node might expose a `speed` and a `direction` property.
+For example the `outdoor-probe` node might expose a `temperature` property and a `humidity` property.
+The `windsensor` node might expose a `speed` and a `direction` property.
 
 Properties can be **arrays**.
 For example, An LED strip can have a property `led` ranging from `1` to `10`, to control LEDs independently.
