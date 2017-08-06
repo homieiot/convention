@@ -8,12 +8,14 @@
 
 You can find implementations of the Homie convention on [this page](implementations.md).
 
-------
-------
+----
+----
+
+<!-- TODO add TOC here after document is stable -->
 
 ## Motivation
 
-The Homie convention thrives to be a communication definition on top of MQTT between IoT devices and controling entities.
+The Homie convention strives to be a **communication definition on top of MQTT** between IoT devices and controlling entities.
 
 > [MQTT](http://mqtt.org) is a machine-to-machine (M2M)/"Internet of Things" connectivity protocol.
 > It was designed as an extremely lightweight publish/subscribe messaging transport.
@@ -22,59 +24,83 @@ MQTT supports easy and unrestricted message-based communication.
 However, MQTT doesn't define the structure and content of these messages and their relation.
 An IoT device publishes data and provides interaction possibilities but a controlling entity will need to be specifically configured to be able to interface with the device.
 
-The Homie convention defines a standardized way of how IoT devices and services announce themselves and their data on the communication channel.
-The Homie convention is thereby a crucial aspect in the support of automatic discovery, configuration and usage of devices and services over the MQTT protocol.
+The Homie convention defines a **standardized way** of how IoT devices and services announce themselves and their data on the communication channel.
+The Homie convention is thereby a crucial aspect in the support of **automatic discovery, configuration and usage** of devices and services over the MQTT protocol.
 
-## Background
+----
 
-An instance of a physical piece of hardware (an Arduino, an ESP8266...) is called a **device**.
+Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
-A device can expose multiple **nodes**. For example, a weather station with two sensors might expose a `base` node and an `windsensor` node.
+## ID Format
 
-A node can have multiple **properties**. The `base` node might for example expose a `temperature` property containing the actual temperature, and an `humidity` property containing the actual humidity.
-Properties can be **arrays**.
-For example, if you have a LED strip, you can have a property `led` ranging from `1` to `10`, to control LEDs independently.
-Properties can be **settable**.
-For example, you don't want your `temperature` property to be settable in case of a temperature sensor: this depends on the environment and it would not make sense to change it.
-However, you will want the `temperature` property to be settable in case of a thermostat.
+IDs are the identifiers used in topic names.
+An ID MAY contain:
 
-Devices, nodes and properties have specific **attributes**.
-For instance, a device will have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
+* lowercase letters from `a` to `z`
+* numbers from `0` to `9`
+* hyphens `-` to separate ID parts
 
-## QoS and retained messages
+An ID MUST NOT start or end with a hyphen (`-`).
 
-Homie devices communicate through MQTT.
+The special character `$` is used and reserved for Homie *attributes*.
+
+The underscore (`_`) is used and reserved for Homie *property arrays*.
+
+
+## QoS and Retained Messages
 
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
-## ID format
+## Topology
 
-An ID MAY contain only lowercase letters from `a` to `z`, numbers from `0` to `9`, and it MAY contain `-`, but MUST NOT start or end with a `-`.
+**Devices:**
+An instance of a physical piece of hardware is called a *device*.
 
-------
-------
+Examples: A weather station, an Arduino, an ESP8266, a coffee machine
 
-## Convention
+**Nodes:**
+A *device* can expose multiple *nodes*.
+Nodes are independent or logically separable parts of a device.
 
-### Base
+Examples: A weather station might expose an `outdoor-probe` node and a `windsensor` node.
 
-To efficiently parse messages, Homie defines a few rules related to topic names.
+**Properties:**
+A *node* can have multiple *properties*.
+Properties represent basic characteristics of the node/device, often given as numbers or finite states.
+
+Examples: The `outdoor-probe` node might expose a `temperature` property and a `humidity` property. The `windsensor` node might expose a `speed` and a `direction` property.
+
+Properties can be **arrays**.
+For example, An LED strip can have a property `led` ranging from `1` to `10`, to control LEDs independently.
+
+Properties can be **settable**.
+For example, you don't want your `temperature` property to be settable in case of a temperature sensor but to be settable in case of a thermostat.
+
+**Attributes:**
+*Devices, nodes and properties* have specific *attributes* characterizing them.
+Attributes are represented by topic identifier starting with `$`.
+The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
+
+Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
+
+### Base Topic
+
 The base topic you will see in the following convention will be `homie/`.
-If this base topic does not suit you (in case of a public broker, for example), you can choose whatever base topic you want.
+If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
 
-A part of a topic starting with a `$` represent an attribute. Its position in the topic define whether the attribute is a device one, node one, or property one.
+Be aware, that only the default base topic `homie/` is eligible for automatic discovery by third party controllers.
 
-------
+----
 
-### Device
+### Devices
 
 * `homie` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID format](#id-format).
+Each device must have a unique device ID which adhere to the [ID Format](#id-format).
 
-#### Device attributes
+#### Device Attributes
 
-* `homie` / `device ID` / `$` **`device attribute`**:
+* `homie` / `device ID` / **`$device-attribute`**:
 A device attribute MUST be one of these:
 
 <table>
@@ -176,9 +202,9 @@ A device attribute MUST be one of these:
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with a `base` and a `windsensor` node would send:
+For example, a device with an ID of `686f6d6965` with a `outdoor-probe` and a `windsensor` node would send:
 
-```
+```cpp
 homie/686f6d6965/$homie → 2.1.0
 homie/686f6d6965/$name → Weather station
 homie/686f6d6965/$localip → 192.168.0.10
@@ -187,21 +213,21 @@ homie/686f6d6965/$stats/uptime → 120
 homie/686f6d6965/$stats/interval → 60
 homie/686f6d6965/$fw/name → weatherstation-firmware
 homie/686f6d6965/$fw/version → 1.0.0
-homie/686f6d6965/$nodes → base,windsensor
+homie/686f6d6965/$nodes → outdoor-probe,windsensor
 homie/686f6d6965/$implementation → esp8266
 homie/686f6d6965/$online → true
 ```
 
-------
+----
 
-### Node
+### Nodes
 
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#id-format).
+Each node must have a unique node ID on a per-device basis which adhere to the [ID Format](#id-format).
 
-#### Node attributes
+#### Node Attributes
 
-* `homie` / `device ID` / `node ID` / `$` **`node attribute`**:
+* `homie` / `device ID` / `node ID` / **`$node-attribute`**:
 A node attribute MUST be one of these:
 
 <table>
@@ -238,24 +264,29 @@ A node attribute MUST be one of these:
   </tr>
 </table>
 
-For example, our `base` node would send:
+For example, our `outdoor-probe` node would send:
 
+```cpp
+homie/686f6d6965/outdoor-probe/$name → Weather station outdoor information
+homie/686f6d6965/outdoor-probe/$type → sensor-XYZ0815
+homie/686f6d6965/outdoor-probe/$properties → temperature,humidity
 ```
-homie/686f6d6965/base/$name → Weather station base information
-homie/686f6d6965/base/$type → weatherbase
-homie/686f6d6965/base/$properties → temperature,humidity
-```
 
-------
+----
 
-### Property
+### Properties
 
 * `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#id-format).
+Each property must have a unique property ID on a per-node basis which adhere to the [ID Format](#id-format).
 
-#### Property attributes
+* A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
+  ```
+  homie/686f6d6965/outdoor-probe/temperature → 21.5
+  ```
 
-* `homie` / `device ID` / `node ID` / `property ID` / `$` **`property attribute`**:
+#### Property Attributes
+
+* `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
 A property attribute MUST be one of these:
 
 <table>
@@ -362,12 +393,12 @@ A property attribute MUST be one of these:
 
 For example, our `temperature` property would send:
 
-```
-homie/686f6d6965/base/temperature/$name → Temperature
-homie/686f6d6965/base/temperature/$settable → false
-homie/686f6d6965/base/temperature/$unit → °C
-homie/686f6d6965/base/temperature/$datatype → float
-homie/686f6d6965/base/temperature/$format → -20:50
+```cpp
+homie/686f6d6965/outdoor-probe/temperature/$name → Temperature
+homie/686f6d6965/outdoor-probe/temperature/$settable → false
+homie/686f6d6965/outdoor-probe/temperature/$unit → °C
+homie/686f6d6965/outdoor-probe/temperature/$datatype → float
+homie/686f6d6965/outdoor-probe/temperature/$format → -20:50
 ```
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
@@ -378,23 +409,23 @@ This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
-```
+```cpp
 homie/kitchen-light/light/power/set ← on
 ```
 
 The device would then turn on the light, and update its `power` state.
 This provides pessimistic feedback, which is important for home automation.
 
-```
+```cpp
 homie/kitchen-light/light/power → true
 ```
 
-#### Array
+### Arrays
 
 A property can be an array if you've added `[]` to its ID in the `$properties` node attribute, and if its `$array` attribute is set to the range of the array.
 A LED strip node would look like this. Note that the topic for an element of the array property is the name of the property followed by a `_` and the index getting updated:
 
-```
+```cpp
 homie/ledstrip-device/ledstrip/$type → ledstrip
 homie/ledstrip-device/ledstrip/$name → LED strip
 homie/ledstrip-device/ledstrip/$properties → led[1-3]
@@ -415,9 +446,9 @@ homie/ledstrip-device/ledstrip/led_3 → off
 
 Note that you can name each element in your array individually ("Green LEDs", etc.).
 
-------
+----
 
-### Broadcast channel
+### Broadcast Channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
@@ -428,7 +459,7 @@ For example, you might want to broadcast an `alert` event with the alert reason 
 Devices are then free to react or not.
 In our case, every buzzer of your home automation system would start buzzing.
 
-```
+```cpp
 homie/$broadcast/alert ← Intruder detected
 ```
 
