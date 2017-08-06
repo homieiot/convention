@@ -157,9 +157,54 @@ A device attribute MUST be one of these:
   <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$stats/uptime</code> is refreshed</td>
+    <td>Interval in seconds at which the <code>$stats/+</code> are refreshed</td>
     <td>Yes</td>
     <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$stats/signal</td>
+    <td>Device → Controller</td>
+    <td>Signal strength in %</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/cputemp</td>
+    <td>Device → Controller</td>
+    <td>CPU Temperature in °C</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/cpuload</td>
+    <td>Device → Controller</td>
+    <td>
+      CPU Load in %.
+      Average of last <code>$interval</code> including all CPUs
+    </td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/battery</td>
+    <td>Device → Controller</td>
+    <td>Battery level in %</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/freeheap</td>
+    <td>Device → Controller</td>
+    <td>Free heap in bytes</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/supply</td>
+    <td>Device → Controller</td>
+    <td>Supply Voltage in V</td>
+    <td>Yes</td>
+    <td>No</td>
   </tr>
   <tr>
     <td>$fw/name</td>
