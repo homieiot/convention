@@ -82,12 +82,16 @@ The precise definition of attributes is important for the automatic discovery of
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
+----
+
 ### Base Topic
 
 The base topic you will see in the following convention will be `homie/`.
 If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
 
 Be aware, that only the default base topic `homie/` is eligible for automatic discovery by third party controllers.
+
+----
 
 ### Devices
 
@@ -243,7 +247,7 @@ A device attribute MUST be one of these:
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with a `outdoor-probe` and a `windsensor` node would send:
+For example, a device with an ID of `686f6d6965` with an `outdoor-probe` and a `windsensor` node would send:
 
 ```java
 homie/686f6d6965/$homie → "2.1.0"
@@ -451,7 +455,7 @@ This especially fits well with MQTT, because of retained message.
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
 ```java
-homie/kitchen-light/light/power/set ← on
+homie/kitchen-light/light/power/set ← "on"
 ```
 
 The device would then turn on the light, and update its `power` state.
@@ -500,7 +504,7 @@ Devices are then free to react or not.
 In our case, every buzzer of your home automation system would start buzzing.
 
 ```java
-homie/$broadcast/alert ← Intruder detected
+homie/$broadcast/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
