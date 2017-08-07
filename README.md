@@ -82,6 +82,10 @@ The precise definition of attributes is important for the automatic discovery of
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
+**Value:**
+*Properties* and *attributes* have a *value* that is transported in the payload ("message") of a specific MQTT topic.
+If a value is of a numeric data type, it MUST be converted to string. Booleans MUST be converted to "true" or "false". All *values* MUST be encoded as UTF-8 strings. 
+
 ### Base Topic
 
 The base topic you will see in the following convention will be `homie/`.
