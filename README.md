@@ -89,8 +89,6 @@ If this base topic does not suit your needs (in case of, e.g., a public broker),
 
 Be aware, that only the default base topic `homie/` is eligible for automatic discovery by third party controllers.
 
-----
-
 ### Devices
 
 * `homie` / **`device ID`**: this is the base topic of a device.
@@ -247,18 +245,18 @@ A device attribute MUST be one of these:
 
 For example, a device with an ID of `686f6d6965` with a `outdoor-probe` and a `windsensor` node would send:
 
-```cpp
-homie/686f6d6965/$homie → 2.1.0
-homie/686f6d6965/$name → Weather station
-homie/686f6d6965/$localip → 192.168.0.10
-homie/686f6d6965/$mac → DE:AD:BE:EF:FE:ED
-homie/686f6d6965/$stats/uptime → 120
-homie/686f6d6965/$stats/interval → 60
-homie/686f6d6965/$fw/name → weatherstation-firmware
-homie/686f6d6965/$fw/version → 1.0.0
-homie/686f6d6965/$nodes → outdoor-probe,windsensor
-homie/686f6d6965/$implementation → esp8266
-homie/686f6d6965/$online → true
+```java
+homie/686f6d6965/$homie → "2.1.0"
+homie/686f6d6965/$name → "Weather station"
+homie/686f6d6965/$localip → "192.168.0.10"
+homie/686f6d6965/$mac → "DE:AD:BE:EF:FE:ED"
+homie/686f6d6965/$stats/uptime → "120"
+homie/686f6d6965/$stats/interval → "60"
+homie/686f6d6965/$fw/name → "weatherstation-firmware"
+homie/686f6d6965/$fw/version → "1.0.0"
+homie/686f6d6965/$nodes → "outdoor-probe,windsensor"
+homie/686f6d6965/$implementation → "esp8266"
+homie/686f6d6965/$online → "true"
 ```
 
 ----
@@ -309,10 +307,10 @@ A node attribute MUST be one of these:
 
 For example, our `outdoor-probe` node would send:
 
-```cpp
-homie/686f6d6965/outdoor-probe/$name → Weather station outdoor information
-homie/686f6d6965/outdoor-probe/$type → sensor-XYZ0815
-homie/686f6d6965/outdoor-probe/$properties → temperature,humidity
+```java
+homie/686f6d6965/outdoor-probe/$name → "Weather station outdoor information"
+homie/686f6d6965/outdoor-probe/$type → "sensor-XYZ0815"
+homie/686f6d6965/outdoor-probe/$properties → "temperature,humidity"
 ```
 
 ----
@@ -323,8 +321,8 @@ homie/686f6d6965/outdoor-probe/$properties → temperature,humidity
 Each property must have a unique property ID on a per-node basis which adhere to the [ID Format](#id-format).
 
 * A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
-  ```
-  homie/686f6d6965/outdoor-probe/temperature → 21.5
+  ```java
+  homie/686f6d6965/outdoor-probe/temperature → "21.5"
   ```
 
 #### Property Attributes
@@ -436,12 +434,12 @@ A property attribute MUST be one of these:
 
 For example, our `temperature` property would send:
 
-```cpp
-homie/686f6d6965/outdoor-probe/temperature/$name → Temperature
-homie/686f6d6965/outdoor-probe/temperature/$settable → false
-homie/686f6d6965/outdoor-probe/temperature/$unit → °C
-homie/686f6d6965/outdoor-probe/temperature/$datatype → float
-homie/686f6d6965/outdoor-probe/temperature/$format → -20:50
+```java
+homie/686f6d6965/outdoor-probe/temperature/$name → "Temperature"
+homie/686f6d6965/outdoor-probe/temperature/$settable → "false"
+homie/686f6d6965/outdoor-probe/temperature/$unit → "°C"
+homie/686f6d6965/outdoor-probe/temperature/$datatype → "float"
+homie/686f6d6965/outdoor-probe/temperature/$format → "-20:50"
 ```
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
@@ -452,15 +450,15 @@ This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
-```cpp
+```java
 homie/kitchen-light/light/power/set ← on
 ```
 
 The device would then turn on the light, and update its `power` state.
 This provides pessimistic feedback, which is important for home automation.
 
-```cpp
-homie/kitchen-light/light/power → true
+```java
+homie/kitchen-light/light/power → "true"
 ```
 
 ### Arrays
@@ -468,23 +466,22 @@ homie/kitchen-light/light/power → true
 A property can be an array if you've added `[]` to its ID in the `$properties` node attribute, and if its `$array` attribute is set to the range of the array.
 A LED strip node would look like this. Note that the topic for an element of the array property is the name of the property followed by a `_` and the index getting updated:
 
-```cpp
-homie/ledstrip-device/ledstrip/$type → ledstrip
-homie/ledstrip-device/ledstrip/$name → LED strip
-homie/ledstrip-device/ledstrip/$properties → led[1-3]
+```java
+homie/ledstrip-device/ledstrip/$type → "ledstrip"
+homie/ledstrip-device/ledstrip/$name → "LED strip"
+homie/ledstrip-device/ledstrip/$properties → "led[1-3]"
 
-homie/ledstrip-device/ledstrip/led/$name → LEDs
-homie/ledstrip-device/ledstrip/led/$settable → true
-homie/ledstrip-device/ledstrip/led/$unit →
-homie/ledstrip-device/ledstrip/led/$datatype → enum
-homie/ledstrip-device/ledstrip/led/$format → on,off
+homie/ledstrip-device/ledstrip/led/$name → "LEDs"
+homie/ledstrip-device/ledstrip/led/$settable → "true"
+homie/ledstrip-device/ledstrip/led/$datatype → "enum"
+homie/ledstrip-device/ledstrip/led/$format → "on,off"
 
-homie/ledstrip-device/ledstrip/led_1/$name → Red LEDs
-homie/ledstrip-device/ledstrip/led_1 → on
-homie/ledstrip-device/ledstrip/led_2/$name → Green LEDs
-homie/ledstrip-device/ledstrip/led_2 → off
-homie/ledstrip-device/ledstrip/led_3/$name → Blue LEDs
-homie/ledstrip-device/ledstrip/led_3 → off
+homie/ledstrip-device/ledstrip/led_1/$name → "Red LEDs"
+homie/ledstrip-device/ledstrip/led_1 → "on"
+homie/ledstrip-device/ledstrip/led_2/$name → "Green LEDs"
+homie/ledstrip-device/ledstrip/led_2 → "off"
+homie/ledstrip-device/ledstrip/led_3/$name → "Blue LEDs"
+homie/ledstrip-device/ledstrip/led_3 → "off"
 ```
 
 Note that you can name each element in your array individually ("Green LEDs", etc.).
@@ -502,7 +499,7 @@ For example, you might want to broadcast an `alert` event with the alert reason 
 Devices are then free to react or not.
 In our case, every buzzer of your home automation system would start buzzing.
 
-```cpp
+```java
 homie/$broadcast/alert ← Intruder detected
 ```
 
