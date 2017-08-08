@@ -101,7 +101,7 @@ Each device must have a unique device ID which adhere to the [ID Format](#id-for
 #### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-The set of device attributes MUST be sent immediately after connection to MQTT broker is established and MUST be one of these:
+When the MQTT connection to the broker is established or re-established, the device MUST sends its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
 
 <table>
   <tr>
@@ -189,7 +189,7 @@ The set of device attributes MUST be sent immediately after connection to MQTT b
   <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$stats/+</code> are refreshed: See next section for details about statistical attributes</td>
+    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -213,7 +213,7 @@ homie/686f6d6965/$online → "true"
 
 ### Device statistics
 * `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
-The `$stats/` hierarchy allows to send device attributes that change over time. They MUST be sent every `$stats/interval` seconds.
+The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
 
 <table>
   <tr>
