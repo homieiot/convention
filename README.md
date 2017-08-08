@@ -384,7 +384,7 @@ A property attribute MUST be one of these:
             <code>#</code> Count or Amount
         </td>
         <td>Yes</td>
-        <td>Yes</td>
+        <td>Yes, if applicable.<br /> If $unit is omitted, it is assumed that the property is unit-less, e.g. a discrete state.</td>
     </tr>
     <tr>
        <td>$datatype</td>
