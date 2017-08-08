@@ -101,7 +101,7 @@ Each device must have a unique device ID which adhere to the [ID Format](#id-for
 #### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-A device attribute MUST be one of these:
+The set of device attributes MUST be sent immediately after connection to MQTT broker is established and MUST be one of these:
 
 <table>
   <tr>
@@ -150,63 +150,11 @@ A device attribute MUST be one of these:
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$stats/uptime</td>
-    <td>Device → Controller</td>
-    <td>Time elapsed in seconds since the boot of the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
     <td>Interval in seconds at which the <code>$stats/+</code> are refreshed</td>
     <td>Yes</td>
     <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$stats/signal</td>
-    <td>Device → Controller</td>
-    <td>Signal strength in %</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/cputemp</td>
-    <td>Device → Controller</td>
-    <td>CPU Temperature in °C</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/cpuload</td>
-    <td>Device → Controller</td>
-    <td>
-      CPU Load in %.
-      Average of last <code>$interval</code> including all CPUs
-    </td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/battery</td>
-    <td>Device → Controller</td>
-    <td>Battery level in %</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/freeheap</td>
-    <td>Device → Controller</td>
-    <td>Free heap in bytes</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/supply</td>
-    <td>Device → Controller</td>
-    <td>Supply Voltage in V</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$fw/name</td>
@@ -262,6 +210,72 @@ homie/686f6d6965/$nodes → "outdoor-probe,windsensor"
 homie/686f6d6965/$implementation → "esp8266"
 homie/686f6d6965/$online → "true"
 ```
+
+### Device statistics
+* `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
+The `$stats/` hierarchy allows to send device attributes that change over time. They MUST be sent every `$stats/interval` seconds.
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Direction</th>
+    <th>Description</th>
+    <th>Retained</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>$stats/uptime</td>
+    <td>Device → Controller</td>
+    <td>Time elapsed in seconds since the boot of the device</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$stats/signal</td>
+    <td>Device → Controller</td>
+    <td>Signal strength in %</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/cputemp</td>
+    <td>Device → Controller</td>
+    <td>CPU Temperature in °C</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/cpuload</td>
+    <td>Device → Controller</td>
+    <td>
+      CPU Load in %.
+      Average of last <code>$interval</code> including all CPUs
+    </td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/battery</td>
+    <td>Device → Controller</td>
+    <td>Battery level in %</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/freeheap</td>
+    <td>Device → Controller</td>
+    <td>Free heap in bytes</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/supply</td>
+    <td>Device → Controller</td>
+    <td>Supply Voltage in V</td>
+    <td>Yes</td>
+    <td>No</td>
+  </tr>
+</table>
 
 ----
 
