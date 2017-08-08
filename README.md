@@ -150,13 +150,6 @@ The set of device attributes MUST be sent immediately after connection to MQTT b
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$stats/interval</td>
-    <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$stats/+</code> are refreshed</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
     <td>$fw/name</td>
     <td>Device → Controller</td>
     <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
@@ -192,6 +185,13 @@ The set of device attributes MUST be sent immediately after connection to MQTT b
     <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
+  </tr>
+  <tr>
+    <td>$stats/interval</td>
+    <td>Device → Controller</td>
+    <td>Interval in seconds at which the <code>$stats/+</code> are refreshed: See next section for details about statistical attributes</td>
+    <td>Yes</td>
+    <td>Yes</td>
   </tr>
 </table>
 
