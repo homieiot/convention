@@ -101,7 +101,7 @@ Each device must have a unique device ID which adhere to the [ID Format](#id-for
 #### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-When the MQTT connection to the broker is established or re-established, the device MUST sends its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
+When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
 
 <table>
   <tr>
