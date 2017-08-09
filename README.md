@@ -202,7 +202,6 @@ homie/686f6d6965/$homie → "2.1.0"
 homie/686f6d6965/$name → "Weather station"
 homie/686f6d6965/$localip → "192.168.0.10"
 homie/686f6d6965/$mac → "DE:AD:BE:EF:FE:ED"
-homie/686f6d6965/$stats/uptime → "120"
 homie/686f6d6965/$stats/interval → "60"
 homie/686f6d6965/$fw/name → "weatherstation-firmware"
 homie/686f6d6965/$fw/version → "1.0.0"
@@ -276,6 +275,15 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
     <td>No</td>
   </tr>
 </table>
+
+For example, a device with an ID of `686f6d6965` with `$stats/$interval` value "60" may send every 60seconds its current values:
+
+```java
+homie/686f6d6965/$stats/uptime → "120"
+homie/686f6d6965/$stats/cputemp → "48"
+homie/686f6d6965/$stats/signal → "24"
+homie/686f6d6965/$stats/battery → "80"
+```
 
 ----
 
