@@ -211,7 +211,7 @@ homie/686f6d6965/$implementation → "esp8266"
 homie/686f6d6965/$online → "true"
 ```
 
-### Device statistics
+#### Device statistics
 * `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
 The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
 
