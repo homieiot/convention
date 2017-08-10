@@ -101,7 +101,7 @@ Each device must have a unique device ID which adhere to the [ID Format](#id-for
 #### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-A device attribute MUST be one of these:
+When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
 
 <table>
   <tr>
@@ -150,16 +150,82 @@ A device attribute MUST be one of these:
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$stats/uptime</td>
+    <td>$fw/name</td>
     <td>Device → Controller</td>
-    <td>Time elapsed in seconds since the boot of the device</td>
+    <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$fw/version</td>
+    <td>Device → Controller</td>
+    <td>Version of the firmware running on the device</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$nodes</td>
+    <td>Device → Controller</td>
+    <td>
+      Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
+    </td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$implementation</td>
+    <td>Device → Controller</td>
+    <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>$implementation/#</td>
+    <td>Controller → Device or Device → Controller</td>
+    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
+    <td>Yes or No, depending of your implementation</td>
+    <td>No</td>
+  </tr>
+  <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the <code>$stats/+</code> are refreshed</td>
+    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+</table>
+
+For example, a device with an ID of `686f6d6965` that comprises off an `outdoor-probe` and a `windsensor` node would send:
+
+```java
+homie/686f6d6965/$homie → "2.1.0"
+homie/686f6d6965/$name → "Weather station"
+homie/686f6d6965/$localip → "192.168.0.10"
+homie/686f6d6965/$mac → "DE:AD:BE:EF:FE:ED"
+homie/686f6d6965/$stats/interval → "60"
+homie/686f6d6965/$fw/name → "weatherstation-firmware"
+homie/686f6d6965/$fw/version → "1.0.0"
+homie/686f6d6965/$nodes → "outdoor-probe,windsensor"
+homie/686f6d6965/$implementation → "esp8266"
+homie/686f6d6965/$online → "true"
+```
+
+#### Device statistics
+* `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
+The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
+
+<table>
+  <tr>
+    <th>Topic</th>
+    <th>Direction</th>
+    <th>Description</th>
+    <th>Retained</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>$stats/uptime</td>
+    <td>Device → Controller</td>
+    <td>Time elapsed in seconds since the boot of the device</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -208,59 +274,15 @@ A device attribute MUST be one of these:
     <td>Yes</td>
     <td>No</td>
   </tr>
-  <tr>
-    <td>$fw/name</td>
-    <td>Device → Controller</td>
-    <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/version</td>
-    <td>Device → Controller</td>
-    <td>Version of the firmware running on the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$nodes</td>
-    <td>Device → Controller</td>
-    <td>
-      Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
-    </td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation</td>
-    <td>Device → Controller</td>
-    <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation/#</td>
-    <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
-    <td>Yes or No, depending of your implementation</td>
-    <td>No</td>
-  </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with an `outdoor-probe` and a `windsensor` node would send:
+For example, a device with an ID of `686f6d6965` with `$stats/$interval` value "60" is supposed to send it's current values every 60seconds:
 
 ```java
-homie/686f6d6965/$homie → "2.1.0"
-homie/686f6d6965/$name → "Weather station"
-homie/686f6d6965/$localip → "192.168.0.10"
-homie/686f6d6965/$mac → "DE:AD:BE:EF:FE:ED"
 homie/686f6d6965/$stats/uptime → "120"
-homie/686f6d6965/$stats/interval → "60"
-homie/686f6d6965/$fw/name → "weatherstation-firmware"
-homie/686f6d6965/$fw/version → "1.0.0"
-homie/686f6d6965/$nodes → "outdoor-probe,windsensor"
-homie/686f6d6965/$implementation → "esp8266"
-homie/686f6d6965/$online → "true"
+homie/686f6d6965/$stats/cputemp → "48"
+homie/686f6d6965/$stats/signal → "24"
+homie/686f6d6965/$stats/battery → "80"
 ```
 
 ----
