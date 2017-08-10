@@ -195,7 +195,7 @@ When the MQTT connection to the broker is established or re-established, the dev
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with an `outdoor-probe` and a `windsensor` node would send:
+For example, a device with an ID of `686f6d6965` that comprises off an `outdoor-probe` and a `windsensor` node would send:
 
 ```java
 homie/686f6d6965/$homie → "2.1.0"
@@ -276,7 +276,7 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with `$stats/$interval` value "60" may send every 60seconds its current values:
+For example, a device with an ID of `686f6d6965` with `$stats/$interval` value "60" is supposed to send it's current values every 60seconds:
 
 ```java
 homie/686f6d6965/$stats/uptime → "120"
