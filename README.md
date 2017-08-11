@@ -192,6 +192,13 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>No</td>
   </tr>
   <tr>
+    <td>$stats</td>
+    <td>Device → Controller</td>
+    <td>Specify all optional stats that the device will announce, with format <code>stats</code> separated by a <code>,</code> if there are multiple stats. See next section for an example</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
     <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
@@ -216,6 +223,7 @@ homie/super-car/$online → "true"
 ```
 
 #### Device statistics
+
 * `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
 The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
 
@@ -281,9 +289,10 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
   </tr>
 </table>
 
-For example, our `super-car` device with `$stats/$interval` value "60" is supposed to send it's current values every 60 seconds:
+For example, our `super-car` device with `$stats/interval` value "60" is supposed to send its current values every 60 seconds:
 
 ```java
+homie/super-car/$stats → "cputemp,signal,battery"
 homie/super-car/$stats/uptime → "120"
 homie/super-car/$stats/cputemp → "48"
 homie/super-car/$stats/signal → "24"
@@ -417,7 +426,7 @@ A property attribute MUST be one of these:
             <code>#</code> Count or Amount
         </td>
         <td>Yes</td>
-        <td>Yes, if applicable.<br /> If $unit is omitted, it is assumed that the property is unit-less, e.g. a discrete state.</td>
+        <td>Yes.<br /> If the property is unit-less, e.g. a discrete state, set this to <code>none</code></td>
     </tr>
     <tr>
        <td>$datatype</td>
@@ -480,7 +489,7 @@ homie/super-car/engine/temperature/$format → "-20:120"
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based.
-You don't tell your smartlight to `turn on`, but you tell it to put it's `power` state to `on`.
+You don't tell your smartlight to `turn on`, but you tell it to put its `power` state to `on`.
 This especially fits well with MQTT, because of retained message.
 
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
