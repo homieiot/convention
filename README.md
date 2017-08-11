@@ -426,7 +426,8 @@ A property attribute MUST be one of these:
          <code>float</code>,
          <code>boolean</code> (<code>true</code> or <code>false</code>),
          <code>string</code>,
-         <code>enum</code>
+         <code>enum</code>,
+         <code>color</code>
        </td>
        <td>Yes</td>
        <td>Yes</td>
@@ -451,6 +452,11 @@ A property attribute MUST be one of these:
            <li>
              <code>regex:pattern</code> to provide a regex that can be used to match the value. e.g. <code>regex:[A-Z][0-9]+</code>.
              <br>Valid for datatype <code>string</code>
+           </li>
+           <li>
+             <code>rgb</code> to provide colors in RGB format e.g. <code>255,255,0</code> for yellow.
+             <code>hsv</code> to provide colors in HSV format e.g. <code>60,100,100</code> for yellow.
+             <br>Valid for datatype <code>color</code>
            </li>
          </ul>
        </td>
