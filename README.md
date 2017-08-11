@@ -44,7 +44,7 @@ An ID MUST NOT start or end with a hyphen (`-`).
 
 The special character `$` is used and reserved for Homie *attributes*.
 
-The underscore (`_`) is used and reserved for Homie *property arrays*.
+The underscore (`_`) is used and reserved for Homie *node arrays*.
 
 
 ## QoS and Retained Messages
@@ -63,15 +63,15 @@ A *device* can expose multiple *nodes*.
 Nodes are independent or logically separable parts of a device.
 For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
 
+Nodes can be **arrays**.
+For example, instead of creating two `lights` node to control front lights and back lights independently, we can set the `lights` node to be an array with two elements.
+
 **Properties:**
 A *node* can have multiple *properties*.
 Properties represent basic characteristics of the node/device, often given as numbers or finite states.
 For example the `wheels` node might expose an `angle` property.
 The `engine` node might expose a `speed`, `direction` and `temperature` property.
 The `lights` node might expose an `intensity` and a `color` property.
-
-Properties can be **arrays**.
-For example, An LED strip can have a property `led` ranging from `1` to `10`, to control LEDs independently.
 
 Properties can be **settable**.
 For example, you don't want your `temperature` property to be settable in case of a temperature sensor (like the car example), but to be settable in case of a thermostat.
@@ -169,6 +169,7 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Device → Controller</td>
     <td>
       Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
+      To make a node an array, append <code>[]</code> to the ID.
     </td>
     <td>Yes</td>
     <td>Yes</td>
@@ -206,7 +207,7 @@ homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
 homie/super-car/$stats/interval → "60"
 homie/super-car/$fw/name → "weatherstation-firmware"
 homie/super-car/$fw/version → "1.0.0"
-homie/super-car/$nodes → "wheels,engine,lights"
+homie/super-car/$nodes → "wheels,engine,lights[]"
 homie/super-car/$implementation → "esp8266"
 homie/super-car/$online → "true"
 ```
@@ -325,11 +326,18 @@ A node attribute MUST be one of these:
     <td>Device → Controller</td>
     <td>
       Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
-      To make a property an array, append <code>[]</code> to the ID.
     </td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
+    <tr>
+       <td>$array</td>
+       <td>Device → Controller</td>
+       <td>Defines the range for an array.</td>
+       <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
+       <td>Yes</td>
+       <td>Yes, if the node is an array</td>
+    </tr>
 </table>
 
 For example, our `engine` node would send:
@@ -449,14 +457,6 @@ A property attribute MUST be one of these:
        <td>Yes</td>
        <td>Yes</td>
     </tr>
-    <tr>
-       <td>$array</td>
-       <td>Device → Controller</td>
-       <td>Defines the range for an array.</td>
-       <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
-       <td>Yes</td>
-       <td>Yes, if the property is an array</td>
-    </tr>
 </table>
 
 For example, our `temperature` property would send:
@@ -490,28 +490,29 @@ homie/kitchen-light/light/power → "true"
 
 ### Arrays
 
-A property can be an array if you've added `[]` to its ID in the `$properties` node attribute, and if its `$array` attribute is set to the range of the array.
-A LED strip node would look like this. Note that the topic for an element of the array property is the name of the property followed by a `_` and the index getting updated:
+A node can be an array if you've added `[]` to its ID in the `$nodes` device attribute, and if its `$array` attribute is set to the range of the array.
+Let's consider we want to control independently the front lights and back lights of our `super-car`. Our `lights` node array would look like this. Note that the topic for an element of the array node is the name of the node followed by a `_` and the index getting updated:
 
 ```java
-homie/ledstrip-device/ledstrip/$type → "ledstrip"
-homie/ledstrip-device/ledstrip/$name → "LED strip"
-homie/ledstrip-device/ledstrip/$properties → "led[1-3]"
+homie/super-car/$nodes → "lights[]"
 
-homie/ledstrip-device/ledstrip/led/$name → "LEDs"
-homie/ledstrip-device/ledstrip/led/$settable → "true"
-homie/ledstrip-device/ledstrip/led/$datatype → "enum"
-homie/ledstrip-device/ledstrip/led/$format → "on,off"
+homie/super-car/lights/$name → "Lights"
+homie/super-car/lights/$properties → "intensity"
+homie/super-car/lights/$array → "0-1"
 
-homie/ledstrip-device/ledstrip/led_1/$name → "Red LEDs"
-homie/ledstrip-device/ledstrip/led_1 → "on"
-homie/ledstrip-device/ledstrip/led_2/$name → "Green LEDs"
-homie/ledstrip-device/ledstrip/led_2 → "off"
-homie/ledstrip-device/ledstrip/led_3/$name → "Blue LEDs"
-homie/ledstrip-device/ledstrip/led_3 → "off"
+homie/super-car/lights/intensity/$name → "Intensity"
+homie/super-car/lights/intensity/$settable → "true"
+homie/super-car/lights/intensity/$unit → "%"
+homie/super-car/lights/intensity/$datatype → "integer"
+homie/super-car/lights/intensity/$format → "0:100"
+
+homie/super-car/lights_0/$name → "Back lights"
+homie/super-car/lights_0/intensity → "0"
+homie/super-car/lights_1/$name → "Front lights"
+homie/super-car/lights_1/intensity → "100"
 ```
 
-Note that you can name each element in your array individually ("Green LEDs", etc.).
+Note that you can name each element in your array individually ("Back lights", etc.).
 
 ----
 
