@@ -46,6 +46,9 @@ The special character `$` is used and reserved for Homie *attributes*.
 
 The underscore (`_`) is used and reserved for Homie *node arrays*.
 
+## Payload
+
+Every MQTT message payload MUST be sent as string. If a value is of a numeric data type, it MUST be converted to string. Booleans MUST be converted to "true" or "false". All values MUST be encoded as UTF-8 strings. 
 
 ## QoS and Retained Messages
 
