@@ -336,7 +336,6 @@ A node attribute MUST be one of these:
     <tr>
        <td>$array</td>
        <td>Device → Controller</td>
-       <td>Defines the range for an array.</td>
        <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
        <td>Yes</td>
        <td>Yes, if the node is an array</td>
