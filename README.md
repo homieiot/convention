@@ -1,6 +1,6 @@
 ![Homie banner](banner.png)
 
-<h1 align="center">The Homie convention</h1>
+<h1 align="center">The Homie Convention</h1>
 <p align="center">Version: <b>2.1.0</b></p>
 <p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
 
@@ -56,24 +56,25 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 **Devices:**
 An instance of a physical piece of hardware is called a *device*.
-For example, a weather station, an Arduino/ESP8266 or a coffee machine.
+For example, a car, an Arduino/ESP8266 or a coffee machine.
 
 **Nodes:**
 A *device* can expose multiple *nodes*.
 Nodes are independent or logically separable parts of a device.
-For example, a weather station might expose an `outdoor-probe` node and a `windsensor` node.
+For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
 
 **Properties:**
 A *node* can have multiple *properties*.
 Properties represent basic characteristics of the node/device, often given as numbers or finite states.
-For example the `outdoor-probe` node might expose a `temperature` property and a `humidity` property.
-The `windsensor` node might expose a `speed` and a `direction` property.
+For example the `wheels` node might expose an `angle` property.
+The `engine` node might expose a `speed`, `direction` and `temperature` property.
+The `lights` node might expose an `intensity` and a `color` property.
 
 Properties can be **arrays**.
 For example, An LED strip can have a property `led` ranging from `1` to `10`, to control LEDs independently.
 
 Properties can be **settable**.
-For example, you don't want your `temperature` property to be settable in case of a temperature sensor but to be settable in case of a thermostat.
+For example, you don't want your `temperature` property to be settable in case of a temperature sensor (like the car example), but to be settable in case of a thermostat.
 
 **Attributes:**
 *Devices, nodes and properties* have specific *attributes* characterizing them.
@@ -195,19 +196,19 @@ When the MQTT connection to the broker is established or re-established, the dev
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` that comprises off an `outdoor-probe` and a `windsensor` node would send:
+For example, a device with an ID of `super-car` that comprises off a `wheels`, `engine` and a `lights` node would send:
 
 ```java
-homie/686f6d6965/$homie → "2.1.0"
-homie/686f6d6965/$name → "Weather station"
-homie/686f6d6965/$localip → "192.168.0.10"
-homie/686f6d6965/$mac → "DE:AD:BE:EF:FE:ED"
-homie/686f6d6965/$stats/interval → "60"
-homie/686f6d6965/$fw/name → "weatherstation-firmware"
-homie/686f6d6965/$fw/version → "1.0.0"
-homie/686f6d6965/$nodes → "outdoor-probe,windsensor"
-homie/686f6d6965/$implementation → "esp8266"
-homie/686f6d6965/$online → "true"
+homie/super-car/$homie → "2.1.0"
+homie/super-car/$name → "Super car"
+homie/super-car/$localip → "192.168.0.10"
+homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
+homie/super-car/$stats/interval → "60"
+homie/super-car/$fw/name → "weatherstation-firmware"
+homie/super-car/$fw/version → "1.0.0"
+homie/super-car/$nodes → "wheels,engine,lights"
+homie/super-car/$implementation → "esp8266"
+homie/super-car/$online → "true"
 ```
 
 #### Device statistics
@@ -276,13 +277,13 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
   </tr>
 </table>
 
-For example, a device with an ID of `686f6d6965` with `$stats/$interval` value "60" is supposed to send it's current values every 60seconds:
+For example, our `super-car` device with `$stats/$interval` value "60" is supposed to send it's current values every 60 seconds:
 
 ```java
-homie/686f6d6965/$stats/uptime → "120"
-homie/686f6d6965/$stats/cputemp → "48"
-homie/686f6d6965/$stats/signal → "24"
-homie/686f6d6965/$stats/battery → "80"
+homie/super-car/$stats/uptime → "120"
+homie/super-car/$stats/cputemp → "48"
+homie/super-car/$stats/signal → "24"
+homie/super-car/$stats/battery → "80"
 ```
 
 ----
@@ -331,12 +332,12 @@ A node attribute MUST be one of these:
   </tr>
 </table>
 
-For example, our `outdoor-probe` node would send:
+For example, our `engine` node would send:
 
 ```java
-homie/686f6d6965/outdoor-probe/$name → "Weather station outdoor information"
-homie/686f6d6965/outdoor-probe/$type → "sensor-XYZ0815"
-homie/686f6d6965/outdoor-probe/$properties → "temperature,humidity"
+homie/super-car/engine/$name → "Car engine"
+homie/super-car/engine/$type → "V8"
+homie/super-car/engine/$properties → "speed,direction,temperature"
 ```
 
 ----
@@ -348,7 +349,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
-  homie/686f6d6965/outdoor-probe/temperature → "21.5"
+  homie/super-car/engine/temperature → "21.5"
   ```
 
 #### Property Attributes
@@ -461,11 +462,11 @@ A property attribute MUST be one of these:
 For example, our `temperature` property would send:
 
 ```java
-homie/686f6d6965/outdoor-probe/temperature/$name → "Temperature"
-homie/686f6d6965/outdoor-probe/temperature/$settable → "false"
-homie/686f6d6965/outdoor-probe/temperature/$unit → "°C"
-homie/686f6d6965/outdoor-probe/temperature/$datatype → "float"
-homie/686f6d6965/outdoor-probe/temperature/$format → "-20:50"
+homie/super-car/engine/temperature/$name → "Engine temperature"
+homie/super-car/engine/temperature/$settable → "false"
+homie/super-car/engine/temperature/$unit → "°C"
+homie/super-car/engine/temperature/$datatype → "float"
+homie/super-car/engine/temperature/$format → "-20:120"
 ```
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
