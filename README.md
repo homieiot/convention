@@ -15,6 +15,7 @@ You can find an implementation of the Homie convention:
 * ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - Some Node-RED nodes for automation: [marvinroger/node-red-contrib-homie](https://github.com/marvinroger/node-red-contrib-homie)
 * A Python-implementation for Raspberry Pi & Co.: [jalmeroth/homie-python](https://github.com/jalmeroth/homie-python).
 * A Ruby-implementation including a command-line-client with OTA-Support for easy adminstration of multiple Homie-devices: [rttools/hodmin](https://github.com/rttools/hodmin)
+* A NodeJS based Homie implementation: [microclimates/homie-device](https://github.com/microclimates/homie-device)
 
 ## Background
 
