@@ -383,23 +383,23 @@ A property attribute MUST be one of these:
         <th>Description</th>
         <th>Valid values</th>
         <th>Retained</th>
-        <th>Required</th>
+        <th>Required (Default)</th>
     </tr>
     <tr>
        <td>$name</td>
        <td>Device → Controller</td>
        <td>Friendly name of the property.</td>
-       <td>Any String </td>
+       <td>Any String</td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>No ("")</td>
     </tr>
     <tr>
         <td>$settable</td>
         <td>Device → Controller</td>
         <td>Specifies whether the property is settable (<code>true</code>) or readonly (<code>false</code>)</td>
-        <td><code>true</code>,<code>false</code></td>
+        <td><code>true</code> or <code>false</code></td>
         <td>Yes</td>
-        <td>Yes</td>
+        <td>No (<code>false</code>)</td>
     </tr>
     <tr>
         <td>$unit</td>
@@ -409,7 +409,7 @@ A property attribute MUST be one of these:
           You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
         </td>
         <td>
-            Recommended: <br>
+            Recommended:<br>
             <code>°C</code> Degree Celsius<br>
             <code>°F</code> Degree Fahrenheit<br>
             <code>°</code> Degree<br>
@@ -426,7 +426,7 @@ A property attribute MUST be one of these:
             <code>#</code> Count or Amount
         </td>
         <td>Yes</td>
-        <td>Yes.<br /> If the property is unit-less, e.g. a discrete state, set this to <code>none</code></td>
+        <td>No ("")</td>
     </tr>
     <tr>
        <td>$datatype</td>
@@ -435,13 +435,13 @@ A property attribute MUST be one of these:
        <td>
          <code>integer</code>,
          <code>float</code>,
-         <code>boolean</code> (<code>true</code> or <code>false</code>),
+         <code>boolean</code>,
          <code>string</code>,
          <code>enum</code>,
          <code>color</code>
        </td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>No (<code>string</code>)</td>
     </tr>
     <tr>
        <td>$format</td>
@@ -472,7 +472,7 @@ A property attribute MUST be one of these:
          </ul>
        </td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>Depends on $datatype</td>
     </tr>
 </table>
 
