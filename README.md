@@ -9,6 +9,7 @@
 You can find implementations of the Homie convention on [this page](implementations.md).
 
 ----
+
 ----
 
 <!-- TODO add TOC here after document is stable -->
@@ -105,7 +106,7 @@ Each device must have a unique device ID which adhere to the [ID Format](#id-for
 #### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
+When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
 
 <table>
   <tr>
@@ -130,11 +131,10 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$online</td>
+    <td>$state</td>
     <td>Device → Controller</td>
     <td>
-      <code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT).
-      When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready
+      See <a href="#device-behavior">Device behavior</a>
     </td>
     <td>Yes</td>
     <td>Yes</td>
@@ -219,8 +219,26 @@ homie/super-car/$fw/name → "weatherstation-firmware"
 homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
 homie/super-car/$implementation → "esp8266"
-homie/super-car/$online → "true"
+homie/super-car/$state → "ready"
 ```
+
+#### Device behavior
+
+The `$state` device attribute represents, as the name suggests, the current state of the device.
+There are 6 different states:
+
+* **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
+This is the first message that must that must be sent.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, ahas sent all Homie messages and is ready to operate.
+You have to send this message after all other announcements message have been sent.
+* **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
+You must send this message before cleanly disconnecting.
+* **`sleeping`**: this is the state the device is in when the device is sleeping.
+You have to send this message before sleeping.
+* **`lost`**: this is the state the device is in when the device has been "badly" disconnected.
+You must define this message as LWT.
+* **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
+You have to send this message when something is wrong.
 
 #### Device statistics
 
