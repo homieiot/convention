@@ -12,7 +12,24 @@ You can find implementations of the Homie convention on [this page](implementati
 
 ----
 
-<!-- TODO add TOC here after document is stable -->
+## Table of contents
+
+* [Motivation](#motivation)
+* [ID format](#id-format)
+* [Payload](#payload)
+* [QoS and retained messages](#qos-and-retained-messages)
+* [Topology](#topology)
+  * [Base topic](#base-topic)
+  * [Devices](#devices)
+    * [Device attributes](#device-attributes)
+    * [Device behavior](#device-behavior)
+    * [Device statistics](#device-statistics)
+  * [Nodes](#nodes)
+    * [Node attributes](#node-attributes)
+  * [Properties](#properties)
+    * [Property attributes](#property-attributes)
+  * [Arrays](#arrays)
+  * [Broadcast channel](#broadcast-channel)
 
 ## Motivation
 
@@ -32,7 +49,7 @@ The Homie convention is thereby a crucial aspect in the support of **automatic d
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
-## ID Format
+## ID format
 
 IDs are the identifiers used in topic names.
 An ID MAY contain:
@@ -51,7 +68,7 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
 
 Every MQTT message payload MUST be sent as string. If a value is of a numeric data type, it MUST be converted to string. Booleans MUST be converted to "true" or "false". All values MUST be encoded as UTF-8 strings. 
 
-## QoS and Retained Messages
+## QoS and retained messages
 
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
@@ -89,7 +106,7 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 
 ----
 
-### Base Topic
+### Base topic
 
 The base topic you will see in the following convention will be `homie/`.
 If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
@@ -101,9 +118,9 @@ Be aware, that only the default base topic `homie/` is eligible for automatic di
 ### Devices
 
 * `homie` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID Format](#id-format).
+Each device must have a unique device ID which adhere to the [ID format](#id-format).
 
-#### Device Attributes
+#### Device attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
 When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
@@ -322,9 +339,9 @@ homie/super-car/$stats/battery → "80"
 ### Nodes
 
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID Format](#id-format).
+Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#id-format).
 
-#### Node Attributes
+#### Node attributes
 
 * `homie` / `device ID` / `node ID` / **`$node-attribute`**:
 A node attribute MUST be one of these:
@@ -382,14 +399,14 @@ homie/super-car/engine/$properties → "speed,direction,temperature"
 ### Properties
 
 * `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID Format](#id-format).
+Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#id-format).
 
 * A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
   homie/super-car/engine/temperature → "21.5"
   ```
 
-#### Property Attributes
+#### Property attributes
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
 A property attribute MUST be one of these:
@@ -551,7 +568,7 @@ Note that you can name each element in your array individually ("Back lights", e
 
 ----
 
-### Broadcast Channel
+### Broadcast channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
