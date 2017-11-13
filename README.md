@@ -15,9 +15,10 @@ You can find implementations of the Homie convention on [this page](implementati
 ## Table of contents
 
 * [Motivation](#motivation)
-* [ID format](#id-format)
-* [Payload](#payload)
-* [QoS and retained messages](#qos-and-retained-messages)
+* [MQTT restrictions](#mqtt-restrictions)
+  * [Topic IDs](#topic-ids)
+  * [Payload](#payload)
+  * [QoS and retained messages](#qos-and-retained-messages)
 * [Topology](#topology)
   * [Base topic](#base-topic)
   * [Devices](#devices)
@@ -47,7 +48,7 @@ The Homie convention is thereby a crucial aspect in the support of **automatic d
 
 ----
 
-## MQTT Restrictions
+## MQTT restrictions
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
@@ -117,7 +118,7 @@ Be aware, that only the default base topic `homie/` is eligible for automatic di
 ### Devices
 
 * `homie` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID format](#id-format).
+Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
 
 #### Device attributes
 
@@ -338,7 +339,7 @@ homie/super-car/$stats/battery → "80"
 ### Nodes
 
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#id-format).
+Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
 
 #### Node attributes
 
@@ -398,7 +399,7 @@ homie/super-car/engine/$properties → "speed,direction,temperature"
 ### Properties
 
 * `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#id-format).
+Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
 
 * A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
@@ -572,7 +573,7 @@ Note that you can name each element in your array individually ("Back lights", e
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
 * `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
-It must adhere to the [ID format](#id-format).
+It must adhere to the [ID format](#topic-ids).
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload.
 Devices are then free to react or not.
