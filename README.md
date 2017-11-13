@@ -1,7 +1,7 @@
 ![Homie banner](banner.png)
 
 <h1 align="center">The Homie Convention</h1>
-<p align="center">Version: <b>2.1.0</b> | <a href="https://github.com/marvinroger/homie/tags">Other versions</a></p>
+<p align="center">Version: <b>2.1.0</b> • <a href="https://github.com/marvinroger/homie/tags">Other versions</a></p>
 <p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
 
 **![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) Please note this v2 branch is a work-in-progress. It might change before the final release.**
@@ -9,9 +9,27 @@
 You can find implementations of the Homie convention on [this page](implementations.md).
 
 ----
+
 ----
 
-<!-- TODO add TOC here after document is stable -->
+## Table of contents
+
+* [Motivation](#motivation)
+* [ID format](#id-format)
+* [Payload](#payload)
+* [QoS and retained messages](#qos-and-retained-messages)
+* [Topology](#topology)
+  * [Base topic](#base-topic)
+  * [Devices](#devices)
+    * [Device attributes](#device-attributes)
+    * [Device behavior](#device-behavior)
+    * [Device statistics](#device-statistics)
+  * [Nodes](#nodes)
+    * [Node attributes](#node-attributes)
+  * [Properties](#properties)
+    * [Property attributes](#property-attributes)
+  * [Arrays](#arrays)
+  * [Broadcast channel](#broadcast-channel)
 
 ## Motivation
 
@@ -49,7 +67,7 @@ If a value is of a numeric data type, it MUST be converted to string.
 Booleans MUST be converted to "true" or "false".
 All values MUST be encoded as UTF-8 strings. 
 
-### QoS and Retained Messages
+### QoS and retained messages
 
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
@@ -87,7 +105,7 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 
 ----
 
-### Base Topic
+### Base topic
 
 The base topic you will see in the following convention will be `homie/`.
 If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
@@ -99,12 +117,12 @@ Be aware, that only the default base topic `homie/` is eligible for automatic di
 ### Devices
 
 * `homie` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID Format](#id-format).
+Each device must have a unique device ID which adhere to the [ID format](#id-format).
 
-#### Device Attributes
+#### Device attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
-When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately. (**TODO** Clarify device behaviour in extra section for `$online` (or `$state`) topic.)
+When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
 
 <table>
   <tr>
@@ -129,11 +147,10 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$online</td>
+    <td>$state</td>
     <td>Device → Controller</td>
     <td>
-      <code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT).
-      When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready
+      See <a href="#device-behavior">Device behavior</a>
     </td>
     <td>Yes</td>
     <td>Yes</td>
@@ -218,8 +235,26 @@ homie/super-car/$fw/name → "weatherstation-firmware"
 homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
 homie/super-car/$implementation → "esp8266"
-homie/super-car/$online → "true"
+homie/super-car/$state → "ready"
 ```
+
+#### Device behavior
+
+The `$state` device attribute represents, as the name suggests, the current state of the device.
+There are 6 different states:
+
+* **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
+This is the first message that must that must be sent.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, ahas sent all Homie messages and is ready to operate.
+You have to send this message after all other announcements message have been sent.
+* **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
+You must send this message before cleanly disconnecting.
+* **`sleeping`**: this is the state the device is in when the device is sleeping.
+You have to send this message before sleeping.
+* **`lost`**: this is the state the device is in when the device has been "badly" disconnected.
+You must define this message as LWT.
+* **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
+You have to send this message when something is wrong.
 
 #### Device statistics
 
@@ -303,9 +338,9 @@ homie/super-car/$stats/battery → "80"
 ### Nodes
 
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID Format](#id-format).
+Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#id-format).
 
-#### Node Attributes
+#### Node attributes
 
 * `homie` / `device ID` / `node ID` / **`$node-attribute`**:
 A node attribute MUST be one of these:
@@ -363,14 +398,14 @@ homie/super-car/engine/$properties → "speed,direction,temperature"
 ### Properties
 
 * `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID Format](#id-format).
+Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#id-format).
 
 * A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
   homie/super-car/engine/temperature → "21.5"
   ```
 
-#### Property Attributes
+#### Property attributes
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
 A property attribute MUST be one of these:
@@ -382,23 +417,23 @@ A property attribute MUST be one of these:
         <th>Description</th>
         <th>Valid values</th>
         <th>Retained</th>
-        <th>Required</th>
+        <th>Required (Default)</th>
     </tr>
     <tr>
        <td>$name</td>
        <td>Device → Controller</td>
        <td>Friendly name of the property.</td>
-       <td>Any String </td>
+       <td>Any String</td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>No ("")</td>
     </tr>
     <tr>
         <td>$settable</td>
         <td>Device → Controller</td>
         <td>Specifies whether the property is settable (<code>true</code>) or readonly (<code>false</code>)</td>
-        <td><code>true</code>,<code>false</code></td>
+        <td><code>true</code> or <code>false</code></td>
         <td>Yes</td>
-        <td>Yes</td>
+        <td>No (<code>false</code>)</td>
     </tr>
     <tr>
         <td>$unit</td>
@@ -408,7 +443,7 @@ A property attribute MUST be one of these:
           You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
         </td>
         <td>
-            Recommended: <br>
+            Recommended:<br>
             <code>°C</code> Degree Celsius<br>
             <code>°F</code> Degree Fahrenheit<br>
             <code>°</code> Degree<br>
@@ -425,7 +460,7 @@ A property attribute MUST be one of these:
             <code>#</code> Count or Amount
         </td>
         <td>Yes</td>
-        <td>Yes.<br /> If the property is unit-less, e.g. a discrete state, set this to <code>none</code></td>
+        <td>No ("")</td>
     </tr>
     <tr>
        <td>$datatype</td>
@@ -434,13 +469,13 @@ A property attribute MUST be one of these:
        <td>
          <code>integer</code>,
          <code>float</code>,
-         <code>boolean</code> (<code>true</code> or <code>false</code>),
+         <code>boolean</code>,
          <code>string</code>,
          <code>enum</code>,
          <code>color</code>
        </td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>No (<code>string</code>)</td>
     </tr>
     <tr>
        <td>$format</td>
@@ -471,7 +506,7 @@ A property attribute MUST be one of these:
          </ul>
        </td>
        <td>Yes</td>
-       <td>Yes</td>
+       <td>Depends on $datatype</td>
     </tr>
 </table>
 
@@ -532,7 +567,7 @@ Note that you can name each element in your array individually ("Back lights", e
 
 ----
 
-### Broadcast Channel
+### Broadcast channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
