@@ -47,28 +47,27 @@ The Homie convention is thereby a crucial aspect in the support of **automatic d
 
 ----
 
+## MQTT Restrictions
+
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
-## ID format
+### Topic IDs
 
-IDs are the identifiers used in topic names.
-An ID MAY contain:
+An MQTT topic consists of one or more topic levels, separated by the slash character (`/`).
+A topic level ID MAY contain lowercase letters from `a` to `z`, numbers from `0` to `9` as well as the hyphen character (`-`).
 
-* lowercase letters from `a` to `z`
-* numbers from `0` to `9`
-* hyphens `-` to separate ID parts
-
-An ID MUST NOT start or end with a hyphen (`-`).
-
+A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
-
 The underscore (`_`) is used and reserved for Homie *node arrays*.
 
-## Payload
+### Payload
 
-Every MQTT message payload MUST be sent as string. If a value is of a numeric data type, it MUST be converted to string. Booleans MUST be converted to "true" or "false". All values MUST be encoded as UTF-8 strings. 
+Every MQTT message payload MUST be sent as string.
+If a value is of a numeric data type, it MUST be converted to string.
+Booleans MUST be converted to "true" or "false".
+All values MUST be encoded as UTF-8 strings. 
 
-## QoS and retained messages
+### QoS and retained messages
 
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
