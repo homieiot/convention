@@ -63,7 +63,7 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
   <tr>
     <td>$online</td>
     <td>Device → Controller</td>
-    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT). When sending the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready</td>
+    <td><code>true</code> when the device is online, <code>false</code> when the device is offline (through LWT). When sending that the device is online, this message must be sent last, to indicate every other required messages are sent and the device is ready</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -194,7 +194,7 @@ homie/686f6d6965/$fw/version → 1.0.0
   <tr>
     <td>$properties</td>
     <td>Device → Controller</td>
-    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
+    <td>Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple properties. For ranges, define the range after the <code>id</code>, within <code>[]</code> and separated by a <code>-</code>.</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -317,14 +317,14 @@ homie/ledstrip-device/ledstrip/led_1 → on
 
 homie/ledstrip-device/ledstrip/led_2/$settable → true
 homie/ledstrip-device/ledstrip/led_2/$unit →
-homie/ledstrip-device/ledstrip/led_1/$name → Green LEDs
+homie/ledstrip-device/ledstrip/led_2/$name → Green LEDs
 homie/ledstrip-device/ledstrip/led_2/$datatype → enum
 homie/ledstrip-device/ledstrip/led_2/$format → on,off
 homie/ledstrip-device/ledstrip/led_2 → off
 
 homie/ledstrip-device/ledstrip/led_3/$settable → true
 homie/ledstrip-device/ledstrip/led_3/$unit →
-homie/ledstrip-device/ledstrip/led_1/$name → Blue LEDs
+homie/ledstrip-device/ledstrip/led_3/$name → Blue LEDs
 homie/ledstrip-device/ledstrip/led_3/$datatype → enum
 homie/ledstrip-device/ledstrip/led_3/$format → on,off
 homie/ledstrip-device/ledstrip/led_3 → on
