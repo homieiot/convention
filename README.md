@@ -286,18 +286,22 @@ For example, our `686f6d6965` above would send:
 
 ```
 homie/686f6d6965/temperature/$type → temperature
-homie/686f6d6965/temperature/$properties → degrees,unit
+homie/686f6d6965/temperature/$name → Bedroom Temperature Node
+homie/686f6d6965/temperature/$properties → degrees
 homie/686f6d6965/temperature/degrees/$settable → false
 homie/686f6d6965/temperature/degrees/$unit → C
 homie/686f6d6965/temperature/degrees/$datatype → float
+homie/686f6d6965/temperature/degrees/$name → Bedroom Temperature
 homie/686f6d6965/temperature/degrees/$format → -20.0:60
 homie/686f6d6965/temperature/degrees → 12.07
 
 homie/686f6d6965/humidity/$type → humidity
+homie/686f6d6965/humidity/$name → Bedroom Humidity Node
 homie/686f6d6965/humidity/$properties → percentage
 homie/686f6d6965/humidity/percentage/$settable → false
 homie/686f6d6965/humidity/percentage/$unit → %
 homie/686f6d6965/humidity/percentage/$datatype → integer
+homie/686f6d6965/humidity/percentage/$name → Bedroom Humidity
 homie/686f6d6965/humidity/percentage/$format → 0:100
 homie/686f6d6965/humidity/percentage → 79
 ```
@@ -306,6 +310,7 @@ A LED strip would look like this. Note that the topic for a range properties is 
 
 ```
 homie/ledstrip-device/ledstrip/$type → ledstrip
+homie/ledstrip-device/ledstrip/$name → My LED Strip Node
 homie/ledstrip-device/ledstrip/$properties → led[1-3]
 
 homie/ledstrip-device/ledstrip/led_1/$settable → true
