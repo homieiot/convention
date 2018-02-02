@@ -231,11 +231,11 @@ homie/super-car/$homie → "2.1.0"
 homie/super-car/$name → "Super car"
 homie/super-car/$localip → "192.168.0.10"
 homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
-homie/super-car/$stats/interval → "60"
 homie/super-car/$fw/name → "weatherstation-firmware"
 homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
 homie/super-car/$implementation → "esp8266"
+homie/super-car/$stats/interval → "60"
 homie/super-car/$state → "ready"
 ```
 
@@ -327,7 +327,7 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
 For example, our `super-car` device with `$stats/interval` value "60" is supposed to send its current values every 60 seconds:
 
 ```java
-homie/super-car/$stats → "cputemp,signal,battery"
+homie/super-car/$stats → "uptime,cputemp,signal,battery"
 homie/super-car/$stats/uptime → "120"
 homie/super-car/$stats/cputemp → "48"
 homie/super-car/$stats/signal → "24"
@@ -519,6 +519,7 @@ homie/super-car/engine/temperature/$settable → "false"
 homie/super-car/engine/temperature/$unit → "°C"
 homie/super-car/engine/temperature/$datatype → "float"
 homie/super-car/engine/temperature/$format → "-20:120"
+homie/super-car/engine/temperature → "21.5"
 ```
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
