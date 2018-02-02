@@ -246,7 +246,7 @@ There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This is the first message that must that must be sent.
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, ahas sent all Homie messages and is ready to operate.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate.
 You have to send this message after all other announcements message have been sent.
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
