@@ -16,7 +16,7 @@ You can find an implementation of the Homie convention:
 * A Python-implementation for Raspberry Pi & Co.: [jalmeroth/homie-python](https://github.com/jalmeroth/homie-python).
 * A Ruby-implementation including a command-line-client with OTA-Support for easy adminstration of multiple Homie-devices: [rttools/hodmin](https://github.com/rttools/hodmin)
 * A NodeJS-implementation closely following [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266) API patterns: [microclimates/homie-device](https://github.com/microclimates/homie-device)
-* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - A MicroPython-implementation: [microhomie/micropython-homie](https://github.com/microhomie/micropython-homie)
+* A MicroPython-implementation: [microhomie/micropython-homie](https://github.com/microhomie/micropython-homie)
 
 ## Background
 
