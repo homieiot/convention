@@ -1,7 +1,7 @@
 ![Homie banner](banner.png)
 
 <h1 align="center">The Homie Convention</h1>
-<p align="center">Version: <b>2.1.0</b> • <a href="https://github.com/marvinroger/homie/tags">Other versions</a></p>
+<p align="center">Version: <b>3.0</b> • <a href="https://github.com/marvinroger/homie/tags">Other versions</a></p>
 <p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
 
 **![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) Please note this v2 branch is a work-in-progress. It might change before the final release.**
