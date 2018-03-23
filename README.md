@@ -139,6 +139,13 @@ To efficiently parse messages, Homie defines a few rules related to topic names.
     <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
+  <tr>
+    <td>$nodes</td>
+    <td>Device → Controller</td>
+    <td>Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.</td>
+    <td>Yes</td>
+    <td>Yes</td>
+  </tr>
 </table>
 
 For example, a device with an ID of `686f6d6965` with a temperature and an humidity sensor would send:
