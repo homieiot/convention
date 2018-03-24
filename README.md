@@ -1,16 +1,17 @@
 ![Homie banner](banner.png)
 
 <h1 align="center">The Homie Convention</h1>
-<p align="center">Version: <b>3.0.0</b> • <a href="https://github.com/marvinroger/homie/tags">Other versions</a></p>
 <p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
 
-**![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) Please note this v3.0.0 branch is a work-in-progress. It might change before the final release.**
+<p align="center">Version: <b><!--VERSION-->3.x.x<!--VERSION--></b> • <a href="https://github.com/homieiot/convention/tags">Browse Versions…</a></p>
 
-You can find implementations of the Homie convention on [this page](implementations.md).
+**![Rolling Release](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/traffic-light-20.png) The Homie Convention follows the rolling release model and is improved and released in short development cycles. Check the *releases* tab to learn about previous release versions.**
+
+Implementations of the Homie convention can be found on [this page](implementations.md).
 
 ----
 
-## Table of contents
+## Table of Contents
 
 * [Motivation](#motivation)
 * [MQTT restrictions](#mqtt-restrictions)
@@ -46,7 +47,7 @@ The Homie convention is thereby a crucial aspect in the support of **automatic d
 
 ----
 
-## MQTT restrictions
+## MQTT Restrictions
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
@@ -104,7 +105,7 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 
 ----
 
-### Base topic
+### Base Topic
 
 The base topic you will see in the following convention will be `homie/`.
 If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
@@ -118,7 +119,7 @@ Be aware, that only the default base topic `homie/` is eligible for automatic di
 * `homie` / **`device ID`**: this is the base topic of a device.
 Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
 
-#### Device attributes
+#### Device Attributes
 
 * `homie` / `device ID` / **`$device-attribute`**:
 When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
@@ -237,7 +238,7 @@ homie/super-car/$stats/interval → "60"
 homie/super-car/$state → "ready"
 ```
 
-#### Device behavior
+#### Device Behavior
 
 The `$state` device attribute represents, as the name suggests, the current state of the device.
 There are 6 different states:
@@ -255,7 +256,7 @@ You must define this message as LWT.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
 
-#### Device statistics
+#### Device Statistics
 
 * `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
 The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
@@ -339,7 +340,7 @@ homie/super-car/$stats/battery → "80"
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
 Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
 
-#### Node attributes
+#### Node Attributes
 
 * `homie` / `device ID` / `node ID` / **`$node-attribute`**:
 A node attribute MUST be one of these:
@@ -404,7 +405,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
   homie/super-car/engine/temperature → "21.5"
   ```
 
-#### Property attributes
+#### Property Attributes
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
 A property attribute MUST be one of these:
@@ -567,7 +568,7 @@ Note that you can name each element in your array individually ("Back lights", e
 
 ----
 
-### Broadcast channel
+### Broadcast Channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
