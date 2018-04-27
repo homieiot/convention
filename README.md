@@ -532,7 +532,7 @@ This especially fits well with MQTT, because of retained message.
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
 ```java
-homie/kitchen-light/light/power/set ← "on"
+homie/kitchen-light/light/power/set ← "true"
 ```
 
 The device would then turn on the light, and update its `power` state.
