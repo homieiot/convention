@@ -86,7 +86,7 @@ Nodes are independent or logically separable parts of a device.
 For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
 
 Nodes can be **arrays**.
-For example, instead of creating two `lights` node to control front lights and back lights independently, we can set the `lights` node to be an array with two elements.
+This comes handy if your requirement is to control every single light on a led strip.
 
 **Properties:**
 A *node* can have multiple *properties*.
