@@ -395,9 +395,9 @@ homie/super-car/engine/$type → "engine"
 homie/super-car/engine/$properties → "speed,direction,temperature"
 ```
 
-`$type` can be any string. The following predefined node types allow controllers to identify and present a node in a more distinct way:
+`$type` can be any Topic ID string. The following predefined node types allow controllers to identify and present a node in a more distinct way:
 
-* "lamp": A controller can assume the node is a lamp. A lamp node should have a power and optionally a color property.
+* "light": A controller can assume the node is a lamp. A lamp node should have a power and optionally a color property.
 * "switch": A switch has a power property and can be stateless (push button).
 
 ----
@@ -473,7 +473,7 @@ A property attribute MUST be one of these:
        <td>$type</td>
        <td>Device → Controller</td>
        <td>The type/category of this property</td>
-       <td>Any string, see recommended types below</td>
+       <td>Topic ID string, see recommended types below</td>
        <td>Yes</td>
        <td>No (The property ID is used)</td>
     </tr>
@@ -521,7 +521,7 @@ A property attribute MUST be one of these:
     </tr>
 </table>
 
-`$type` can be any string. If it is not specified, the property ID is used for `$type`. The following predefined property types allow controllers to identify and present a property in a more distinct way:
+`$type` can be any Topic ID string. If it is not specified, the property ID is used for `$type`. The following predefined property types allow controllers to identify and present a property in a more distinct way:
 
 * "temperature": The integer or float value represents a temperature reading
 
