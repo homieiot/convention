@@ -30,6 +30,7 @@ Implementations of the Homie convention can be found on [this page](implementati
     * [Property attributes](#property-attributes)
   * [Arrays](#arrays)
   * [Broadcast channel](#broadcast-channel)
+* [Appendix A: System information and Over-the-Air update capability](#ota)
 * [FAQ and Rationale](#faq)
 
 
@@ -158,34 +159,6 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$localip</td>
-    <td>Device → Controller</td>
-    <td>IP of the device on the local network</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$mac</td>
-    <td>Device → Controller</td>
-    <td>Mac address of the device network interface. The format MUST be of the type <code>A1:B2:C3:D4:E5:F6</code></td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/name</td>
-    <td>Device → Controller</td>
-    <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/version</td>
-    <td>Device → Controller</td>
-    <td>Version of the firmware running on the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
     <td>$nodes</td>
     <td>Device → Controller</td>
     <td>
@@ -200,13 +173,6 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
     <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation/#</td>
-    <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
-    <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
   <tr>
@@ -230,14 +196,10 @@ For example, a device with an ID of `super-car` that comprises off a `wheels`, `
 ```java
 homie/super-car/$homie → "2.1.0"
 homie/super-car/$name → "Super car"
-homie/super-car/$localip → "192.168.0.10"
-homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
-homie/super-car/$fw/name → "weatherstation-firmware"
-homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
-homie/super-car/$implementation → "esp8266"
-homie/super-car/$stats/interval → "60"
 homie/super-car/$state → "ready"
+homie/super-car/$stats/interval → "60"
+homie/super-car/$implementation → "esp8266"
 ```
 
 #### Device Behavior
@@ -276,7 +238,7 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
     <td>Device → Controller</td>
     <td>Time elapsed in seconds since the boot of the device</td>
     <td>Yes</td>
-    <td>Yes</td>
+    <td>No</td>
   </tr>
   <tr>
     <td>$stats/signal</td>
@@ -584,6 +546,19 @@ homie/$broadcast/alert ← "Intruder detected"
 Any other topic is not part of the Homie convention.
 
 ----
+
+## Appendix A: System information and Over-the-Air update capability
+<a id="ota"></a>
+The following Homie MQTT topics are recommended but not required.
+They provide all necessary parameters to support over the air (OTA) updates and system information.
+
+| Topic             | Description                                 | Retained | Example                                                                                                        |
+|-------------------|---------------------------------------------|----------|----------------------------------------------------------------------------------------------------------------|
+| $system/arch      | Hardware Architecture                       | true     | For custom silicon, the SOC name like `esp8266`. The CPU architecture otherwise: "x86","x86_64", "ARMv8", etc. |
+| $system/os        | Operating system/firmware name              | true     | "Linux", "Windows 10", "My-custom-firmware"                                                                    |
+| $system/fwversion | Firmware/Application version                | true     | "1.0","10"                                                                                                     |
+| $system/ip        | Comma separated list of device IP addresses | true     | "192.168.0.15", "10.10.10.134,192.168.0.15", " 2001:0db8:0000:0000:0000:ff00:0042:8329"                        |
+| $system/mac       | MAC (Media access control) address          | true     | "DE:AD:BE:EF:FE:ED". Need to be the MAC of the interface that IPs of $system/ip are assigned to.               |
 ----
 
 ## FAQ
