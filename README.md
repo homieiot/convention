@@ -353,21 +353,21 @@ A node attribute MUST be one of these:
     <th>Direction</th>
     <th>Description</th>
     <th>Retained</th>
-    <th>Required</th>
+    <th>Required (default)</th>
   </tr>
   <tr>
     <td>$name</td>
     <td>Device → Controller</td>
     <td>Friendly name of the Node</td>
     <td>Yes</td>
-    <td>Yes</td>
+    <td>No (the node ID is used)</td>
   </tr>
   <tr>
     <td>$type</td>
     <td>Device → Controller</td>
     <td>Type of the node</td>
     <td>Yes</td>
-    <td>Yes</td>
+    <td>No</td>
   </tr>
   <tr>
     <td>$properties</td>
@@ -391,9 +391,14 @@ For example, our `engine` node would send:
 
 ```java
 homie/super-car/engine/$name → "Car engine"
-homie/super-car/engine/$type → "V8"
+homie/super-car/engine/$type → "engine"
 homie/super-car/engine/$properties → "speed,direction,temperature"
 ```
+
+`$type` can be any Topic ID string. The following predefined node types allow controllers to identify and present a node in a more distinct way:
+
+* "light": A controller can assume the node is a lamp. A lamp node should have a power and optionally a color property.
+* "switch": A switch has a power property and can be stateless (push button).
 
 ----
 
@@ -465,6 +470,14 @@ A property attribute MUST be one of these:
         <td>No ("")</td>
     </tr>
     <tr>
+       <td>$type</td>
+       <td>Device → Controller</td>
+       <td>The type/category of this property</td>
+       <td>Topic ID string, see recommended types below</td>
+       <td>Yes</td>
+       <td>No (The property ID is used)</td>
+    </tr>
+    <tr>
        <td>$datatype</td>
        <td>Device → Controller</td>
        <td>Describes the format of data.</td>
@@ -507,6 +520,10 @@ A property attribute MUST be one of these:
        <td>No for $datatype <code>string</code>,<code>integer</code>,<code>float</code>,<code>boolean</code>. Yes for <code>enum</code>,<code>color</code></td>
     </tr>
 </table>
+
+`$type` can be any Topic ID string. If it is not specified, the property ID is used for `$type`. The following predefined property types allow controllers to identify and present a property in a more distinct way:
+
+* "temperature": The integer or float value represents a temperature reading
 
 For example, our `temperature` property would send:
 
