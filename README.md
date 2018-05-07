@@ -158,68 +158,12 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Yes</td>
   </tr>
   <tr>
-    <td>$localip</td>
-    <td>Device → Controller</td>
-    <td>IP of the device on the local network</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$mac</td>
-    <td>Device → Controller</td>
-    <td>Mac address of the device network interface. The format MUST be of the type <code>A1:B2:C3:D4:E5:F6</code></td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/name</td>
-    <td>Device → Controller</td>
-    <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/version</td>
-    <td>Device → Controller</td>
-    <td>Version of the firmware running on the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
     <td>$nodes</td>
     <td>Device → Controller</td>
     <td>
       Nodes the device exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
       To make a node an array, append <code>[]</code> to the ID.
     </td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation</td>
-    <td>Device → Controller</td>
-    <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation/#</td>
-    <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
-    <td>Yes or No, depending of your implementation</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats</td>
-    <td>Device → Controller</td>
-    <td>Specify all optional stats that the device will announce, with format <code>stats</code> separated by a <code>,</code> if there are multiple stats. See next section for an example</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$stats/interval</td>
-    <td>Device → Controller</td>
-    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
     <td>Yes</td>
     <td>Yes</td>
   </tr>
@@ -230,13 +174,7 @@ For example, a device with an ID of `super-car` that comprises off a `wheels`, `
 ```java
 homie/super-car/$homie → "2.1.0"
 homie/super-car/$name → "Super car"
-homie/super-car/$localip → "192.168.0.10"
-homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
-homie/super-car/$fw/name → "weatherstation-firmware"
-homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
-homie/super-car/$implementation → "esp8266"
-homie/super-car/$stats/interval → "60"
 homie/super-car/$state → "ready"
 ```
 
@@ -257,85 +195,6 @@ You have to send this message before sleeping.
 You must define this message as LWT.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
-
-#### Device Statistics
-
-* `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
-The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
-
-<table>
-  <tr>
-    <th>Topic</th>
-    <th>Direction</th>
-    <th>Description</th>
-    <th>Retained</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td>$stats/uptime</td>
-    <td>Device → Controller</td>
-    <td>Time elapsed in seconds since the boot of the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$stats/signal</td>
-    <td>Device → Controller</td>
-    <td>Signal strength in %</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/cputemp</td>
-    <td>Device → Controller</td>
-    <td>CPU Temperature in °C</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/cpuload</td>
-    <td>Device → Controller</td>
-    <td>
-      CPU Load in %.
-      Average of last <code>$interval</code> including all CPUs
-    </td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/battery</td>
-    <td>Device → Controller</td>
-    <td>Battery level in %</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/freeheap</td>
-    <td>Device → Controller</td>
-    <td>Free heap in bytes</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>$stats/supply</td>
-    <td>Device → Controller</td>
-    <td>Supply Voltage in V</td>
-    <td>Yes</td>
-    <td>No</td>
-  </tr>
-</table>
-
-For example, our `super-car` device with `$stats/interval` value "60" is supposed to send its current values every 60 seconds:
-
-```java
-homie/super-car/$stats → "uptime,cputemp,signal,battery"
-homie/super-car/$stats/uptime → "120"
-homie/super-car/$stats/cputemp → "48"
-homie/super-car/$stats/signal → "24"
-homie/super-car/$stats/battery → "80"
-```
-
-----
 
 ### Nodes
 
@@ -378,13 +237,13 @@ A node attribute MUST be one of these:
     <td>Yes</td>
     <td>Yes</td>
   </tr>
-    <tr>
-       <td>$array</td>
-       <td>Device → Controller</td>
-       <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
-       <td>Yes</td>
-       <td>Yes, if the node is an array</td>
-    </tr>
+  <tr>
+    <td>$array</td>
+    <td>Device → Controller</td>
+    <td>Range separated by a <code>-</code>. e.g. <code>0-2</code> for an array with the indexes <code>0</code>, <code>1</code> and <code>2</code></td>
+    <td>Yes</td>
+    <td>Yes, if the node is an array</td>
+  </tr>
 </table>
 
 For example, our `engine` node would send:
@@ -538,6 +397,18 @@ This provides pessimistic feedback, which is important for home automation.
 homie/kitchen-light/light/power → "true"
 ```
 
+#### How do I query/request a property?
+
+You don't.
+The MQTT protocol does not implement the request-reply but rather the publish-subscribe messaging pattern.
+The Homie convention follows the publish-subscribe principle by publishing data as retained messages on a regular basis.
+You might want to rethink the design of your application - in most scenarios a regularly updated information is sufficient.
+
+*Workaround:* You are free to implement your own ideas on top of the basic structure of the Homie convention.
+You could either implement a `get` getter topic and its logic to trigger a value update, or you may exploit the concept of Homie properties and define a settable property to trigger a value update.
+
+A discussion on the matter can be found in issue [#79](https://github.com/homieiot/convention/issues/79).
+
 ### Arrays
 
 A node can be an array if you've added `[]` to its ID in the `$nodes` device attribute, and if its `$array` attribute is set to the range of the array.
@@ -580,25 +451,3 @@ In our case, every buzzer of your home automation system would start buzzing.
 ```java
 homie/$broadcast/alert ← "Intruder detected"
 ```
-
-Any other topic is not part of the Homie convention.
-
-----
-----
-
-## FAQ
-
-In this section frequently asked questions will be answered.
-This includes design decisions and drawn compromises in the specifics of the Homie convention.
-
-### How do I query/request a property?
-
-You don't.
-The MQTT protocol does not implement the request-reply but rather the publish-subscribe messaging pattern.
-The Homie convention follows the publish-subscribe principle by publishing data as retained messages on a regular basis.
-You might want to rethink the design of your application - in most scenarios a regularly updated information is sufficient.
-
-*Workaround:* You are free to implement your own ideas on top of the basic structure of the Homie convention.
-You could either implement a `get` getter topic and its logic to trigger a value update, or you may exploit the concept of Homie properties and define a settable property to trigger a value update.
-
-A discussion on the matter can be found in issue [#79](https://github.com/homieiot/convention/issues/79).
