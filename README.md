@@ -98,6 +98,16 @@ The `lights` node might expose an `intensity` and a `color` property.
 Properties can be **settable**.
 For example, you don't want your `temperature` property to be settable in case of a temperature sensor (like the car example), but to be settable in case of a thermostat.
 
+Properties can be **stateful**.
+A property is stateful by default. A stateless property would be useful for momentary events (door bell pressed). The MQTT retained flag will not be set on a stateless property.
+
+A combination of those flags compiles into this list:
+
+* **stateful + non-settable**: The node publishes a property state (temperature sensor)
+* **stateful + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
+* **stateless + non-settable**: The node publishes momentary events (door bell pressed)
+* **stateless + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
+
 **Attributes:**
 *Devices, nodes and properties* have specific *attributes* characterizing them.
 Attributes are represented by topic identifier starting with `$`.
@@ -436,6 +446,14 @@ A property attribute MUST be one of these:
         <td><code>true</code> or <code>false</code></td>
         <td>Yes</td>
         <td>No (<code>false</code>)</td>
+    </tr>
+    <tr>
+        <td>$stateful</td>
+        <td>Device → Controller</td>
+        <td>Specifies whether the property is stateful (<code>true</code>) or stateless (<code>false</code>). Publishing to a stateless property topic MUST always happen with the 'retain' flag off.</td>
+        <td><code>true</code> or <code>false</code></td>
+        <td>Yes</td>
+        <td>No (<code>true</code>)</td>
     </tr>
     <tr>
         <td>$unit</td>
