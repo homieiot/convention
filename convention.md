@@ -1,53 +1,7 @@
-![Homie banner](banner.png)
+# The Homie Convention
 
-<h1 align="center">The Homie Convention</h1>
-<p align="center"><i>A lightweight MQTT convention for the IoT</i></p>
-
-<p align="center">Version: <b><!--VERSION-->3.x.x<!--VERSION--></b> • <a href="https://github.com/homieiot/convention/tags">Browse Versions…</a></p>
-
-**![Rolling Release](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/traffic-light-20.png) The Homie Convention follows the rolling release model and is improved and released in short development cycles. Check the *releases* tab to learn about previous release versions.**
-
-Implementations of the Homie convention can be found on [this page](implementations.md).
-
-----
-
-## Table of Contents
-
-* [Motivation](#motivation)
-* [MQTT restrictions](#mqtt-restrictions)
-  * [Topic IDs](#topic-ids)
-  * [Payload](#payload)
-  * [QoS and retained messages](#qos-and-retained-messages)
-* [Topology](#topology)
-  * [Base topic](#base-topic)
-  * [Devices](#devices)
-    * [Device attributes](#device-attributes)
-    * [Device behavior](#device-behavior)
-    * [Device statistics](#device-statistics)
-  * [Nodes](#nodes)
-    * [Node attributes](#node-attributes)
-  * [Properties](#properties)
-    * [Property attributes](#property-attributes)
-  * [Arrays](#arrays)
-  * [Broadcast channel](#broadcast-channel)
-* [FAQ and Rationale](#faq)
-
-
-## Motivation
-
-The Homie convention strives to be a **communication definition on top of MQTT** between IoT devices and controlling entities.
-
-> [MQTT](http://mqtt.org) is a machine-to-machine (M2M)/"Internet of Things" connectivity protocol.
-> It was designed as an extremely lightweight publish/subscribe messaging transport.
-
-MQTT supports easy and unrestricted message-based communication.
-However, MQTT doesn't define the structure and content of these messages and their relation.
-An IoT device publishes data and provides interaction possibilities but a controlling entity will need to be specifically configured to be able to interface with the device.
-
-The Homie convention defines a **standardized way** of how IoT devices and services announce themselves and their data on the communication channel.
-The Homie convention is thereby a crucial aspect in the support of **automatic discovery, configuration and usage** of devices and services over the MQTT protocol.
-
-----
+Version: **<!--VERSION-->x.x.x<!--VERSION-->**
+Date: **<!--DATE-->01. Jan 2000<!--DATE-->**
 
 ## MQTT Restrictions
 
@@ -600,23 +554,3 @@ homie/$broadcast/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
-
-----
-----
-
-## FAQ
-
-In this section frequently asked questions will be answered.
-This includes design decisions and drawn compromises in the specifics of the Homie convention.
-
-### How do I query/request a property?
-
-You don't.
-The MQTT protocol does not implement the request-reply but rather the publish-subscribe messaging pattern.
-The Homie convention follows the publish-subscribe principle by publishing data as retained messages on a regular basis.
-You might want to rethink the design of your application - in most scenarios a regularly updated information is sufficient.
-
-*Workaround:* You are free to implement your own ideas on top of the basic structure of the Homie convention.
-You could either implement a `get` getter topic and its logic to trigger a value update, or you may exploit the concept of Homie properties and define a settable property to trigger a value update.
-
-A discussion on the matter can be found in issue [#79](https://github.com/homieiot/convention/issues/79).
