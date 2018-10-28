@@ -8,6 +8,7 @@
 * ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - A MicroPython-implementation: [microhomie/micropython-homie](https://github.com/microhomie/micropython-homie)
 * A NodeJS-implementation closely following [marvinroger/homie-esp8266](https://github.com/marvinroger/homie-esp8266) API patterns: [microclimates/homie-device](https://github.com/microclimates/homie-device)
 * An ESP32 IDF implementation: [craftmetrics/esp32-homie](https://github.com/craftmetrics/esp32-homie)
+* ![WIP](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/barricade-24.png) **WIP** - A Kotlin-implementation: [boc-tothefuture/kotlin-homieiot](https://github.com/boc-tothefuture/kotlin-homieiot)
 
 ## Projects utilizing the Homie convention
 
