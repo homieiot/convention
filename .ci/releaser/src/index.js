@@ -50,8 +50,8 @@ const BUMP_TYPE_PER_PREFIX = {
 const DRY_RUN_FLAG = "--dry-run";
 
 const RELEASE_MARKER = "[release]";
-const DEPLOYMENT_BRANCH = "releaser-test";
-const SOURCE_BRANCH = "releaser";
+const DEPLOYMENT_BRANCH = "master";
+const SOURCE_BRANCH = "develop";
 
 const DATE_REGEX = /<!--DATE-->(.+)<!--DATE-->/;
 const VERSION_REGEX = /<!--VERSION-->(.+)<!--VERSION-->/;
@@ -192,7 +192,7 @@ function generateChangelog(analyzedCommits) {
 
 async function build(version, sourceCommitSha) {
   const sourceConvention = await fs.readFile(
-    path.join(ROOT_DIR, "README.md"),
+    path.join(ROOT_DIR, "convention.md"),
     "utf8"
   );
 

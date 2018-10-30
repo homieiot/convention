@@ -7,4 +7,4 @@ script:
   - pushd ./.ci/releaser && yarn release && popd
 branches:
   only:
-    - releaser
+    - develop
