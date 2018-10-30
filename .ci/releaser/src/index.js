@@ -43,8 +43,8 @@ const BUMP_TYPE_PER_PREFIX = {
 const DRY_RUN_FLAG = "--dry-run";
 
 const RELEASE_MARKER = "[release]";
-const DEPLOYMENT_BRANCH = "test-releaser";
-const SOURCE_BRANCH = "develop";
+const DEPLOYMENT_BRANCH = "releaser-test";
+const SOURCE_BRANCH = "releaser";
 
 const VERSION_REGEX = /<!--VERSION-->(.+)<!--VERSION-->/;
 const SOURCE_COMMIT_REGEX = /<!--GENERATED FROM COMMIT ([0-9a-f]{40})-->/;
