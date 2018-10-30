@@ -1,0 +1,16 @@
+{
+  "name": "homie-releaser",
+  "version": "1.0.0",
+  "repository": "https://github.com/homieiot/convention",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "release": "node src/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "consola": "^1.4.4",
+    "fs-extra": "^7.0.0",
+    "node-cmd": "^3.0.0"
+  }
+}
