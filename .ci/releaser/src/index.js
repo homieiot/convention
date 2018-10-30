@@ -216,8 +216,8 @@ async function deployToGit(
   const { stdout } = await runScript(`
     cd ${OUTPUT_DIR}
     git init
-    git config --global user.name "travis@travis-ci.org"
-    git config --global user.email "Travis CI"
+    git config --global user.name "Travis CI"
+    git config --global user.email "travis@travis-ci.org"
     git remote add origin https://{${username}:${password}@github.com/${repoSlug}
     git add .
     git commit -m "Release v${version}"
@@ -226,7 +226,7 @@ async function deployToGit(
   console.log(stdout);
 }
 
-async function createGithubRelease(version, commitish, changelog) {
+async function createGithubRelease(repoSlug, version, commitish, changelog) {
   const res = await GITHUB_HTTP_CLIENT.post(`/repos/${repoSlug}/releases`, {
     tag_name: "v" + version,
     target_commitish: commitish,
@@ -290,7 +290,12 @@ async function main() {
       GITHUB_TOKEN
     );
     consola.info(`Creating GitHub release`);
-    await createGithubRelease(targetVersion, DEPLOYMENT_BRANCH, changelog);
+    await createGithubRelease(
+      REPO_SLUG,
+      targetVersion,
+      DEPLOYMENT_BRANCH,
+      changelog
+    );
     consola.success("Success");
   }
 }
