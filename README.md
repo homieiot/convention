@@ -5,33 +5,32 @@
 
 <p align="center">Version: <b><!--VERSION-->3.x.x<!--VERSION--></b> • <a href="https://github.com/homieiot/convention/tags">Browse Versions…</a></p>
 
-**![Rolling Release](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/traffic-light-20.png) The Homie Convention follows the rolling release model and is improved and released in short development cycles. Check the *releases* tab to learn about previous release versions.**
+**![Rolling Release](https://cdn2.iconfinder.com/data/icons/thesquid-ink-40-free-flat-icon-pack/64/traffic-light-20.png) The Homie Convention follows the rolling release model and is improved and released in short development cycles. Check the _releases_ tab to learn about previous release versions.**
 
 Implementations of the Homie convention can be found on [this page](implementations.md).
 
-----
+---
 
 ## Table of Contents
 
-* [Motivation](#motivation)
-* [MQTT restrictions](#mqtt-restrictions)
-  * [Topic IDs](#topic-ids)
-  * [Payload](#payload)
-  * [QoS and retained messages](#qos-and-retained-messages)
-* [Topology](#topology)
-  * [Base topic](#base-topic)
-  * [Devices](#devices)
-    * [Device attributes](#device-attributes)
-    * [Device behavior](#device-behavior)
-    * [Device statistics](#device-statistics)
-  * [Nodes](#nodes)
-    * [Node attributes](#node-attributes)
-  * [Properties](#properties)
-    * [Property attributes](#property-attributes)
-  * [Arrays](#arrays)
-  * [Broadcast channel](#broadcast-channel)
-* [FAQ and Rationale](#faq)
-
+- [Motivation](#motivation)
+- [MQTT restrictions](#mqtt-restrictions)
+  - [Topic IDs](#topic-ids)
+  - [Payload](#payload)
+  - [QoS and retained messages](#qos-and-retained-messages)
+- [Topology](#topology)
+  - [Base topic](#base-topic)
+  - [Devices](#devices)
+    - [Device attributes](#device-attributes)
+    - [Device behavior](#device-behavior)
+    - [Device statistics](#device-statistics)
+  - [Nodes](#nodes)
+    - [Node attributes](#node-attributes)
+  - [Properties](#properties)
+    - [Property attributes](#property-attributes)
+  - [Arrays](#arrays)
+  - [Broadcast channel](#broadcast-channel)
+- [FAQ and Rationale](#faq)
 
 ## Motivation
 
@@ -47,7 +46,7 @@ An IoT device publishes data and provides interaction possibilities but a contro
 The Homie convention defines a **standardized way** of how IoT devices and services announce themselves and their data on the communication channel.
 The Homie convention is thereby a crucial aspect in the support of **automatic discovery, configuration and usage** of devices and services over the MQTT protocol.
 
-----
+---
 
 ## MQTT Restrictions
 
@@ -59,15 +58,15 @@ An MQTT topic consists of one or more topic levels, separated by the slash chara
 A topic level ID MAY contain lowercase letters from `a` to `z`, numbers from `0` to `9` as well as the hyphen character (`-`).
 
 A topic level ID MUST NOT start or end with a hyphen (`-`).
-The special character `$` is used and reserved for Homie *attributes*.
-The underscore (`_`) is used and reserved for Homie *node arrays*.
+The special character `$` is used and reserved for Homie _attributes_.
+The underscore (`_`) is used and reserved for Homie _node arrays_.
 
 ### Payload
 
 Every MQTT message payload MUST be sent as string.
 If a value is of a numeric data type, it MUST be converted to string.
 Booleans MUST be converted to "true" or "false".
-All values MUST be encoded as UTF-8 strings. 
+All values MUST be encoded as UTF-8 strings.
 
 ### QoS and retained messages
 
@@ -77,11 +76,11 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 ## Topology
 
 **Devices:**
-An instance of a physical piece of hardware is called a *device*.
+An instance of a physical piece of hardware is called a _device_.
 For example, a car, an Arduino/ESP8266 or a coffee machine.
 
 **Nodes:**
-A *device* can expose multiple *nodes*.
+A _device_ can expose multiple _nodes_.
 Nodes are independent or logically separable parts of a device.
 For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
 
@@ -89,7 +88,7 @@ Nodes can be **arrays**.
 For example, instead of creating two `lights` node to control front lights and back lights independently, we can set the `lights` node to be an array with two elements.
 
 **Properties:**
-A *node* can have multiple *properties*.
+A _node_ can have multiple _properties_.
 Properties represent basic characteristics of the node/device, often given as numbers or finite states.
 For example the `wheels` node might expose an `angle` property.
 The `engine` node might expose a `speed`, `direction` and `temperature` property.
@@ -103,19 +102,19 @@ A property is retained by default. A non-retained property would be useful for m
 
 A combination of those flags compiles into this list:
 
-* **retained + non-settable**: The node publishes a property state (temperature sensor)
-* **retained + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
-* **non-retained + non-settable**: The node publishes momentary events (door bell pressed)
-* **non-retained + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
+- **retained + non-settable**: The node publishes a property state (temperature sensor)
+- **retained + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
+- **non-retained + non-settable**: The node publishes momentary events (door bell pressed)
+- **non-retained + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
 
 **Attributes:**
-*Devices, nodes and properties* have specific *attributes* characterizing them.
+_Devices, nodes and properties_ have specific _attributes_ characterizing them.
 Attributes are represented by topic identifier starting with `$`.
 The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
-----
+---
 
 ### Base Topic
 
@@ -124,17 +123,17 @@ If this base topic does not suit your needs (in case of, e.g., a public broker),
 
 Be aware, that only the default base topic `homie/` is eligible for automatic discovery by third party controllers.
 
-----
+---
 
 ### Devices
 
-* `homie` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
+- `homie` / **`device ID`**: this is the base topic of a device.
+  Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
 
 #### Device Attributes
 
-* `homie` / `device ID` / **`$device-attribute`**:
-When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
+- `homie` / `device ID` / **`$device-attribute`**:
+  When the MQTT connection to the broker is established or re-established, the device MUST send its attributes to the broker immediately.
 
 <table>
   <tr>
@@ -255,23 +254,23 @@ homie/super-car/$state → "ready"
 The `$state` device attribute represents, as the name suggests, the current state of the device.
 There are 6 different states:
 
-* **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
-This is the first message that must that must be sent.
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate.
-You have to send this message after all other announcements message have been sent.
-* **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
-You must send this message before cleanly disconnecting.
-* **`sleeping`**: this is the state the device is in when the device is sleeping.
-You have to send this message before sleeping.
-* **`lost`**: this is the state the device is in when the device has been "badly" disconnected.
-You must define this message as LWT.
-* **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
-You have to send this message when something is wrong.
+- **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
+  This is the first message that must that must be sent.
+- **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate.
+  You have to send this message after all other announcements message have been sent.
+- **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
+  You must send this message before cleanly disconnecting.
+- **`sleeping`**: this is the state the device is in when the device is sleeping.
+  You have to send this message before sleeping.
+- **`lost`**: this is the state the device is in when the device has been "badly" disconnected.
+  You must define this message as LWT.
+- **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
+  You have to send this message when something is wrong.
 
 #### Device Statistics
 
-* `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
-The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
+- `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
+  The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
 
 <table>
   <tr>
@@ -345,17 +344,17 @@ homie/super-car/$stats/signal → "24"
 homie/super-car/$stats/battery → "80"
 ```
 
-----
+---
 
 ### Nodes
 
-* `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
+- `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
+  Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
 
 #### Node Attributes
 
-* `homie` / `device ID` / `node ID` / **`$node-attribute`**:
-A node attribute MUST be one of these:
+- `homie` / `device ID` / `node ID` / **`$node-attribute`**:
+  A node attribute MUST be one of these:
 
 <table>
   <tr>
@@ -405,22 +404,22 @@ homie/super-car/engine/$type → "V8"
 homie/super-car/engine/$properties → "speed,direction,temperature"
 ```
 
-----
+---
 
 ### Properties
 
-* `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
+- `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
+  Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
 
-* A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
+- A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
   homie/super-car/engine/temperature → "21.5"
   ```
 
 #### Property Attributes
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
-A property attribute MUST be one of these:
+- `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
+  A property attribute MUST be one of these:
 
 <table>
     <tr>
@@ -537,7 +536,7 @@ homie/super-car/engine/temperature/$format → "-20:120"
 homie/super-car/engine/temperature → "21.5"
 ```
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
+- `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
 
 Homie is state-based.
 You don't tell your smartlight to `turn on`, but you tell it to put its `power` state to `on`.
@@ -582,14 +581,14 @@ homie/super-car/lights_1/intensity → "100"
 
 Note that you can name each element in your array individually ("Back lights", etc.).
 
-----
+---
 
 ### Broadcast Channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
-* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
-It must adhere to the [ID format](#topic-ids).
+- `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
+  It must adhere to the [ID format](#topic-ids).
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload.
 Devices are then free to react or not.
@@ -601,8 +600,9 @@ homie/$broadcast/alert ← "Intruder detected"
 
 Any other topic is not part of the Homie convention.
 
-----
-----
+---
+
+---
 
 ## FAQ
 
@@ -616,7 +616,7 @@ The MQTT protocol does not implement the request-reply but rather the publish-su
 The Homie convention follows the publish-subscribe principle by publishing data as retained messages on a regular basis.
 You might want to rethink the design of your application - in most scenarios a regularly updated information is sufficient.
 
-*Workaround:* You are free to implement your own ideas on top of the basic structure of the Homie convention.
+_Workaround:_ You are free to implement your own ideas on top of the basic structure of the Homie convention.
 You could either implement a `get` getter topic and its logic to trigger a value update, or you may exploit the concept of Homie properties and define a settable property to trigger a value update.
 
 A discussion on the matter can be found in issue [#79](https://github.com/homieiot/convention/issues/79).
