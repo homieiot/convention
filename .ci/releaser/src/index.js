@@ -22,6 +22,13 @@ const REPO_SLUG = process.env.TRAVIS_REPO_SLUG;
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+const GITHUB_HTTP_CLIENT = axios.create({
+  baseURL: "https://api.github.com/",
+  headers: {
+    Authorization: "token " + GITHUB_TOKEN
+  }
+});
+
 if (!COMMIT || !REPO_SLUG || !GITHUB_USERNAME || !GITHUB_TOKEN) {
   consola.fatal("Missing environment variable");
   process.exit(1);
@@ -55,8 +62,8 @@ const OUTPUT_DIR = path.resolve(os.tmpdir(), `homie-${new Date().getTime()}`);
 const ROOT_DIR = path.join(__dirname, "../../../");
 
 async function getLatestVersion(repoSlug) {
-  const res = await axios.get(
-    `https://api.github.com/repos/${repoSlug}/releases/latest`
+  const res = await GITHUB_HTTP_CLIENT.get(
+    `/repos/${repoSlug}/releases/latest`
   );
 
   return res.data.tag_name.slice(1);
@@ -81,8 +88,8 @@ function getSourceCommitFromConvention(convention) {
 }
 
 async function getCommits(repoSlug, fromCommitish, toCommitish) {
-  const res = await axios.get(
-    `https://api.github.com/repos/${repoSlug}/compare/${fromCommitish}...${toCommitish}`
+  const res = await GITHUB_HTTP_CLIENT.get(
+    `/repos/${repoSlug}/compare/${fromCommitish}...${toCommitish}`
   );
 
   const commits = res.data.commits.map(el => {
@@ -221,22 +228,14 @@ async function deployToGit(
 }
 
 async function createGithubRelease(version, commitish, changelog) {
-  const res = await axios.post(
-    `https://api.github.com/repos/${repoSlug}/releases`,
-    {
-      tag_name: "v" + version,
-      target_commitish: commitish,
-      name: "v" + version,
-      body: changelog,
-      draft: false,
-      prerelease: false
-    },
-    {
-      headers: {
-        Authorization: "token " + GITHUB_TOKEN
-      }
-    }
-  );
+  const res = await GITHUB_HTTP_CLIENT.post(`/repos/${repoSlug}/releases`, {
+    tag_name: "v" + version,
+    target_commitish: commitish,
+    name: "v" + version,
+    body: changelog,
+    draft: true,
+    prerelease: false
+  });
 }
 
 async function main() {
