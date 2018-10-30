@@ -53,6 +53,7 @@ const RELEASE_MARKER = "[release]";
 const DEPLOYMENT_BRANCH = "releaser-test";
 const SOURCE_BRANCH = "releaser";
 
+const DATE_REGEX = /<!--DATE-->(.+)<!--DATE-->/;
 const VERSION_REGEX = /<!--VERSION-->(.+)<!--VERSION-->/;
 const SOURCE_COMMIT_REGEX = /<!--GENERATED FROM COMMIT ([0-9a-f]{40})-->/;
 const generateSourceCommitComment = commit =>
@@ -194,9 +195,11 @@ async function build(version, sourceCommitSha) {
     path.join(ROOT_DIR, "README.md"),
     "utf8"
   );
+
+  const date = new Date().toISOString().split("T")[0];
   let builtConvention = `
 ${generateSourceCommitComment(sourceCommitSha)}
-${sourceConvention.replace(VERSION_REGEX, version)}
+${sourceConvention.replace(VERSION_REGEX, version).replace(DATE_REGEX, date)}
 `.trim();
 
   await fs.outputFile(path.join(OUTPUT_DIR, "README.md"), builtConvention);
