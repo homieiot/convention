@@ -303,4 +303,5 @@ main()
   .catch(async err => {
     consola.fatal(err);
     await cleanup();
+    process.exit(1);
   });
