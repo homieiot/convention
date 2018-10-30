@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "8"
 install:
-  - yarn
+  - pushd ./.ci/releaser && yarn && popd
 script:
   - pushd ./.ci/releaser && yarn release && popd
 branches:
