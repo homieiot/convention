@@ -135,7 +135,7 @@ function bumpVersion(version, bumpType) {
 
   if (bumpType === BUMP_TYPE.MAJOR) {
     parts[0]++;
-  } else if (bumpType === BUMP_TYPE.MAJOR) {
+  } else if (bumpType === BUMP_TYPE.MINOR) {
     parts[1]++;
   } else if (bumpType === BUMP_TYPE.PATCH) {
     parts[2]++;
@@ -214,7 +214,7 @@ async function deployToGit(
   password
 ) {
   const { stdout } = await runScript(`
-    pushd ${OUTPUT_DIR}
+    cd ${OUTPUT_DIR}
     git init
     git config --global user.name "travis@travis-ci.org"
     git config --global user.email "Travis CI"
@@ -222,7 +222,6 @@ async function deployToGit(
     git add .
     git commit -m "Release v${version}"
     git push -f origin master:${targetBranch}
-    popd
   `);
   console.log(stdout);
 }
