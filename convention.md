@@ -95,7 +95,6 @@ When the MQTT connection to the broker is established or re-established, the dev
     <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
-    <th>Retained</th>
     <th>Required</th>
   </tr>
   <tr>
@@ -103,13 +102,11 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Device → Controller</td>
     <td>Version of the Homie convention the device conforms to</td>
     <td>Yes</td>
-    <td>Yes</td>
   </tr>
   <tr>
     <td>$name</td>
     <td>Device → Controller</td>
     <td>Friendly name of the device</td>
-    <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
@@ -118,35 +115,6 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>
       See <a href="#device-behavior">Device behavior</a>
     </td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$localip</td>
-    <td>Device → Controller</td>
-    <td>IP of the device on the local network</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$mac</td>
-    <td>Device → Controller</td>
-    <td>Mac address of the device network interface. The format MUST be of the type <code>A1:B2:C3:D4:E5:F6</code></td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/name</td>
-    <td>Device → Controller</td>
-    <td>Name of the firmware running on the device. Allowed characters are the same as the device ID</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$fw/version</td>
-    <td>Device → Controller</td>
-    <td>Version of the firmware running on the device</td>
-    <td>Yes</td>
     <td>Yes</td>
   </tr>
   <tr>
@@ -157,35 +125,18 @@ When the MQTT connection to the broker is established or re-established, the dev
       To make a node an array, append <code>[]</code> to the ID.
     </td>
     <td>Yes</td>
-    <td>Yes</td>
   </tr>
   <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$implementation/#</td>
-    <td>Controller → Device or Device → Controller</td>
-    <td>You can use any subtopics of <code>$implementation</code> for anything related to your specific Homie implementation.</td>
-    <td>Yes or No, depending of your implementation</td>
     <td>No</td>
   </tr>
   <tr>
     <td>$stats</td>
     <td>Device → Controller</td>
     <td>Specify all optional stats that the device will announce, with format <code>stats</code> separated by a <code>,</code> if there are multiple stats. See next section for an example</td>
-    <td>Yes</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>$stats/interval</td>
-    <td>Device → Controller</td>
-    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
-    <td>Yes</td>
-    <td>Yes</td>
+    <td>No</td>
   </tr>
 </table>
 
@@ -194,13 +145,8 @@ For example, a device with an ID of `super-car` that comprises off a `wheels`, `
 ```java
 homie/super-car/$homie → "2.1.0"
 homie/super-car/$name → "Super car"
-homie/super-car/$localip → "192.168.0.10"
-homie/super-car/$mac → "DE:AD:BE:EF:FE:ED"
-homie/super-car/$fw/name → "weatherstation-firmware"
-homie/super-car/$fw/version → "1.0.0"
 homie/super-car/$nodes → "wheels,engine,lights[]"
 homie/super-car/$implementation → "esp8266"
-homie/super-car/$stats/interval → "60"
 homie/super-car/$state → "ready"
 ```
 
@@ -225,36 +171,34 @@ You have to send this message when something is wrong.
 #### Device Statistics
 
 * `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
-The `$stats/` hierarchy allows to send device attributes that change over time. The device MUST send them every `$stats/interval` seconds.
+The `$stats/` hierarchy allows to send device attributes that change over time. All defined topic are optional.
+The interval defined in `$stats/interval` in seconds is a hint to the controller how often the statistics will be updated.
 
 <table>
   <tr>
     <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
-    <th>Retained</th>
-    <th>Required</th>
+  </tr>
+  <tr>
+    <td>$stats/interval</td>
+    <td>Device → Controller</td>
+    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
   </tr>
   <tr>
     <td>$stats/uptime</td>
     <td>Device → Controller</td>
     <td>Time elapsed in seconds since the boot of the device</td>
-    <td>Yes</td>
-    <td>Yes</td>
   </tr>
   <tr>
     <td>$stats/signal</td>
     <td>Device → Controller</td>
     <td>Signal strength in %</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$stats/cputemp</td>
     <td>Device → Controller</td>
     <td>CPU Temperature in °C</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$stats/cpuload</td>
@@ -263,29 +207,21 @@ The `$stats/` hierarchy allows to send device attributes that change over time. 
       CPU Load in %.
       Average of last <code>$interval</code> including all CPUs
     </td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$stats/battery</td>
     <td>Device → Controller</td>
     <td>Battery level in %</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$stats/freeheap</td>
     <td>Device → Controller</td>
     <td>Free heap in bytes</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
   <tr>
     <td>$stats/supply</td>
     <td>Device → Controller</td>
     <td>Supply Voltage in V</td>
-    <td>Yes</td>
-    <td>No</td>
   </tr>
 </table>
 
@@ -293,6 +229,7 @@ For example, our `super-car` device with `$stats/interval` value "60" is suppose
 
 ```java
 homie/super-car/$stats → "uptime,cputemp,signal,battery"
+homie/super-car/$stats/interval → "60"
 homie/super-car/$stats/uptime → "120"
 homie/super-car/$stats/cputemp → "48"
 homie/super-car/$stats/signal → "24"
@@ -309,29 +246,23 @@ Each node must have a unique node ID on a per-device basis which adhere to the [
 #### Node Attributes
 
 * `homie` / `device ID` / `node ID` / **`$node-attribute`**:
-A node attribute MUST be one of these:
+All listed attributes are **required**. A node attribute MUST be one of these:
 
 <table>
   <tr>
     <th>Topic</th>
     <th>Direction</th>
     <th>Description</th>
-    <th>Retained</th>
-    <th>Required</th>
   </tr>
   <tr>
     <td>$name</td>
     <td>Device → Controller</td>
     <td>Friendly name of the Node</td>
-    <td>Yes</td>
-    <td>Yes</td>
   </tr>
   <tr>
     <td>$type</td>
     <td>Device → Controller</td>
     <td>Type of the node</td>
-    <td>Yes</td>
-    <td>Yes</td>
   </tr>
   <tr>
     <td>$properties</td>
@@ -339,8 +270,6 @@ A node attribute MUST be one of these:
     <td>
       Properties the node exposes, with format <code>id</code> separated by a <code>,</code> if there are multiple nodes.
     </td>
-    <td>Yes</td>
-    <td>Yes</td>
   </tr>
     <tr>
        <td>$array</td>
@@ -382,7 +311,6 @@ A property attribute MUST be one of these:
         <th>Direction</th>
         <th>Description</th>
         <th>Valid values</th>
-        <th>Retained</th>
         <th>Required (Default)</th>
     </tr>
     <tr>
@@ -390,7 +318,6 @@ A property attribute MUST be one of these:
        <td>Device → Controller</td>
        <td>Friendly name of the property.</td>
        <td>Any String</td>
-       <td>Yes</td>
        <td>No ("")</td>
     </tr>
     <tr>
@@ -398,7 +325,6 @@ A property attribute MUST be one of these:
         <td>Device → Controller</td>
         <td>Specifies whether the property is settable (<code>true</code>) or readonly (<code>false</code>)</td>
         <td><code>true</code> or <code>false</code></td>
-        <td>Yes</td>
         <td>No (<code>false</code>)</td>
     </tr>
     <tr>
@@ -406,7 +332,6 @@ A property attribute MUST be one of these:
         <td>Device → Controller</td>
         <td>Specifies whether the property is retained (<code>true</code>) or non-retained (<code>false</code>). Publishing to a non-retained property topic MUST always happen with the MQTT 'retain' flag off.</td>
         <td><code>true</code> or <code>false</code></td>
-        <td>Yes</td>
         <td>No (<code>true</code>)</td>
     </tr>
     <tr>
@@ -433,7 +358,6 @@ A property attribute MUST be one of these:
             <code>psi</code> PSI<br>
             <code>#</code> Count or Amount
         </td>
-        <td>Yes</td>
         <td>No ("")</td>
     </tr>
     <tr>
@@ -448,7 +372,6 @@ A property attribute MUST be one of these:
          <code>enum</code>,
          <code>color</code>
        </td>
-       <td>Yes</td>
        <td>No (<code>string</code>)</td>
     </tr>
     <tr>
@@ -475,7 +398,6 @@ A property attribute MUST be one of these:
            </li>
          </ul>
        </td>
-       <td>Yes</td>
        <td>No for $datatype <code>string</code>,<code>integer</code>,<code>float</code>,<code>boolean</code>. Yes for <code>enum</code>,<code>color</code></td>
     </tr>
 </table>
