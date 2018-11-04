@@ -183,7 +183,7 @@ The interval defined in `$stats/interval` in seconds is a hint to the controller
   <tr>
     <td>$stats/interval</td>
     <td>Device → Controller</td>
-    <td>Interval in seconds at which the device refreshes its <code>$stats/+</code>: See next section for details about statistical attributes</td>
+    <td>A hint to the controller how often the statistics will be updated</td>
   </tr>
   <tr>
     <td>$stats/uptime</td>
