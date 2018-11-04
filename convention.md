@@ -19,9 +19,9 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
 ### Payload
 
 Every MQTT message payload MUST be sent as string.
-If a value is of a numeric data type, it MUST be converted to string.
+If a payload is of a numeric data type, it MUST be converted to string.
 Booleans MUST be converted to "true" or "false".
-All values MUST be encoded as UTF-8 strings. 
+All payloads MUST be encoded as UTF-8 strings. 
 
 ### QoS and retained messages
 
@@ -366,7 +366,7 @@ homie/super-car/engine/$properties → "speed,direction,temperature"
 * `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
 Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
 
-* A property value (e.g. a sensor reading) is directly published to the property topic, e.g.:
+* A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
   homie/super-car/engine/temperature → "21.5"
   ```
@@ -455,16 +455,16 @@ A property attribute MUST be one of these:
        <td>$format</td>
        <td>Device → Controller</td>
        <td>
-        Describes what are valid values for this property.
+        Describes what are valid payloads for this property.
        </td>
        <td>
          <ul>
            <li>
-             <code>from:to</code> Describes a range of values e.g. <code>10:15</code>.
+             <code>from:to</code> Describes a range of payloads e.g. <code>10:15</code>.
              <br>Valid for datatypes <code>integer</code>, <code>float</code>
            </li>
            <li>
-             <code>value,value,value</code> for enumerating all valid values.
+             <code>payload,payload,payload</code> for enumerating all valid payloads.
              Escape <code>,</code> by using <code>,,</code>. e.g. <code>A,B,C</code> or <code>ON,OFF,PAUSE</code>.
              <br>Valid for datatypes <code>enum</code>
            </li>
