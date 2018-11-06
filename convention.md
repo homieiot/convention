@@ -19,7 +19,9 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
 ### Payload
 
 Every MQTT message payload MUST be sent as UTF-8 encoded string.
-A numeric data type MUST contain a numeric value published as string with the decimal separator, if any, being a dot.
+A numeric data type MUST be converted to a literal string with the dot character as the decimal separator for the `float` data type.
+An empty message is not valid as payload for numeric data types.
+The value published as payload MUST be valid for the respective property/attribute type as per the convention definition below.
 Booleans MUST be converted to "true" or "false".
 
 ### QoS and retained messages
