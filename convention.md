@@ -128,6 +128,15 @@ When the MQTT connection to the broker is established or re-established, the dev
     <td>Yes</td>
   </tr>
   <tr>
+    <td>$specs</td>
+    <td>Device → Controller</td>
+    <td>
+      A list of optional specifications the device supports, e.g. OTA, with format <code>id</code> separated by a <code>,</code> if there are multiple specs.
+      If no extensions are supported an empty string must be published.
+    </td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>$implementation</td>
     <td>Device → Controller</td>
     <td>An identifier for the Homie implementation (example <code>esp8266</code>)</td>
@@ -475,3 +484,14 @@ homie/$broadcast/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
+
+### Optional Specifications
+
+In addition to homie-core the device may support multiple extensions which are defined in separate specifications.
+Every extension is identified by a unique id. In order to make sure those ids are unique, there are rules on how they are created. An id should only contain url safe characters.
+
+#### Official extension
+Extensions defined by homie are prefixed with `homie.`. An example would be `homie.ota`.
+
+#### Vendor specific extensions
+A vendor can create it's own extension to homie. In this case the id consists of the reverse domain name of a vendor owned domain and a freely choosen prefix. For example a company owning `example.org` that likes likes to extend homie a cool feature would choose `org.example.cool-feature`.
