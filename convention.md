@@ -29,7 +29,7 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
  #### Integer
  - Integer types are UTF-8 encoded representations of 64-bit signed whole numbers
  - Integers range from -9,223,372,036,854,775,808 (-2<sup>63</sup>) to 9,223,372,036,854,775,807 (2<sup>63</sup>-1)
- - The payload may only contain whole numbers and the minus character "-". No other characters including spaces (" ") are permitted 
+ - The payload may only contain whole numbers and the negation character "-". No other characters including spaces (" ") are permitted 
  - A string with just a negation sign ("-") is not a valid payload
  - An empty string ("") is not a valid payload
  
