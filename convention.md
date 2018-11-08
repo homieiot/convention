@@ -36,7 +36,7 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
  #### Float
  - Float types are UTF-8 encoded representations of 64-bit signed floating point numbers
  - Floats range from 2<sup>-1074</sup> to (2-2<sup>-52</sup>)*2<sup>1023</sup>
- - The payload may only contain whole numbers, the minus character "-", and the decimal separator ".", no other characters, including spaces (" ") are permitted 
+ - The payload may only contain whole numbers, the negation character "-", and the decimal separator ".", no other characters, including spaces (" ") are permitted 
  - The dot character (".") is the decimal separator (used if necessary) and may only have a single instance present in the payload
  - Representations of numeric concepts such as "NaN" (Not a Number) and "Infinity" are not a valid payload
  - Representations using exponent notation ("e" or "E") are not valid payloads
