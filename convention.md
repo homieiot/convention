@@ -485,8 +485,8 @@ homie/$broadcast/alert ← "Intruder detected"
 
 Any other topic is not part of the Homie convention.
 
-### Optional Extensions
+### Addendum: Extensions
 
 In addition to homie-core the device may support multiple extensions which are defined in separate conventions.
-Every extension is identified by a unique id, which is similar to a topic id but also allows dots.
-The id consists of the reverse domain name of a vendor owned domain and a freely choosen prefix. For example a company owning `example.org` that likes likes to extend homie a cool feature would choose `org.example.cool-feature`. If it is a official extension the prefix must be `homie`.
+Every extension is identified by a unique id.
+The id consists of the reverse domain name and a freely choosen prefix. For example a company `example.org` that likes to extend homie a cool feature would choose `org.example.cool-feature`. The prefix `homie` is reserved.
