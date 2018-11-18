@@ -277,7 +277,7 @@ This provides pessimistic feedback, which is important for home automation.
 homie/kitchen-light/light/power → "true"
 ```
 
-### Arrays
+## Arrays
 
 A node can be an array if you've added `[]` to its ID in the `$nodes` device attribute.
 
@@ -313,7 +313,7 @@ homie/super-car/lights_1/intensity → "100"
 
 Note that you can name each element in your array individually ("Back lights", etc.).
 
-### Broadcast Channel
+## Broadcast Channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
 
@@ -330,7 +330,7 @@ homie/$broadcast/alert ← "Intruder detected"
 
 Any other topic is not part of the Homie convention.
 
-### Addendum: Extensions
+## Extensions
 
 In addition to homie-core the device may support multiple extensions which are defined in separate conventions.
 Every extension is identified by a unique id.
