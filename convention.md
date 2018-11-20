@@ -29,6 +29,12 @@ Booleans MUST be converted to "true" or "false".
 The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
+### Last will
+
+MQTT only allows one last will message per connection.
+Homie requires a last will for the `homie` / `device ID` / `$ready` attribute, see [Device Behavior](#device-behavior).
+As a consequence a new MQTT connection to the brocker is required per published device.
+
 ## Base Topic
 
 The MQTT base topic you will see in the following convention will be `homie/`.
