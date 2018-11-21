@@ -50,7 +50,7 @@ Boolean
 Enum
  - Enum payloads must be one of the values specified in the format definition of the property
  - Enum payloads are case sensitive, e.g. "Car" will not match a format definition of "car"
- - Enum matches are exact, e.g. A payload of "car ", will not match a format definition of "car". " car", "car" and "car " Represent three valid and distinct enum values
+ - Payloads should have leading and trailing whitespace removed
  - An empty string ("") is not a valid payload
  
 Color
