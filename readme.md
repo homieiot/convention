@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://homieiot.github.io"><img src="https://raw.githubusercontent.com/homieiot/convention-website/master/docs/banner.png"><br>The Homie Convention</a></h1>
+<h1 align="center"><a href="https://homieiot.github.io"><img src="https://raw.githubusercontent.com/homieiot/convention-website/master/static/img/banner.png"><br>The Homie Convention</a></h1>
 <i align="center">A lightweight MQTT convention for the IoT</i>
 
 ## Motivation
