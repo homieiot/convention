@@ -19,7 +19,7 @@ The underscore (`_`) is used and reserved for Homie *node arrays*.
 ### Payload
 
  - Every MQTT message payload MUST be sent as a UTF-8 encoded string
--  The value published as payload MUST be valid for the respective property/attribute type as per the defined convention
+ - The value published as payload MUST be valid for the respective property/attribute type as per the defined convention
  
 String
  - String types are limited to 268,435,456 characters 
@@ -33,12 +33,11 @@ Integer
  - An empty string ("") is not a valid payload
  
 Float
- - Float types are UTF-8 encoded representations of 64-bit signed floating point numbers
+- Float types are UTF-8 encoded representations of 64-bit signed floating point numbers
  - Floats range from 2<sup>-1074</sup> to (2-2<sup>-52</sup>)*2<sup>1023</sup>
- - The payload may only contain whole numbers, the negation character "-", and the decimal separator ".", no other characters, including spaces (" ") are permitted 
+ - The payload may only contain whole numbers, the negation character "-", the exponent character "e" or "E" and the decimal separator ".", no other characters, including spaces (" ") are permitted 
  - The dot character (".") is the decimal separator (used if necessary) and may only have a single instance present in the payload
  - Representations of numeric concepts such as "NaN" (Not a Number) and "Infinity" are not a valid payload
- - Representations using exponent notation ("e" or "E") are not valid payloads
  - A string with just a negation sign ("-") is not a valid payload
  - An empty string ("") is not a valid payload
  
