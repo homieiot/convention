@@ -1,7 +1,9 @@
-script: curl -s -X POST \                                                                                                                                      ✔  ⚙  1743  11:52:10 
-   -H "Content-Type: application/json" \
-   -H "Accept: application/json" \
-   -H "Travis-API-Version: 3" \
-   -H "Authorization: token ${TRAVIS_ACCESS_TOKEN}" \
-   -d "{\"request\":{\"branch\":\"master\",\"message\":\"Triggered by convention change\"}}" \
-   https://api.travis-ci.org/repo/homieiot%2Fconvention-website/requests
+script: |
+    rtn=$(curl -X POST \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -H "Travis-API-Version: 3" \
+    -H "Authorization: token ${TRAVIS_ACCESS_TOKEN}" \
+    -d "{\"request\":{\"branch\":\"master\",\"message\":\"Triggered by convention change\"}}" \
+    https://api.travis-ci.com/repo/homieiot%2Fconvention-website/requests)
+    echo $rtn
