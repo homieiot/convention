@@ -91,7 +91,7 @@ Controllers are free to restrict discovery to a specific root topic, configurabl
 
 As soon as a device starts to publish any Homie related topic,
 it MUST finish with all topics within a timeframe of 500ms.
-Otherwise a controller can assume that the topic is not set.
+Controller can assume that not received topics within this timeframe are not set.
 
 ## Topology
 
