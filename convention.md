@@ -114,19 +114,6 @@ For example the `wheels` node might expose an `angle` property.
 The `engine` node might expose a `speed`, `direction` and `temperature` property.
 The `lights` node might expose an `intensity` and a `color` property.
 
-Properties can be **settable**.
-For example, you don't want your `temperature` property to be settable in case of a temperature sensor (like the car example), but to be settable in case of a thermostat.
-
-Properties can be **retained**.
-A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
-
-A combination of those flags compiles into this list:
-
-* **retained + non-settable**: The node publishes a property state (temperature sensor)
-* **retained + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
-* **non-retained + non-settable**: The node publishes momentary events (door bell pressed)
-* **non-retained + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
-
 **Attributes:**
 *Devices, nodes and properties* have specific *attributes* characterizing them.
 Attributes are represented by topic identifier starting with `$`.
@@ -250,6 +237,21 @@ Each property must have a unique property ID on a per-node basis which adhere to
   ```java
   homie/super-car/engine/temperature → "21.5"
   ```
+  
+* Properties can be **settable**.
+  For example, you don't want your `temperature` property to be settable in case of a temperature sensor
+  (like the car example), but to be settable in case of a thermostat.
+
+* Properties can be **retained**.
+  A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
+
+A combination of those flags compiles into this list:
+
+* **retained + non-settable**: The node publishes a property state (temperature sensor)
+* **retained + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
+* **non-retained + non-settable**: The node publishes momentary events (door bell pressed)
+* **non-retained + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
+
 
 #### Property Attributes
 
