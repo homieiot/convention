@@ -301,42 +301,6 @@ This provides pessimistic feedback, which is important for home automation.
 homie/kitchen-light/light/power → "true"
 ```
 
-## Arrays
-
-A node can be an array if you've added `[]` to its ID in the `$nodes` device attribute.
-
-You need to specify these additional attributes on the array node:
-
-| Topic       | Description                                                                               |
-|-------------|-------------------------------------------------------------------------------------------|
-| $array      | Range separated by a -. e.g. 0-2 for an array with the indexes 0, 1 and 2                 |
-
-The topic for an element of the array node is the name of the node followed by a `_` and the index.
-
-Example:
-In the following example two lights are grouped in an array:
-
-```java
-homie/super-car/$nodes → "lights[]"
-
-homie/super-car/lights/$name → "Lights"
-homie/super-car/lights/$properties → "intensity"
-homie/super-car/lights/$array → "0-1"
-
-homie/super-car/lights/intensity/$name → "Intensity"
-homie/super-car/lights/intensity/$settable → "true"
-homie/super-car/lights/intensity/$unit → "%"
-homie/super-car/lights/intensity/$datatype → "integer"
-homie/super-car/lights/intensity/$format → "0:100"
-
-homie/super-car/lights_0/$name → "Back lights"
-homie/super-car/lights_0/intensity → "0"
-homie/super-car/lights_1/$name → "Front lights"
-homie/super-car/lights_1/intensity → "100"
-```
-
-Note that you can name each element in your array individually ("Back lights", etc.).
-
 ## Broadcast Channel
 
 Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
