@@ -188,34 +188,6 @@ You must define this message as LWT.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
 
-#### Device Statistics
-
-* `homie` / `device ID` / `$stats`/ **`$device-statistic-attribute`**:
-The `$stats/` hierarchy allows to send device attributes that change over time. All defined topic are optional.
-The interval defined in `$stats/interval` in seconds is a hint to the controller how often the statistics will be updated.
-
-| Topic           | Description                                                       |
-|-----------------|-------------------------------------------------------------------|
-| $stats/interval | A hint to the controller how often the statistics will be updated |
-| $stats/uptime   | Time elapsed in seconds since the boot of the device              |
-| $stats/signal   | Signal strength in %                                              |
-| $stats/cputemp  | CPU Temperature in °C                                             |
-| $stats/cpuload  | CPU Load in %. Average of last $interval including all CPUs       |
-| $stats/battery  | Battery level in %                                                |
-| $stats/freeheap | Free heap in bytes                                                |
-| $stats/supply   | Supply Voltage in V                                               |
-
-For example, our `super-car` device with `$stats/interval` value "60" is supposed to send its current values every 60 seconds:
-
-```java
-homie/super-car/$stats → "uptime,cputemp,signal,battery"
-homie/super-car/$stats/interval → "60"
-homie/super-car/$stats/uptime → "120"
-homie/super-car/$stats/cputemp → "48"
-homie/super-car/$stats/signal → "24"
-homie/super-car/$stats/battery → "80"
-```
-
 ### Nodes
 
 * `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
