@@ -158,7 +158,6 @@ Optional topics include:
 | Topic           | Description                   |
 |-----------------|-------------------------------|
 | $implementation | An identifier for the Homie implementation (example "esp8266")                     |
-| $stats          | See [Device statistics](#device-statistics), separated by `,` for multiple ones.   |
 
 For example, a device with an ID of `super-car` that comprises off a `wheels`, `engine` and a `lights` node would send:
 
