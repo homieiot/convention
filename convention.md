@@ -74,10 +74,12 @@ As a consequence a new MQTT connection to the brocker is required per published 
 
 ## Base Topic
 
-The MQTT base topic you will see in the following convention will be `homie/`.
-If this base topic does not suit your needs (in case of, e.g., a public broker), you can choose another.
+The root topic in this document is `homie/`.
+If this root topic does not suit your needs (in case of, e.g., a public broker or because of branding),
+you can choose another.
 
-Be aware, that only the default base topic `homie/` is eligible for automatic discovery by third party controllers.
+Homie controllers must by default perform auto-discovery on the wildcard topic "+/+/$homie".
+Controllers are free to restrict discovery to a specific root topic, configurable by the user.
 
 ## Timings
 
