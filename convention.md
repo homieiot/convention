@@ -282,20 +282,22 @@ Recommended unit strings:
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: the device can subscribe to this topic if the property is **settable** from the controller, in case of actuators.
+#### Property command topic
 
-Homie is state-based.
-You don't tell your smartlight to `turn on`, but you tell it to put its `power` state to `on`.
-This especially fits well with MQTT, because of retained message.
+* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
 
-For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
+A Homie controller publishes to the `set` command topic with non-retained messages only.
+
+The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
+This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
+
+To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/kitchen-light/light/power/set` for commands:
 
 ```java
 homie/kitchen-light/light/power/set ← "true"
 ```
 
-The device would then turn on the light, and update its `power` state.
-This provides pessimistic feedback, which is important for home automation.
+In response the device will turn on the light and upon success update its `power` property state accordingly:
 
 ```java
 homie/kitchen-light/light/power → "true"
