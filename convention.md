@@ -323,7 +323,7 @@ Any other topic is not part of the Homie convention.
 This convention only covers discoverability of devices and its capabilities.
 The aim is to have standardized MQTT topics for all kind of complex scenarios.
 A Homie device may therefore support extensions, defined in separate documents.
-Every extension is identified by a unique id and will be linked from the section.
+Every extension is identified by a unique ID and will be linked from the section.
 
 The id consists of the reverse domain name and a freely choosen prefix. The domain and prefix `homie` is reserved.
 
