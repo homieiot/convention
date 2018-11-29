@@ -328,4 +328,4 @@ Every extension is identified by a unique ID and will be linked from the section
 The ID consists of the reverse domain name and a freely chosen prefix.
 The domain and prefix `homie` is reserved.
 
-For example an organisation `example.org` wants to add a feature `our-feature`. They would choose the extension id `org.example.our-feature`. 
+For example, an organization `example.org` wanting to add a feature `our-feature` would choose the extension ID `org.example.our-feature`. 
