@@ -290,15 +290,13 @@ The assigned and processed payload must be reflected by the Homie device in the 
 
 A Homie controller publishes to the command topic with non-retained messages only.
 
-Homie is state-based. You don't tell your smartlight to `turn on`, but you tell it to put its `power` state to `on`.
-
 For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
 
 ```java
 homie/kitchen-light/light/power/set ← "true"
 ```
 
-The device would then turn on the light, and update its `power` state.
+Following a pessimistic feedback pattern, the device updates its `power` state as soon as turning on the light worked.
 
 ```java
 homie/kitchen-light/light/power → "true"
