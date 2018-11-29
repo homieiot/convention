@@ -287,6 +287,7 @@ You are not limited to the recommended values, although they are the only well k
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
 
 The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
+This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
 A Homie controller publishes to the `set` command topic with non-retained messages only.
 
