@@ -288,7 +288,7 @@ You are not limited to the recommended values, although they are the only well k
 
 The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
 
-A Homie controller publishes to the command topic with non-retained messages only.
+A Homie controller publishes to the `set` command topic with non-retained messages only.
 
 To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/kitchen-light/light/power/set` for commands:
 
