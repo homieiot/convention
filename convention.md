@@ -325,6 +325,7 @@ The aim is to have standardized MQTT topics for all kind of complex scenarios.
 A Homie device may therefore support extensions, defined in separate documents.
 Every extension is identified by a unique ID and will be linked from the section.
 
-The id consists of the reverse domain name and a freely choosen prefix. The domain and prefix `homie` is reserved.
+The ID consists of the reverse domain name and a freely chosen prefix.
+The domain and prefix `homie` is reserved.
 
 For example an organisation `example.org` wants to add a feature `our-feature`. They would choose the extension id `org.example.our-feature`. 
