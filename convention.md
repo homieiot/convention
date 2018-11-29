@@ -91,7 +91,7 @@ Controllers are free to restrict discovery to a specific root topic, configurabl
 
 As soon as a device starts to publish any Homie related topic,
 it MUST finish with all topics within a timeframe of 500ms.
-Controller can assume that not received topics within this timeframe are not set.
+Controllers should assume the default for topic values not received within this timeframe.
 
 ## Topology
 
@@ -322,6 +322,12 @@ Any other topic is not part of the Homie convention.
 
 ## Extensions
 
-In addition to homie-core the device may support multiple extensions which are defined in separate conventions.
-Every extension is identified by a unique id.
-The id consists of the reverse domain name and a freely choosen prefix. For example a company `example.org` that likes to extend homie a cool feature would choose `org.example.cool-feature`. The prefix `homie` is reserved.
+This convention only covers discoverability of devices and its capabilities.
+The aim is to have standardized MQTT topics for all kind of complex scenarios.
+A Homie device may therefore support extensions, defined in separate documents.
+Every extension is identified by a unique ID and will be linked from this section.
+
+The ID consists of the reverse domain name and a freely chosen suffix.
+The domain and suffix `homie` is reserved.
+
+For example, an organization `example.org` wanting to add a feature `our-feature` would choose the extension ID `org.example.our-feature`. 
