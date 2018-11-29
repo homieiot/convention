@@ -297,7 +297,7 @@ To give an example: A `kitchen-light` device exposing the `light` node with a se
 homie/kitchen-light/light/power/set ← "true"
 ```
 
-Following a pessimistic feedback pattern, the device updates its `power` state as soon as turning on the light worked.
+In response the device will turn on the light and upon success update its `power` property state accordingly:
 
 ```java
 homie/kitchen-light/light/power → "true"
