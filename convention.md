@@ -290,7 +290,7 @@ The assigned and processed payload must be reflected by the Homie device in the 
 
 A Homie controller publishes to the command topic with non-retained messages only.
 
-For example, a `kitchen-light` device exposing a `light` node would subscribe to `homie/kitchen-light/light/power/set` and it would receive:
+To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/kitchen-light/light/power/set` for commands:
 
 ```java
 homie/kitchen-light/light/power/set ← "true"
