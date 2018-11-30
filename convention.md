@@ -328,6 +328,6 @@ A Homie device may therefore support extensions, defined in separate documents.
 Every extension is identified by a unique ID and will be linked from this section.
 
 The ID consists of the reverse domain name and a freely chosen suffix.
-The domain and suffix `homie` is reserved.
+The domain and suffix `homie` are reserved.
 
 For example, an organization `example.org` wanting to add a feature `our-feature` would choose the extension ID `org.example.our-feature`. 
