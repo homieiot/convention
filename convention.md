@@ -76,7 +76,7 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 MQTT only allows one last will message per connection.
 Homie requires a last will for the `homie` / `device ID` / `$ready` attribute, see [Device Behavior](#device-behavior).
-As a consequence a new MQTT connection to the brocker is required per published device.
+As a consequence a new MQTT connection to the broker is required per published device.
 
 ## Base Topic
 
@@ -146,7 +146,7 @@ Optional topics include:
 |-----------------|-------------------------------|
 | $implementation | An identifier for the Homie implementation (example "esp8266")                     |
 
-For example, a device with an ID of `super-car` that comprises off a `wheels`, `engine` and a `lights` node would send:
+For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
 
 ```java
 homie/super-car/$homie → "2.1.0"
@@ -305,7 +305,7 @@ homie/kitchen-light/light/power → "true"
 
 ## Broadcast Channel
 
-Homie defines a broadcast channel, so a controller is able to broadcast a message to every Homie devices:
+Homie defines a broadcast channel, so a controller is able to broadcast a message to all Homie devices:
 
 * `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
 It must adhere to the [ID format](#topic-ids).
