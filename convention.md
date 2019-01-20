@@ -87,12 +87,6 @@ you can choose another.
 Homie controllers must by default perform auto-discovery on the wildcard topic "+/+/$homie".
 Controllers are free to restrict discovery to a specific root topic, configurable by the user.
 
-## Timings
-
-As soon as a device starts to publish any Homie related topic,
-it MUST finish with all topics within a timeframe of 500ms.
-Controllers should assume the default for topic values not received within this timeframe.
-
 ## Topology
 
 **Devices:**
@@ -136,7 +130,7 @@ The following device attributes are mandatory and MUST be send, even if it is ju
 |-------------|--------------------------------------------------------------------------:|
 | $homie      | The implemented Homie convention version                                  |
 | $name       | Friendly name of the device                                               |
-| $state      | See [Device behavior](#device-behavior)                                   |
+| $state      | See [Device Lifecycle](#device-lifecycle)                                   |
 | $nodes      | [Nodes](#nodes) the device exposes, separated by `,` for multiple ones.   |
 | $extensions | Supported extensions, separated by `,` for multiple ones.                 |
 
@@ -156,15 +150,14 @@ homie/super-car/$implementation → "esp8266"
 homie/super-car/$state → "ready"
 ```
 
-#### Device Behavior
+#### Device Lifecycle
 
-The `$state` device attribute represents, as the name suggests, the current state of the device.
+The `$state` device attribute represents the current state of the device.
 There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate.
-You have to send this message after all other announcements message have been sent.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate. A Homie Controller can assume default values for all optional topics.
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
