@@ -75,7 +75,7 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 ### Last will
 
 MQTT only allows one last will message per connection.
-Homie requires a last will for the `homie` / `device ID` / `$ready` attribute, see [Device Behavior](#device-behavior).
+Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
 As a consequence a new MQTT connection to the broker is required per published device.
 
 ## Base Topic
