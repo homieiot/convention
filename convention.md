@@ -14,7 +14,6 @@ A topic level ID MAY contain lowercase letters from `a` to `z`, numbers from `0`
 
 A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
-The underscore (`_`) is used and reserved for Homie *node arrays*.
 
 ### Payload
 
@@ -97,9 +96,6 @@ For example, a car, an Arduino/ESP8266 or a coffee machine.
 A *device* can expose multiple *nodes*.
 Nodes are independent or logically separable parts of a device.
 For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
-
-Nodes can be **arrays**.
-For example, instead of creating two `lights` node to control front lights and back lights independently, we can set the `lights` node to be an array with two elements.
 
 **Properties:**
 A *node* can have multiple *properties*.
