@@ -1,7 +1,7 @@
 # Legacy Stats
 
-Version: **<!--VERSION-->0.1.0<!--VERSION-->**
-Date: **<!--DATE-->10. Jul 2019<!--DATE-->**
+Version: **<!--VERSION-->0.1.1<!--VERSION-->**
+Date: **<!--DATE-->12. Jul 2019<!--DATE-->**
 Authors: **<!--AUTHORS-->The Homie Community<!--AUTHORS-->**
 License: **<!--LICENSE-->[CCA 4.0](https://homieiot.github.io/license)<!--LICENSE-->**
 
@@ -17,11 +17,12 @@ By doing this, the legacy *$stats* attribute can be kept, and the device doesn't
 In addition to this extension, a second extension, [Legacy Firmware]() exists.
 If this extension is implemented, too, not only the stats are backwards-compatible, but the whole device.
 
+## Homie Version
+This extension supports Homie `4.x`.
+
 ## Extension Identifier
 The ID of this extension is `org.homie.legacy-stats`.
-
-## Homie Version
-This extension supports Homie `4.0`.
+Therefore the **$extensions entry** is `org.homie.legacy-stats:0.1.1:[4.x]`.
 
 ## Extension Datatypes
 This extension defines no new datatypes.
@@ -34,24 +35,7 @@ This extension defines no direct device attributes.
 
 #### Nested Device Attributes
 
-This extension defines two nested device attribute.
-
-##### $org.homie.legacy-stats
-The **$org.homie.legacy-stats** nesting attribute is **required**.
-
-It defines **no optional** attributes and the following **required** nested attributes:
-
-| Topic                                   | Description                                                             | Payload type                            |
-|-----------------------------------------|-------------------------------------------------------------------------|-----------------------------------------|
-| $org.homie.legacy-stats/$version        | The version of this extension                                           | String with constant value: "0.1.0"     |
-| $org.homie.legacy-stats/$homie-versions | The Homie versions this extension supports, separated by a comma (`,`)  | String with constant value: "4.0"       |
-
-**Examples**
-Assuming the base topic is *homie* and device ID is *super-car* then:
-```java
-homie/super-car/$org.homie.legacy-stats/$version → "0.1.0"
-homie/super-car/$org.homie.legacy-stats/$homie-versions → "4.0"
-```
+This extension defines one nested device attribute.
 
 ##### $stats
 The **$stats** nesting attribute is **required**.

@@ -15,11 +15,12 @@ It is used to create an extension according to the [Homie Extension Convention](
 "A Homie device may therefore support extensions, defined in separate documents. Every extension is identified by a unique ID and will be linked from this section"<sup>\[1\]</sup>.
 The above was a quote from the Homie Convention to illustrate the usage of the [Attribution](#Attribution) section.
 
+## Homie Version
+This extension supports Homie `3.0.1` and `4.x`.
+
 ## Extension Identifier
 The ID of this extension is `org.example.our-feature`.
-
-## Homie Version
-This extension supports Homie `3.0.1` and `4.0`.
+Therefore the **$extensions entry** is `org.example.our-feature:x.x.x:[3.0.1;4.x]`.
 
 ## Extension Datatypes
 This extension defines one new datatype.
@@ -38,29 +39,7 @@ This extension defines one new datatype.
 
 ### Device Attributes
 
-This extension defines no direct device attributes.
-
-#### Nested Device Attributes
-
-This extension defines one nested device attribute.
-
-##### $org.example.our-feature
-
-The **$org.example.our-feature** nesting attribute is **required**.
-
-It defines **no optional** attributes and the following **required** nested attributes:
-
-| Topic                                    | Description                                                             | Payload type                            |
-|------------------------------------------|-------------------------------------------------------------------------|-----------------------------------------|
-| $org.example.our-feature/$version        | The version of this extension                                           | String with constant value: "x.x.x"     |
-| $org.example.our-feature/$homie-versions | The Homie versions this extension supports, separated by a comma (`,`)  | String with constant value: "3.0.1,4.0" |
-
-**Examples**
-Assuming the base topic is *homie* and device ID is *super-car* then:
-```java
-homie/super-car/$org.example.our-feature/$version → "x.x.x"
-homie/super-car/$org.example.our-feature/$homie-versions → "3.0.1,4.0"
-```
+This extension defines no device attributes.
 
 ### Node Attributes
 This extension defines no direct node attributes.
