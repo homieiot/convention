@@ -58,10 +58,10 @@ For each element in the `$mainkey-ids` list, two nested attributes are **require
 **Examples**
 With respect to the previous example:
 ```java
-homie/super-car/engine/temperature/$meta/alexa/$key → "HomeKit"
-homie/super-car/engine/temperature/$meta/alexa/$value → "Fan.v2"
-homie/super-car/engine/temperature/$meta/homekit/$key → "Alexa"
-homie/super-car/engine/temperature/$meta/homekit/$value → "Fan"
+homie/super-car/engine/temperature/$meta/homekit/$key → "HomeKit"
+homie/super-car/engine/temperature/$meta/homekit/$value → "Fan.v2"
+homie/super-car/engine/temperature/$meta/alexa/$key → "Alexa"
+homie/super-car/engine/temperature/$meta/alexa/$value → "Fan"
 ```
 
 Notice that in this example, the *mainkey ids* are *alexa* and *homekit*, but the actual key names are *Alexa* and *HomeKit*.
