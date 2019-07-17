@@ -8,7 +8,7 @@ License: **<!--LICENSE-->[CCA 4.0](https://homieiot.github.io/license)<!--LICENS
 ## Abstract
 This extension defines how to add metadata and tags to devices, nodes and properties.
 
-Tags are simple annotations that every device, node oder property can have.
+Tags are simple annotations that every device, node or property can have.
 Metadata on the other hand are more complex. They allow the definition of multiple *mainkeys* and *mainvalues* for each device, node or property.
 Each main-key-value-pair may have nested sub-key-value-pairs.
 Having metadata might be useful for Homie controllers.
@@ -58,10 +58,10 @@ For each element in the `$mainkey-ids` list, two nested attributes are **require
 **Examples**
 With respect to the previous example:
 ```java
-homie/super-car/engine/temperature/$meta/0/$key → "HomeKit"
-homie/super-car/engine/temperature/$meta/0/$value → "Fan.v2"
-homie/super-car/engine/temperature/$meta/1/$key → "Alexa"
-homie/super-car/engine/temperature/$meta/1/$value → "Fan"
+homie/super-car/engine/temperature/$meta/homekit/$key → "HomeKit"
+homie/super-car/engine/temperature/$meta/homekit/$value → "Fan.v2"
+homie/super-car/engine/temperature/$meta/alexa/$key → "Alexa"
+homie/super-car/engine/temperature/$meta/alexa/$value → "Fan"
 ```
 
 Notice that in this example, the *mainkey ids* are *alexa* and *homekit*, but the actual key names are *Alexa* and *HomeKit*.
