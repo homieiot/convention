@@ -13,7 +13,7 @@ Newer versions on the other hand, do not specify them.
 If a device of a newer Homie version implements this extension, the above mentioned attributes are backwards-compatible to older Homie versions.
 Respectively, these attributes of an older device can be made Homie `4.0` compliant, by simply advertising this extension as implemented.
 By doing this, these legacy attribute can be kept, and the device doesn't have to be altered much.
-In addition to this extension, a second extension, [Legacy Stats]() exists.
+In addition to this extension, a second extension, [Legacy Stats](https://github.com/homieiot/convention/blob/develop/extensions/documents/homie_legacy_stats_extension.md) exists.
 If this extension is implemented, too, not only the firmware attributes are backwards-compatible, but the whole device.
 
 ## Homie Version
