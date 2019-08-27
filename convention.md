@@ -141,7 +141,7 @@ For example, a device with an ID of `super-car` that comprises of a `wheels`, `e
 ```java
 homie/super-car/$homie → "2.1.0"
 homie/super-car/$name → "Super car"
-homie/super-car/$nodes → "wheels,engine,lights[]"
+homie/super-car/$nodes → "wheels,engine,lights"
 homie/super-car/$implementation → "esp8266"
 homie/super-car/$state → "ready"
 ```
