@@ -13,7 +13,7 @@ Homie devices will publish a last-updated timestamp along with any property valu
 This extension supports Homie `3.0.1` and `4.x`.
 
 ## Extension Identifier
-The ID of this extension is `name.berger.name.last-updated`.
+The ID of this extension is `name.berger.max.last-updated`.
 Therefore the **$extensions entry** is `name.berger.max.last-updated:1.0.0:[3.0.1;4.x]`.
 
 ## Extension Datatypes
