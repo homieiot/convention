@@ -45,7 +45,7 @@ If its used, it **must** follow the description below:
 
 | Topic                                 | Description                                       | Payload type                       |
 |---------------------------------------|---------------------------------------------------|------------------------------------|
-| $last-updated        | Timestamp when the data was last updated from the backend / sensor              | integer: unix timestamp in UTC (seconds since 1/1/70) OR 0 for unknown |
+| $last-updated        | Timestamp when the property value was last updated by the Homie device | integer: seconds that have passed since the Unix epoch (00:00:00 UTC on 1 January 1970) OR 0 for unknown |
 
 Device usage:
 * The $last-update **must** always be published immediately before a value update.
