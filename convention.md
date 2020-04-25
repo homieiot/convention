@@ -152,7 +152,8 @@ The `$state` device attribute represents the current state of the device.
 There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
-This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
+This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online.
+A device may fall back into this state to do some reconfiguration.
 * **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate. This implies that the value of every retained property must have been published during initialization. A Homie Controller can assume default values for all optional topics.
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
@@ -162,6 +163,12 @@ You have to send this message before sleeping.
 You must define this message as LWT.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
+
+The following MQTT topics must remain unchanged when a device is in `ready`, `sleeping` or `alert` state:
+
+* Any device attributes except `$name` and `$state`
+* The `$properties` attribute of any node
+* Any attribute of any property except `$name`
 
 ### Nodes
 
