@@ -331,3 +331,28 @@ For example, an organization `example.org` wanting to add a feature `our-feature
 Every extension must be published using a license.
 The license can be chosen freely, even proprietary licenses are possible.
 The recommended license is the [CCA 4.0](https://homieiot.github.io/license), since this is the license Homie itself uses.
+
+## Implementation notes
+
+### Device initialization
+
+Some devices require knowledge of their settable retained properties to function properly.
+The homie convention does not specify how to initialize/recover them e.g. after a power cycle.
+A few common approaches are:
+
+* A device can simply load default values from some configuration file.
+* A device can restore its previous state from some local storage. This is the recommended way.
+* A device may try to restore its state using MQTT. This can be done by subcribing to the respective channels.
+An alternative way is to recover the state from other MQTT channels that are external to the Homie specification.
+This is not a recommended approach tough, because retained messages are only sent by the broker in response to a new subscription.
+So if a device doesn't reconnect with a clean session, then the retained messages won't be resent.
+* If a property is not critical for correct function, there is no need to recover it.
+
+### Device reconfiguration
+
+If a device wishes to modify any of its nodes or properties, it can
+
+* disconnect and reconnect with other values, or
+* set `$state=init` and then modify any of the attributes.
+
+Devices can remove old properties and nodes by publishing a zero-length payload on the respective topics.
