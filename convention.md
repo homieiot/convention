@@ -211,6 +211,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * Properties can be **retained**.
   A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
+  Non-retained properties must be sent with a QoS of **Exactly once (2)** (this applies for both the value and the `/set`-command, but not for any of the attributes).
 
 A combination of those flags compiles into this list:
 
