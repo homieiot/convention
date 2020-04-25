@@ -68,7 +68,7 @@ The special character `$` is used and reserved for Homie *attributes*.
 
 ### QoS and retained messages
 
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 ### Last will
