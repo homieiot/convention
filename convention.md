@@ -64,7 +64,11 @@ The special character `$` is used and reserved for Homie *attributes*.
 - Payloads for type "rgb" contains 3 comma separated values of numbers with a valid range between 0 and 255. e.g. 100,100,100
 - Payloads for type "hsv" contains 3 comma separated values of numbers. The first number has a range of 0 to 360, the second and third numbers have a range of 0 to 100.  e.g. 300,50,75
 - An empty string ("") is not a valid payload
- 
+
+#### DateTime
+
+- DateTime payloads must use the ISO 8601 format. 
+- An empty string ("") is not a valid payload
 
 ### QoS and retained messages
 
