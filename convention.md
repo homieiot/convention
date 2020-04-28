@@ -157,7 +157,7 @@ There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate. A Homie Controller can assume default values for all optional topics.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages for describing the device attributes, nodes and properties. The device has subscribed to all appropriate set topics and is ready to receive messages. 
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
