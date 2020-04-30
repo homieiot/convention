@@ -10,7 +10,7 @@ Homie communicates through [MQTT](http://mqtt.org) and is hence based on the bas
 ### Topic IDs
 
 An MQTT topic consists of one or more topic levels, separated by the slash character (`/`).
-A topic level ID MAY contain lowercase letters from `a` to `z`, numbers from `0` to `9` as well as the hyphen character (`-`).
+A topic level ID MAY ONLY contain lowercase letters from `a` to `z`, numbers from `0` to `9` as well as the hyphen character (`-`).
 
 A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
@@ -64,7 +64,11 @@ The special character `$` is used and reserved for Homie *attributes*.
 - Payloads for type "rgb" contains 3 comma separated values of numbers with a valid range between 0 and 255. e.g. 100,100,100
 - Payloads for type "hsv" contains 3 comma separated values of numbers. The first number has a range of 0 to 360, the second and third numbers have a range of 0 to 100.  e.g. 300,50,75
 - An empty string ("") is not a valid payload
- 
+
+#### DateTime
+
+- DateTime payloads must use the ISO 8601 format. 
+- An empty string ("") is not a valid payload
 
 ### QoS and retained messages
 
@@ -152,9 +156,9 @@ The `$state` device attribute represents the current state of the device.
 There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
-This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online.
+This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
 A device may fall back into this state to do some reconfiguration.
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages and is ready to operate. This implies that the value of every retained property must have been published during initialization. A Homie Controller can assume default values for all optional topics.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages for describing the device attributes, nodes, properties and their values. The device has subscribed to all appropriate `/set` topics and is ready to receive messages. 
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
