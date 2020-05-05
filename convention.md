@@ -314,11 +314,11 @@ In response the device will turn on the light and upon success update its `power
 homie/kitchen-light/light/power → "true"
 ```
 
-## Broadcast Channel
+## Broadcast Topic
 
-Homie defines a broadcast channel, so a controller is able to broadcast a message to all Homie devices:
+Homie defines a broadcast topic, so a controller is able to broadcast a message to all Homie devices:
 
-* `homie` / `$broadcast` / **`level`**: `level` is an arbitrary broadcast identifier.
+* `homie` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels.
 It must adhere to the [ID format](#topic-ids).
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload.
@@ -327,6 +327,7 @@ In our case, every buzzer of your home automation system would start buzzing.
 
 ```java
 homie/$broadcast/alert ← "Intruder detected"
+homie/$broadcast/security/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
