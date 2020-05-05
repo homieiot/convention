@@ -73,8 +73,20 @@ The special character `$` is used and reserved for Homie *attributes*.
 
 #### DateTime
 
-- DateTime payloads must use the ISO 8601 format. 
+- DateTime payloads must use the ISO [8601 format](https://en.wikipedia.org/wiki/ISO_8601). 
 - An empty string ("") is not a valid payload
+
+#### Duration
+
+- Duration payloads must use the [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations)
+- The format is PTHHMMSSS, where:
+P: Required and indicates a duration.
+T: Required and indicates a time.
+H: Indicates hour and is preceded by the number of hours, if hours are specified.
+M: Indicates minutes, and is preceded by the number of minutes, if minutes are specified.
+S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
+- An empty string ("") is not a valid payload
+
 
 ### QoS and retained messages
 
