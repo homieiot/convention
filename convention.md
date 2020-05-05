@@ -348,9 +348,8 @@ A few common approaches are:
 * A device can simply load default values from some configuration file.
 * A device can restore its previous state from some local storage. This is the recommended way.
 * A device may try to restore its state using MQTT. This can be done by subcribing to the respective channels.
-An alternative way is to recover the state from other MQTT channels that are external to the Homie specification.
-This is not a recommended approach though, because retained messages are only sent by the broker in response to a new subscription.
-So if a device doesn't reconnect with a clean session, then the retained messages won't be resent.
+  The controller could set all properties of a device once it becomes `ready`.
+  An alternative way is to recover the state from other MQTT channels that are external to the Homie specification.
 * If a property is not critical for correct function, there is no need to recover it.
 
 ### Device reconfiguration
