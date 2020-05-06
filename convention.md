@@ -90,7 +90,7 @@ S: Indicates seconds, preceded by the number of seconds, if seconds are specifie
 
 ### QoS and retained messages
 
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **QoS 1**.
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
 All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 ### Last will
@@ -175,7 +175,8 @@ There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker, has sent all Homie messages for describing the device attributes, nodes and properties. The device has subscribed to all appropriate set topics and is ready to receive messages. 
+A device may fall back into this state to do some reconfiguration.
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages for describing the device attributes, nodes, properties and their values. The device has subscribed to all appropriate `/set` topics and is ready to receive messages. 
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
@@ -184,6 +185,12 @@ You have to send this message before sleeping.
 You must define this message as LWT.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
+
+The following MQTT topics must remain unchanged when a device is in `ready`, `sleeping` or `alert` state:
+
+* Any device attributes except `$name` and `$state`
+* The `$properties` attribute of any node
+* Any attribute of any property except `$name`
 
 ### Nodes
 
@@ -226,6 +233,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * Properties can be **retained**.
   A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
+  Non-retained properties should be `/set` with a QoS of **At most once (0)** to ensure that events don't arrive late or multiple times.
 
 A combination of those flags compiles into this list:
 
@@ -347,3 +355,27 @@ For example, an organization `example.org` wanting to add a feature `our-feature
 Every extension must be published using a license.
 The license can be chosen freely, even proprietary licenses are possible.
 The recommended license is the [CCA 4.0](https://homieiot.github.io/license), since this is the license Homie itself uses.
+
+## Implementation notes
+
+### Device initialization
+
+Some devices require knowledge of their settable retained properties to function properly.
+The homie convention does not specify how to initialize/recover them e.g. after a power cycle.
+A few common approaches are:
+
+* A device can simply load default values from some configuration file.
+* A device can restore its previous state from some local storage. This is the recommended way.
+* A device may try to restore its state using MQTT. This can be done by subcribing to the respective channels.
+  The controller could set all properties of a device once it becomes `ready`.
+  An alternative way is to recover the state from other MQTT channels that are external to the Homie specification.
+* If a property is not critical for correct function, there is no need to recover it.
+
+### Device reconfiguration
+
+If a device wishes to modify any of its nodes or properties, it can
+
+* disconnect and reconnect with other values, or
+* set `$state=init` and then modify any of the attributes.
+
+Devices can remove old properties and nodes by publishing a zero-length payload on the respective topics.
