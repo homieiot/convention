@@ -252,7 +252,7 @@ The following attributes are required:
 | Topic     | Description                                          | Payload type                                |
 |-----------|------------------------------------------------------|---------------------------------------------|
 | $name     | Friendly name of the property.                       | String                                  |
-| $datatype | The data type. See [Payloads](#payloads).            | Enum: \[integer, float, boolean,string, enum, color\] |
+| $datatype | The data type. See [Payloads](#payload).            | Enum: \[integer, float, boolean,string, enum, color\] |
 
 The following attributes are optional:
 
