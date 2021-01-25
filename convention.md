@@ -36,7 +36,7 @@ The special character `$` is used and reserved for Homie *attributes*.
 #### Float
 
 - Float types are UTF-8 encoded string literal representations of 64-bit signed floating point numbers
-- Floats range from 2<sup>-1074</sup> to (2-2<sup>-52</sup>)&ast;2<sup>1023</sup>
+- Floats range from +/-(2^-1074) to +/-((2 - 2^-52) * 2^1023)
 - The payload may only contain whole numbers, the negation character "-", the exponent character "e" or "E" and the decimal separator ".", no other characters, including spaces (" ") are permitted 
 - The dot character (".") is the decimal separator (used if necessary) and may only have a single instance present in the payload
 - Representations of numeric concepts such as "NaN" (Not a Number) and "Infinity" are not a valid payload
