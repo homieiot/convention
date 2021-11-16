@@ -254,12 +254,13 @@ The following attributes are required:
 |-----------|------------------------------------------------------|---------------------------------------------|
 | $name     | Friendly name of the property.                       | String                                  |
 | $datatype | The data type. See [Payloads](#payload).            | Enum: \[integer, float, boolean,string, enum, color, datetime, duration\] |
+| $format   | Specifies restrictions or options for the given data type, required for color and enum types) | See below                                 |
 
 The following attributes are optional:
 
 | Topic     | Description                                          |  Payload type                                |
 |-----------|------------------------------------------------------|---------------------------------------------|
-| $format   | Specifies restrictions or options for the given data type | See below                                 |
+| $format   | Specifies restrictions or options for the given data type (**required** for color and enum types) | See below                                 |
 | $settable     | Settable (<code>true</code>). Default is read-only (<code>false</code>)  | Boolean     |
 | $retained     | Non-retained (<code>false</code>). Default is Retained (<code>true</code>).  | Boolean     |
 | $unit     | Optional unit of this property. See list below.  | String     |
