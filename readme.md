@@ -23,6 +23,8 @@ Find the convention here: https://homieiot.github.io
 
 ## Guiding design principles
 
+These principles should be taken into account when proposing changes to the conventuion.
+
 ### Separation of concerns
 Many of todays HA applications, both commercial and free, take the approach of an all-in-one package (monolith). This creates closed eco systems and a duplication of work. The biggest challeng in IoT is connecting devices by writing driver-software to integrate them (because of the ever growing number of connected devices available). Each of the available monolithical HA applications duplicates this effort because of their integrated, tightly-coupled designs.
 
@@ -42,6 +44,10 @@ It should have a low entry barrier to use. The only central component required i
 
 ### Easy for developers
 It should have a low entry barrier for developers. Set up an MQTT server and grab a Homie library and start coding.
+
+### Resource constraints
+Devices with very limited resources should still be able to use the Homie Convention (provided they are MQTT capable).
+Controllers are assumed to have more resources available, to be able to build multiple device representations and control many devices simultaneously.
 
 ### No control logic
 Homie does specify control logic for devices. It specifies the means by wich other devices or controllers can interact but does not have any logic by itself. Logic engines (if-this then-that) are separate and can be build on top of the convention.
