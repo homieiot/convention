@@ -15,6 +15,17 @@ A topic level ID MAY ONLY contain lowercase letters from `a` to `z`, numbers fro
 A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
 
+### QoS and retained messages
+
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
+All messages MUST be sent as **retained**, UNLESS stated otherwise.
+
+### Last will
+
+MQTT only allows one last will message per connection.
+Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
+As a consequence a new MQTT connection to the broker is required per published device.
+
 ### Payload
 
 - Every MQTT message payload MUST be sent as a UTF-8 encoded string
@@ -87,18 +98,6 @@ M: Indicates minutes, and is preceded by the number of minutes, if minutes are s
 S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
 - An empty string ("") is not a valid payload
 
-
-### QoS and retained messages
-
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
-All messages MUST be sent as **retained**, UNLESS stated otherwise.
-
-### Last will
-
-MQTT only allows one last will message per connection.
-Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
-As a consequence a new MQTT connection to the broker is required per published device.
-
 ## Base Topic
 
 The root topic in this document is `homie/`.
@@ -145,29 +144,38 @@ Each device must have a unique device ID which adhere to the [ID format](#topic-
 The following device attributes are mandatory and MUST be sent, even if it is just an empty string (note that `$homie` and `$state` can never be empty).
 
 | Topic       |                                                    Description            |
-|-------------|--------------------------------------------------------------------------:|
-| $homie      | The implemented Homie convention version                                  |
-| $name       | Friendly name of the device                                               |
+|-------------|--------------------------------------------------------------------------|
+| $description| The description document (JSON), describing the device, nodes and properties of this device. |
 | $state      | See [Device Lifecycle](#device-lifecycle)                                   |
-| $nodes      | [Nodes](#nodes) the device exposes, separated by `,` for multiple ones.   |
-| $extensions | Supported extensions, separated by `,` for multiple ones.                 |
 
-Optional topics include:
+The JSON description document has the following format;
 
-| Topic           | Description                   |
-|-----------------|-------------------------------|
-| $implementation | An identifier for the Homie implementation (example "esp8266")                     |
+|Property   | Type         | Required | Nullable | Description |
+|-----------|--------------|----------|----------|-------------|
+| homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
+| nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
+| name      |string        | yes      | no       | Friendly name of the device |
+| parent    |string        | no       | no       | [ID](#topic-ids) of the parent device, if any. |
+| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
+| extensions|array-strings | no       | no       | Array of supported extensions. Should be omitted if empty. |
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
-
 ```java
-homie/super-car/$homie → "4.0.0"
-homie/super-car/$name → "Super car"
-homie/super-car/$extensions → ""
-homie/super-car/$nodes → "wheels,engine,lights"
-homie/super-car/$implementation → "esp8266"
 homie/super-car/$state → "ready"
+homie/super-car/$description → following JSON document;
 ```
+```json
+      {
+        "homie": "5.0",
+        "name": "Super car",
+        "nodes": [ 
+          { "id": "wheels", ... },
+          { "id": "engine", ... },
+          { "id": "lights", ... }
+        ]
+      }
+```
+
 
 #### Device Lifecycle
 
@@ -200,22 +208,30 @@ Each node must have a unique node ID on a per-device basis which adhere to the [
 
 #### Node Attributes
 
-* `homie` / `device ID` / `node ID` / **`$node-attribute`**:
+There are no node properties in MQTT topics for this level.
 
-All listed attributes are **required**. A node attribute MUST be one of these:
+The Node object itself is described in the `homie` / `device ID` / `$description` JSON document. The Node object has the following fields:
 
-| Topic       | Description                                                                               |
-|-------------|-------------------------------------------------------------------------------------------|
-| $name       | Friendly name of the Node                                                                 |
-| $type       | Type of the node                                                                          |
-| $properties | Exposed properties, separated by `,` for multiple ones.                                   |
+|Property   | Type         | Required | Nullable | Description |
+|-----------|--------------|----------|----------|-------------|
+| id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
+| name      |string        | yes      | no       | Friendly name of the Node. |
+| type      |string        | yes      | no       | Type of the Node. |
+| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
 
-For example, our `engine` node would send:
+For example, our `engine` node would look like this:
 
-```java
-homie/super-car/engine/$name → "Car engine"
-homie/super-car/engine/$type → "V8"
-homie/super-car/engine/$properties → "speed,direction,temperature"
+```json
+      {
+        "id": "engine",
+        "name": "Car engine",
+        "type": "V8",
+        "properties": [ 
+          { "id": "speed", ... },
+          { "id": "direction", ... },
+          { "id": "temperature", ... }
+        ]
+      }
 ```
 
 ### Properties
@@ -238,41 +254,44 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 A combination of those flags compiles into this list:
 
-* **retained + non-settable**: The node publishes a property state (temperature sensor)
-* **retained + settable**: The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
-* **non-retained + non-settable**: The node publishes momentary events (door bell pressed)
-* **non-retained + settable**: The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
+| retained | settable | description |
+|----------|----------|-------------|
+| no       | no       | The node publishes momentary events (door bell pressed)
+| yes      | no       | The node publishes a property state (temperature sensor)
+| no       | yes      | The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
+| yes      | yes      | The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
 
 
 #### Property Attributes
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`$property-attribute`**:
+There are no properties in MQTT topics for this level.
 
-The following attributes are required:
+The Property object itself is described in the `homie` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
-| Topic     | Description                                          | Payload type                                |
-|-----------|------------------------------------------------------|---------------------------------------------|
-| $name     | Friendly name of the property.                       | String                                  |
-| $datatype | The data type. See [Payloads](#payload).            | Enum: \[integer, float, boolean,string, enum, color, datetime, duration\] |
-| $format   | Specifies restrictions or options for the given data type, required for color and enum types) | See below                                 |
+|Property   | Type         | Required | Default | Description |
+|-----------|--------------|----------|----------|-------------|
+| id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
+| name      | string       | yes      |          | Friendly name of the Property. |
+| datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
+| format    | string       | no       |          | Specifies restrictions or options for the given data type, See below. |
+| settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
+| retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
+| unit      | string       | no       |          | Unit of this property. See list below. |
 
-The following attributes are optional:
 
-| Topic     | Description                                          |  Payload type                                |
-|-----------|------------------------------------------------------|---------------------------------------------|
-| $format   | Specifies restrictions or options for the given data type (**required** for color and enum types) | See below                                 |
-| $settable     | Settable (<code>true</code>). Default is read-only (<code>false</code>)  | Boolean     |
-| $retained     | Non-retained (<code>false</code>). Default is Retained (<code>true</code>).  | Boolean     |
-| $unit     | Optional unit of this property. See list below.  | String     |
+For example, our `temperature` property would look like this in the device/node description document:
 
-For example, our `temperature` property would send:
-
+```json
+      {
+        "id": "temperature",
+        "name": "Engine temperature",
+        "unit": "°C",
+        "datatype": "float",
+        "format": "-20:120"
+      }
+```
+And the following MQTT topic with the reported property value:
 ```java
-homie/super-car/engine/temperature/$name → "Engine temperature"
-homie/super-car/engine/temperature/$settable → "false"
-homie/super-car/engine/temperature/$unit → "°C"
-homie/super-car/engine/temperature/$datatype → "float"
-homie/super-car/engine/temperature/$format → "-20:120"
 homie/super-car/engine/temperature → "21.5"
 ```
 
