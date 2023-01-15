@@ -273,7 +273,7 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 | id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
 | name      | string       | yes      |          | Friendly name of the Property. |
 | datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
-| format    | string       | no       |          | Specifies restrictions or options for the given data type, See below. |
+| format    | string       | yes/no   |          | Specifies restrictions or options for the given data type, See below. Required for `"color"` and `"enum"` datatypes. |
 | settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
 | retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
 | unit      | string       | no       |          | Unit of this property. See list below. |
