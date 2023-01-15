@@ -154,11 +154,11 @@ The JSON description document has the following format;
 |Property   | Type         | Required | Nullable | Description |
 |-----------|--------------|----------|----------|-------------|
 | homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
-| nodes     |array-objects | no       | no       | [Nodes](#nodes) the device exposes. |
+| nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
 | name      |string        | yes      | no       | Friendly name of the device |
 | parent    |string        | no       | no       | [ID](#topic-ids) of the parent device, if any. |
-| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices |
-| extensions|array-strings | no       | no       | Supported extensions. |
+| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
+| extensions|array-strings | no       | no       | Array of supported extensions. Should be omitted if empty. |
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
 ```java
@@ -172,7 +172,7 @@ homie/super-car/$description → following JSON document;
         "nodes": [ 
           { "id": "wheels", ... },
           { "id": "engine", ... },
-          { "id": "ligts", ... }
+          { "id": "lights", ... }
         ]
       }
 ```
@@ -218,7 +218,7 @@ The Node object itself is described in the `homie` / `device ID` / `$description
 | id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
 | name      |string        | yes      | no       | Friendly name of the Node. |
 | type      |string        | yes      | no       | Type of the Node. |
-| properties|array-objects | no       | no       | [Properties](#properties) the Node exposes. |
+| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
 
 For example, our `engine` node would look like this:
 
@@ -271,12 +271,12 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 
 |Property   | Type         | Required | Default | Description |
 |-----------|--------------|----------|----------|-------------|
-| id        |string        | yes      |          | [ID](#topic-ids) of the Property. |
-| name      |string        | yes      |          | Friendly name of the Property. |
-| datatype  |string        | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
-| format    |string        | no       |          | Specifies restrictions or options for the given data type, See below. |
-| settable  | boolean      | no       | `false`  | Whether the Property is settable. |
-| retained  | boolean      | no       | `true`   | Whether the Property is retained. |
+| id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
+| name      | string       | yes      |          | Friendly name of the Property. |
+| datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
+| format    | string       | no       |          | Specifies restrictions or options for the given data type, See below. |
+| settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
+| retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
 | unit      | string       | no       |          | Unit of this property. See list below. |
 
 
@@ -286,7 +286,6 @@ For example, our `temperature` property would look like this in the device/node 
       {
         "id": "temperature",
         "name": "Engine temperature",
-        "settable": false,
         "unit": "°C",
         "datatype": "float",
         "format": "-20:120"
