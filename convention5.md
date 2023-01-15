@@ -15,6 +15,17 @@ A topic level ID MAY ONLY contain lowercase letters from `a` to `z`, numbers fro
 A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
 
+### QoS and retained messages
+
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
+All messages MUST be sent as **retained**, UNLESS stated otherwise.
+
+### Last will
+
+MQTT only allows one last will message per connection.
+Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
+As a consequence a new MQTT connection to the broker is required per published device.
+
 ### Payload
 
 - Every MQTT message payload MUST be sent as a UTF-8 encoded string
@@ -86,18 +97,6 @@ H: Indicates hour and is preceded by the number of hours, if hours are specified
 M: Indicates minutes, and is preceded by the number of minutes, if minutes are specified.
 S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
 - An empty string ("") is not a valid payload
-
-
-### QoS and retained messages
-
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
-All messages MUST be sent as **retained**, UNLESS stated otherwise.
-
-### Last will
-
-MQTT only allows one last will message per connection.
-Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
-As a consequence a new MQTT connection to the broker is required per published device.
 
 ## Base Topic
 
