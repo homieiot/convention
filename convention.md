@@ -216,7 +216,6 @@ The Node object itself is described in the `homie` / `device ID` / `$description
 |-----------|--------------|----------|----------|-------------|
 | id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
 | name      |string        | yes      | no       | Friendly name of the Node. |
-| type      |string        | yes      | no       | Type of the Node. |
 | properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
 
 For example, our `engine` node would look like this:
@@ -225,7 +224,6 @@ For example, our `engine` node would look like this:
       {
         "id": "engine",
         "name": "Car engine",
-        "type": "V8",
         "properties": [ 
           { "id": "speed", ... },
           { "id": "direction", ... },
