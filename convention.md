@@ -54,12 +54,6 @@ As a consequence a new MQTT connection to the broker is required per published d
 - A string with just a negation sign ("-") is not a valid payload
 - An empty string ("") is not a valid payload
  
-#### Percent
-
-- Percent properties are set when the `$unit` attribute is set to `%`
-- Percentage values maybe [Integer](#integer) or [Float](#float)
-- Percentage values are not restricted to 0-100
-
 #### Boolean
 
 - Booleans must be converted to the string literals "true" or "false"
