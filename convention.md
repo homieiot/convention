@@ -24,7 +24,7 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
 MQTT only allows one last will message per connection, but since a device can have children, the LWT message MUST be set on the
-root device (the device at the root of parent-child tree).
+root device (the device at the root of the parent-child tree).
 
 ### Payload
 
@@ -159,8 +159,8 @@ The JSON description document has the following format;
 | nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
 | name      |string        | yes      | no       | Friendly name of the device |
 | children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
-| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if any `children` are given. |
-| parent    |string        | no       | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. |
+| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is not the root device, must be omitted otherwise. |
+| parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device, should be omitted otherwise. |
 | extensions|array-strings | no       | no       | Array of supported extensions. Should be omitted if empty. |
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
