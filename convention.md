@@ -138,7 +138,7 @@ Each device must have a unique device ID which adhere to the [ID format](#topic-
 
 * `homie` / `device ID` / **`$device-attribute`**:
 
-The following device attributes are mandatory and MUST be sent, even if it is just an empty string (note that `$homie` and `$state` can never be empty).
+The following device attributes are mandatory and MUST be sent.
 
 | Topic       |                                                    Description            |
 |-------------|--------------------------------------------------------------------------|
