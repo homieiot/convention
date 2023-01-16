@@ -22,9 +22,9 @@ All messages MUST be sent as **retained**, UNLESS stated otherwise.
 
 ### Last will
 
-MQTT only allows one last will message per connection.
 Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
-As a consequence a new MQTT connection to the broker is required per published device.
+MQTT only allows one last will message per connection, but since a device can have children, the LWT message MUST be set on the
+root device (the device at the root of the parent-child tree).
 
 ### Payload
 
@@ -106,6 +106,9 @@ Controllers are free to restrict discovery to a specific root topic, configurabl
 **Devices:**
 An instance of a physical piece of hardware is called a *device*.
 For example, a car, an Arduino/ESP8266 or a coffee machine.
+Within the convention devices can be modelled to have children. For example bridge
+devices; a zwave bridge device (the parent) exposing many child devices (the
+zwave devices). There is no depth limit set on additionally nested children.
 
 **Nodes:**
 A *device* can expose multiple *nodes*.
@@ -149,8 +152,9 @@ The JSON description document has the following format;
 | homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
 | nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
 | name      |string        | yes      | no       | Friendly name of the device |
-| parent    |string        | no       | no       | [ID](#topic-ids) of the parent device, if any. |
 | children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
+| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is not the root device, must be omitted otherwise. |
+| parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device, should be omitted otherwise. |
 | extensions|array-strings | no       | no       | Array of supported extensions. Should be omitted if empty. |
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
@@ -170,10 +174,30 @@ homie/super-car/$description → following JSON document;
       }
 ```
 
+#### Device hierarchy
+
+Devices can be organized in parent-child relationships. These are expressed via the device
+attributes `root`, `parent`, and `children`. In any parent-child tree there is only one
+"root" device, which is the top level device that has no parent, but only children.
+
+Example: a ZWave bridge (`id = "bridge"`), which exposes a ZWave device with a dual-relay (`id = "dualrelay"`),
+which respectively control Light1 (`id = "light1"`) and Light2 (`id = "light2"`). So there are 4 devices in total.
+Then these are the attribute values:
+
+|Attribute  | Zwave bridge   | Relay                | first light | second light |
+|-----------|----------------|----------------------|-------------|--------------|
+| id        | "bridge"       | "dualrelay"          | "light1"    | "light2"     |
+| children  | ["dualrelay"]  | ["light1", "light2"] |             |              |
+| root      |                | "bridge"             | "bridge"    | "bridge"     |
+| parent    |                |                      | "dualrelay" | "dualrelay"  |
+
+To monitor the `state` of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
+Because if the root device looses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
 
 #### Device Lifecycle
 
-The `$state` device attribute represents the current state of the device.
+The `$state` device attribute represents the current state of the device. **Important**: for child devices also the root-device state should be taken into account.
+
 There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
@@ -184,8 +208,8 @@ A device may fall back into this state to do some reconfiguration.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
 You have to send this message before sleeping.
-* **`lost`**: this is the state the device is in when the device has been "badly" disconnected.
-You must define this message as LWT.
+* **`lost`**: this is the state the device is in when the device has been "badly" disconnected. **Important**: If a root-device `$state` is `"lost"` then the state of **every child device in its tree** is also `"lost"`.
+You must define this message as last will (LWT) for root devices.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
 
@@ -265,7 +289,7 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 | id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
 | name      | string       | yes      |          | Friendly name of the Property. |
 | datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
-| format    | string       | yes/no   |          | Specifies restrictions or options for the given data type, See below. Required for `"color"` and `"enum"` datatypes. |
+| format    | string       | yes/no   |          | Specifies restrictions or options for the given data type, See below. **Required** for `"color"` and `"enum"` datatypes. |
 | settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
 | retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
 | unit      | string       | no       |          | Unit of this property. See list below. |
