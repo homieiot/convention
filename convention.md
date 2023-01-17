@@ -107,11 +107,12 @@ S: Indicates seconds, preceded by the number of seconds, if seconds are specifie
 
 ## Base Topic
 
-The root topic in this document is `homie/`.
+The root topic in this document is `"homie/5/"`.
 If this root topic does not suit your needs (in case of, e.g., a public broker or because of branding),
-you can choose another.
+you can change the first segment, but the `"/5/"` segment must be retained. This allows controllers
+to subscribe to only the devices they are compatible with.
 
-Homie controllers must by default perform auto-discovery on the wildcard topic "+/+/$homie".
+Homie 5 controllers must by default perform auto-discovery on the wildcard topic `"+/5/+/$state"`.
 Controllers are free to restrict discovery to a specific root topic, configurable by the user.
 
 ## Topology
@@ -155,8 +156,8 @@ The following device attributes are mandatory and MUST be sent.
 
 | Topic       |                                                    Description            |
 |-------------|--------------------------------------------------------------------------|
-| $description| The description document (JSON), describing the device, nodes and properties of this device. |
-| $state      | See [Device Lifecycle](#device-lifecycle)                                   |
+| $state      | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
+| $description| The description document (JSON), describing the device, nodes and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
 
 The JSON description document has the following format;
 
@@ -172,8 +173,8 @@ The JSON description document has the following format;
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
 ```java
-homie/super-car/$state → "ready"
-homie/super-car/$description → following JSON document;
+homie/5/super-car/$state → "ready"
+homie/5/super-car/$description → following JSON document;
 ```
 ```json
       {
@@ -226,11 +227,6 @@ You must define this message as last will (LWT) for root devices.
 * **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
 
-The following MQTT topics must remain unchanged when a device is in `ready`, `sleeping` or `alert` state:
-
-* Any device attributes except `$name` and `$state`
-* The `$properties` attribute of any node
-* Any attribute of any property except `$name`
 
 ### Nodes
 
@@ -270,7 +266,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
-  homie/super-car/engine/temperature → "21.5"
+  homie/5/super-car/engine/temperature → "21.5"
   ```
   
 * Properties can be **settable**.
@@ -321,7 +317,7 @@ For example, our `temperature` property would look like this in the device/node 
 ```
 And the following MQTT topic with the reported property value:
 ```java
-homie/super-car/engine/temperature → "21.5"
+homie/5/super-car/engine/temperature → "21.5"
 ```
 
 #### Formats
@@ -370,16 +366,16 @@ A Homie controller publishes to the `set` command topic with non-retained messag
 The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
-To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/kitchen-light/light/power/set` for commands:
+To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/set` for commands:
 
 ```java
-homie/kitchen-light/light/power/set ← "true"
+homie/5/kitchen-light/light/power/set ← "true"
 ```
 
 In response the device will turn on the light and upon success update its `power` property state accordingly:
 
 ```java
-homie/kitchen-light/light/power → "true"
+homie/5/kitchen-light/light/power → "true"
 ```
 
 ## Broadcast Topic
@@ -394,8 +390,8 @@ Devices are then free to react or not.
 In our case, every buzzer of your home automation system would start buzzing.
 
 ```java
-homie/$broadcast/alert ← "Intruder detected"
-homie/$broadcast/security/alert ← "Intruder detected"
+homie/5/$broadcast/alert ← "Intruder detected"
+homie/5/$broadcast/security/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
@@ -415,6 +411,32 @@ For example, an organization `example.org` wanting to add a feature `our-feature
 Every extension must be published using a license.
 The license can be chosen freely, even proprietary licenses are possible.
 The recommended license is the [CCA 4.0](https://homieiot.github.io/license), since this is the license Homie itself uses.
+
+## Versioning
+
+Some considerations related to versioning in this specification;
+
+* compatibility is assumed to be major version only, so version 5 for this spec.
+* the base topic includes the major version. This allows controllers to only subscribe to devices they are
+compatible with.
+
+### Backward compatibility
+
+* backward compatibility: a v5 controller controlling a v5 device with a smaller minor version. Eg. a v5.3 
+controller sending commands to a v5.0 device.
+* Controllers should be aware of unsupported features in older major or minor versions they subscribe to, because the spec for that version is known.
+
+### Forward compatibility
+
+* forward comaptibility: a v5 controller controlling a v5 device with a higher minor version. Eg. a v5.0
+controller sending commands to a v5.2 device.
+* Controllers should ignore unknown fields, properties, attributes, etc. within an object (device, node, or property), but keep the object itself.
+* Controllers should ignore the entire object (device, node, or property) if in a known field, property, or attribute an illegal value is encountred. For example;
+  * illegal characters in a topic or name
+  * unknown data type
+  * unknown/illegal format
+  * required element missing
+
 
 ## Implementation notes
 
