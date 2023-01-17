@@ -164,6 +164,7 @@ The JSON description document has the following format;
 |Property   | Type         | Required | Nullable | Description |
 |-----------|--------------|----------|----------|-------------|
 | homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
+| version   | integer      | yes      | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
 | nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
 | name      |string        | yes      | no       | Friendly name of the device |
 | children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
