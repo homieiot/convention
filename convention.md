@@ -311,6 +311,8 @@ And the following MQTT topic with the reported property value:
 homie/super-car/engine/temperature → "21.5"
 ```
 
+#### Formats
+
 Format:
 
 * For `integer` and `float`: Describes a range of payloads e.g. `10:15`
@@ -319,18 +321,23 @@ Format:
   - `rgb` to provide colors in RGB format e.g. `255,255,0` for yellow.
   - `hsv` to provide colors in HSV format e.g. `60,100,100` for yellow.
 
+#### Units
+
 Recommended unit strings:
 
 * `°C`: Degree Celsius
 * `°F`: Degree Fahrenheit
-* `°`: Degree
+* `°`: Degree (UTF8: `U+00B0`, Hex: `0xc2 0xb0`, Dec: `194 176`)
 * `L`: Liter
 * `gal`: Galon
 * `V`: Volts
 * `W`: Watt
+* `kW`: Kilowatt
+* `kWh`: Kilowatt-hour
 * `A`: Ampere
 * `%`: Percent
 * `m`: Meter
+* `m³`: Cubicmeter ('³' is UTF8: `U+00B3`, Hex: `0xc2 0xb3`, Dec: `194 179`)
 * `ft`: Feet
 * `Pa`: Pascal
 * `psi`: PSI
