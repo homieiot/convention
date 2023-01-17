@@ -272,10 +272,10 @@ A combination of those flags compiles into this list:
 
 | retained | settable | description |
 |----------|----------|-------------|
-| no       | no       | The node publishes momentary events (door bell pressed)
+| yes      | yes      | The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
 | yes      | no       | The node publishes a property state (temperature sensor)
 | no       | yes      | The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
-| yes      | yes      | The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
+| no       | no       | The node publishes momentary events (door bell pressed)
 
 
 #### Property Attributes
