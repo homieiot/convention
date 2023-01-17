@@ -70,10 +70,10 @@ root device (the device at the root of the parent-child tree).
 #### Color
 
 - Color payload validity varies depending on the property format definition of either "rgb" or "hsv"
-- Both payload types contain comma separated whole numbers of differing restricted ranges
-- The encoded string may only contain whole numbers and the comma character ",", no other characters are permitted, including spaces (" ")
-- Payloads for type "rgb" contains 3 comma separated values of numbers with a valid range between 0 and 255. e.g. 100,100,100
-- Payloads for type "hsv" contains 3 comma separated values of numbers. The first number has a range of 0 to 360, the second and third numbers have a range of 0 to 100.  e.g. 300,50,75
+- Both payload types contain comma separated numbers of differing restricted ranges. The numbers must conform to the [float](#float) format
+- The encoded string may only contain the [float](#float) numbers and the comma character ",", no other characters are permitted, including spaces (" ")
+- Payloads for type "rgb" contain 3 comma separated values of [floats](#float) with a valid range between 0 and 255 (inclusive). e.g. 100,100,100
+- Payloads for type "hsv" contain 3 comma separated values of [floats](#float). The first number has a range of 0 to 360 (inclusive), the second and third numbers have a range of 0 to 100 (inclusive).  e.g. 300,50,75
 - An empty string ("") is not a valid payload
 
 #### DateTime
@@ -289,10 +289,10 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 | id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
 | name      | string       | yes      |          | Friendly name of the Property. |
 | datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
-| format    | string       | yes/no   |          | Specifies restrictions or options for the given data type, See below. **Required** for `"color"` and `"enum"` datatypes. |
+| format    | string       | see [formats](#formats)   | see [formats](#formats) | Specifies restrictions or options for the given data type. |
 | settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
 | retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
-| unit      | string       | no       |          | Unit of this property. See list below. |
+| unit      | string       | no       |          | Unit of this property. See [units](#units). |
 
 
 For example, our `temperature` property would look like this in the device/node description document:
@@ -313,13 +313,16 @@ homie/super-car/engine/temperature → "21.5"
 
 #### Formats
 
-Format:
+The format attribute specifies restrictions or options for the given data type.
 
-* For `integer` and `float`: Describes a range of payloads e.g. `10:15`
-* For `enum`: `payload,payload,payload` for enumerating all valid payloads.
-* For `color`:
-  - `rgb` to provide colors in RGB format e.g. `255,255,0` for yellow.
-  - `hsv` to provide colors in HSV format e.g. `60,100,100` for yellow.
+| Type         | Required | Default | Description |
+|--------------|----------|----------|-------------|
+| float        | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.|
+| integer      | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10 |
+| enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. If quotes or whitespace are used adjacent of the '`,`' (comma), then they are part of the value. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
+| color        | yes      |          | `rgb` or `hsv`. See the [color type](#integer) for the resulting value formats. |
+| boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represent the `false` value and the second the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
+
 
 #### Units
 
@@ -337,7 +340,7 @@ Recommended unit strings:
 * `A`: Ampere
 * `%`: Percent
 * `m`: Meter
-* `m³`: Cubicmeter ('³' is UTF8: `U+00B3`, Hex: `0xc2 0xb3`, Dec: `194 179`)
+* `m³`: Cubic meter ('³' is UTF8: `U+00B3`, Hex: `0xc2 0xb3`, Dec: `194 179`)
 * `ft`: Feet
 * `Pa`: Pascal
 * `psi`: PSI
