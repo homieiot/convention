@@ -29,14 +29,14 @@ As a consequence a new MQTT connection to the broker is required per published d
 ### Empty string values
 
 MQTT will treat an empty string payload as a "delete" instruction for the topic. Therefor an
-empty string value is represented by a single 0 byte string.
+empty string value is represented by a 1 character string containing a single byte value 1 (Hex: `0x01`, Dec: `1`).
 
 The empty string (passed as an MQTT payload) can only occur in 2 places;
 
 - `homie5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
 - `homie5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
 
-This convention specifies no way to represent an actual value of a single 0 byte. If a device
+This convention specifies no way to represent an actual value of a 1 character string with a single byte 1. If a device
 needs this, then it should provide for an escape mechanism on application level.
 
 ### Payload
