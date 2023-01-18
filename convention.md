@@ -181,6 +181,7 @@ homie/5/super-car/$description → following JSON document;
       {
         "homie": "5.0",
         "name": "Super car",
+        "version": 7,
         "nodes": [ 
           { "id": "wheels", ... },
           { "id": "engine", ... },
