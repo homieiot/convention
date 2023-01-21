@@ -34,7 +34,7 @@ empty string value is represented by a 1 character string containing a single by
 The empty string (passed as an MQTT payload) can only occur in 2 places;
 
 - `homie5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
-- `homie5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
+- `homie5` / `device ID` / `node ID` / `property ID` / `$set`; the topic to set properties (of string types)
 
 This convention specifies no way to represent an actual value of a 1 character string with a single byte 0. If a device
 needs this, then it should provide for an escape mechanism on application level.
@@ -219,7 +219,7 @@ There are 6 different states:
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
 A device may fall back into this state to do some reconfiguration.
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages for describing the device attributes, nodes, properties and their values. The device has subscribed to all appropriate `/set` topics and is ready to receive messages. 
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages for describing the device attributes, nodes, properties and their values. The device has subscribed to all appropriate `/$set` topics and is ready to receive messages. 
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
@@ -241,11 +241,12 @@ There are no node properties in MQTT topics for this level.
 
 The Node object itself is described in the `homie` / `device ID` / `$description` JSON document. The Node object has the following fields:
 
-|Property   | Type         | Required | Nullable | Description |
+|Property   | Type         | Required | Default  | Description |
 |-----------|--------------|----------|----------|-------------|
-| id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
-| name      |string        | yes      | no       | Friendly name of the Node. |
-| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
+| id        |string        | yes      |          | [ID](#topic-ids) of the Node. |
+| name      |string        | yes      |          | Friendly name of the Node. |
+| properties|array-objects | no       |          | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
+| settable  |boolean       | no       | `false`  | Whether the Node is settable. Should be omitted if `false`. See [Node cmmand topic](#node-command-topic) |
 
 For example, our `engine` node would look like this:
 
@@ -259,6 +260,55 @@ For example, our `engine` node would look like this:
           { "id": "temperature", ... }
         ]
       }
+```
+
+#### Node command topic
+
+The Node command topic is used to set multiple property values at once. 
+
+* `homie` / `device ID` / `node ID` / **`$set`**: The device must subscribe to this topic if the Node is **settable**.
+
+This can be used to prevent creating inconsistent states if related properties would be set in the wrong order.
+A Homie controller publishes to the `$set` command topic with non-retained messages only.
+
+The payload set on a Node is a JSON object, where the keys are the Property names, and the values the Property values to set:
+
+* The object must only contain properties that are settable
+* It must at least contain 1 property, but there is no need to include all properties
+* The values for boolean and number (integer and float) types are encoded as their JSON equivalents. Any other type must
+  be encoded as a string
+* JSON Objects, Arrays and Null values are not valid values
+* The values should only be set on the device, if all values can be set, otherwise none should set
+
+To give an example: A `thermostat` device switching from "heating" mode to "cooling" mode:
+
+```java
+// initial state
+homie/5/thermostat/setpoint/value = 10
+homie/5/thermostat/setpoint/minimum = 10
+homie/5/thermostat/setpoint/maximum = 23
+homie/5/thermostat/heating/enabled = true
+homie/5/thermostat/cooling/enabled = false
+
+// Node $set (these might cause issues if set in the wrong order)
+homie/5/thermostat/setpoint/$set ← {
+  "value": 25,
+  "minimum": 22,
+  "maximum": 30,
+}
+// Property $set
+homie/5/thermostat/heating/enabled/$set ← false
+homie/5/thermostat/cooling/enabled/$set ← true
+```
+
+In response the device will update its properties accordingly:
+
+```java
+homie/5/thermostat/setpoint/value → 25
+homie/5/thermostat/setpoint/minimum → 22
+homie/5/thermostat/setpoint/maximum → 30
+homie/5/thermostat/heating/enabled → false
+homie/5/thermostat/cooling/enabled → true
 ```
 
 ### Properties
@@ -277,7 +327,7 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * Properties can be **retained**.
   A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
-  Non-retained properties should be `/set` with a QoS of **At most once (0)** to ensure that events don't arrive late or multiple times.
+  Non-retained properties should be `/$set` with a QoS of **At most once (0)** to ensure that events don't arrive late or multiple times.
 
 A combination of those flags compiles into this list:
 
@@ -361,17 +411,17 @@ You are not limited to the recommended values, although they are the only well k
 
 #### Property command topic
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
+* `homie` / `device ID` / `node ID` / `property ID` / **`$set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
 
-A Homie controller publishes to the `set` command topic with non-retained messages only.
+A Homie controller publishes to the `$set` command topic with non-retained messages only.
 
 The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
-To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/set` for commands:
+To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/$set` for commands:
 
 ```java
-homie/5/kitchen-light/light/power/set ← "true"
+homie/5/kitchen-light/light/power/$set ← "true"
 ```
 
 In response the device will turn on the light and upon success update its `power` property state accordingly:
