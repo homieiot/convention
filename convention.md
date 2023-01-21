@@ -17,12 +17,14 @@ The special character `$` is used and reserved for Homie *attributes*.
 
 ### QoS and retained messages
 
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (QoS 1)**.
+The recommended QoS level is **Exactly once (QoS 2)** (except for non-retained, see below).
 
 * All messages MUST be sent as **retained**, UNLESS stated otherwise.
-* Devices publishing values for their non-retained properties must use **non-retained** messages only.
 * Controllers setting values for device properties publish to the Property `set` topic with **non-retained** messages only.
-* Controllers setting values for Non-retained device properties should publish to the Property `/set` topic with a QoS of **At most once (QoS 0)** to ensure that events don't arrive late or multiple times.
+* Controllers setting values for **non-retained** device properties should publish to the Property `/set` topic with a QoS of **At most once (QoS 0)**.
+* Devices publishing values for their **non-retained** properties must use **non-retained** messages, with a QoS of **At most once (QoS 0)**.
+
+For QoS details see [the explanation](#qos-choices-explained).
 
 ### Last will
 
@@ -467,3 +469,14 @@ If a device wishes to modify any of its nodes or properties, it can
 * set `$state=init` and then modify any of the attributes.
 
 Devices can remove old properties and nodes by publishing a zero-length payload on the respective topics.
+
+## QoS choices explained
+
+The nature of the Homie convention makes it safe about duplicate messages, so QoS levels for reliability **At least once (QoS 1)** 
+and **Exactly once (QoS 2)** should both be fine. The recommended level is **Exactly once (QoS 2)**, since a resend on QoS 1 might have a different order, and hence is slightly less reliable, in case another device send a new message that lands in between the 'send' and 'resend' of the first message. However, the probability of that happening is most likely negligible.
+
+Keep in mind that if you change the QoS level to **At least once (QoS 1)**, then it should be done so for the entire Homie network.
+Because MQTT ordering will not hold if QoS levels of messages are different. That said; anyone who accepts the lesser reliability of
+**At least once (QoS 1)**, will most likely also not care about the potential ordering issue of mixed QoS levels.
+
+For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
