@@ -17,8 +17,12 @@ The special character `$` is used and reserved for Homie *attributes*.
 
 ### QoS and retained messages
 
-The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (1)**.
-All messages MUST be sent as **retained**, UNLESS stated otherwise.
+The nature of the Homie convention makes it safe about duplicate messages, so the recommended QoS for reliability is **At least once (QoS 1)**.
+
+* All messages MUST be sent as **retained**, UNLESS stated otherwise.
+* Devices publishing values for their non-retained properties must use **non-retained** messages only.
+* Controllers setting values for device properties publish to the Property `set` topic with **non-retained** messages only.
+* Controllers setting values for Non-retained device properties should publish to the Property `/set` topic with a QoS of **At most once (QoS 0)** to ensure that events don't arrive late or multiple times.
 
 ### Last will
 
@@ -277,14 +281,14 @@ Each property must have a unique property ID on a per-node basis which adhere to
 
 * Properties can be **retained**.
   A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
-  Non-retained properties should be `/set` with a QoS of **At most once (0)** to ensure that events don't arrive late or multiple times.
+  See also [QoS settings](#qos-and-retained-messages).
 
 A combination of those flags compiles into this list:
 
 | retained | settable | description |
 |----------|----------|-------------|
 | yes      | yes      | The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
-| yes      | no       | The node publishes a property state (temperature sensor)
+| yes      | no       | (default) The node publishes a property state (temperature sensor)
 | no       | yes      | The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
 | no       | no       | The node publishes momentary events (door bell pressed)
 
@@ -363,7 +367,7 @@ You are not limited to the recommended values, although they are the only well k
 
 * `homie` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
 
-A Homie controller publishes to the `set` command topic with non-retained messages only.
+A Homie controller publishes to the `set` command topic with non-retained messages only. See [retained messages](#qos-and-retained-messages).
 
 The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
