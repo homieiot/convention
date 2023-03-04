@@ -368,8 +368,7 @@ Recommended unit strings:
 * `lx`: Lux
 * `K`: Kelvin
 * `MK⁻¹`: Mired ('⁻' is UTF-16: `0x207B`, Hex: `0xe2 0x81 0xbb`, Dec: `226 129 187` | '¹' is UTF-16: `0x00B9`, Hex: `0xc2 0xb9`, Dec: `194 185` )
-* `#`: Count or Amount  
-* 
+* `#`: Count or Amount
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
 
