@@ -114,7 +114,7 @@ S: Indicates seconds, preceded by the number of seconds, if seconds are specifie
 
 #### JSON
 - Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes
-- For validation of the JSON data the `format` attribute may contain a [JSONSchema](http://json-schema.org/) defintion as string.Recommended version is Draft-07 http://json-schema.org/draft-07/schema# as this is currently most widely supported by most tools and libraries. This is optional but strongly recommended.
+- For validation of the JSON data the `format` attribute may contain a [JSONSchema](http://json-schema.org/) defintion as string. Recommended version is Draft-07 http://json-schema.org/draft-07/schema# as this is currently most widely supported by most tools and libraries. This is optional but strongly recommended.
 
 ## Base Topic
 
