@@ -88,11 +88,12 @@ needs this, then it should provide for an escape mechanism on application level.
  
 #### Color
 
-- Color payload validity varies depending on the property format definition of either "rgb" or "hsv"
+- Color payload validity varies depending on the property format definition of either "rgb", "hsv" or "xyz"
 - Both payload types contain comma separated numbers of differing restricted ranges. The numbers must conform to the [float](#float) format
 - The encoded string may only contain the [float](#float) numbers and the comma character ",", no other characters are permitted, including spaces (" ")
 - Payloads for type "rgb" contain 3 comma separated values of [floats](#float) with a valid range between 0 and 255 (inclusive). e.g. 100,100,100
 - Payloads for type "hsv" contain 3 comma separated values of [floats](#float). The first number has a range of 0 to 360 (inclusive), the second and third numbers have a range of 0 to 100 (inclusive).  e.g. 300,50,75
+- Payloads for type "xyz" contain 2 comma separated values of [floats](#float) with a valid range between 0 and 1 (inclusive). The z value can be calucated via z=1-x-y and is therefore not transmitted. (see [CIE_1931_color_space](https://en.wikipedia.org/wiki/CIE_1931_color_space))
 - An empty string ("") is not a valid payload
 
 #### DateTime
@@ -110,6 +111,10 @@ H: Indicates hour and is preceded by the number of hours, if hours are specified
 M: Indicates minutes, and is preceded by the number of minutes, if minutes are specified.
 S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
 - An empty string ("") is not a valid payload
+
+#### JSON
+- Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes
+- For validation of the JSON data the `format` attribute may contain a [JSONSchema](http://json-schema.org/) defintion as string.Recommended version is Draft-07 http://json-schema.org/draft-07/schema# as this is currently most widely supported by most tools and libraries. This is optional but strongly recommended.
 
 ## Base Topic
 
@@ -305,7 +310,7 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 |-----------|--------------|----------|----------|-------------|
 | id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
 | name      | string       | yes      |          | Friendly name of the Property. |
-| datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
+| datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`, `json`. |
 | format    | string       | see [formats](#formats)   | see [formats](#formats) | Specifies restrictions or options for the given data type. |
 | settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
 | retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
@@ -337,7 +342,7 @@ The format attribute specifies restrictions or options for the given data type.
 | float        | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.|
 | integer      | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10 |
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. If quotes or whitespace are used adjacent of the '`,`' (comma), then they are part of the value. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
-| color        | yes      |          | `rgb` or `hsv`. See the [color type](#integer) for the resulting value formats. |
+| color        | yes      |          | `rgb`, `hsv` or `xyz`. See the [color type](#color) for the resulting value formats. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represent the `false` value and the second the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 
 
