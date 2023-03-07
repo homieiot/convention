@@ -48,6 +48,7 @@ needs this, then it should provide for an escape mechanism on application level.
 ### Payload
 
 - Every MQTT message payload MUST be sent as a UTF-8 encoded string
+- The message MUST NOT include the UTF-8 [BOM](https://en.wikipedia.org/wiki/Byte_order_mark)
 - The value published as payload MUST be valid for the respective property/attribute type as per the list below
  
 #### String
@@ -57,7 +58,7 @@ needs this, then it should provide for an escape mechanism on application level.
  
 #### Integer
 
-- Integer types are UTF-8 encoded string literal representations of 64-bit signed whole numbers
+- Integer types are string literal representations of 64-bit signed whole numbers
 - Integers range from -9,223,372,036,854,775,808 (-2<sup>63</sup>) to 9,223,372,036,854,775,807 (2<sup>63</sup>-1)
 - The payload may only contain whole numbers and the negation character "-". No other characters including spaces (" ") are permitted 
 - A string with just a negation sign ("-") is not a valid payload
@@ -65,7 +66,7 @@ needs this, then it should provide for an escape mechanism on application level.
  
 #### Float
 
-- Float types are UTF-8 encoded string literal representations of 64-bit signed floating point numbers
+- Float types are string literal representations of 64-bit signed floating point numbers
 - Floats range from +/-(2^-1074) to +/-((2 - 2^-52) * 2^1023)
 - The payload may only contain whole numbers, the negation character "-", the exponent character "e" or "E" and the decimal separator ".", no other characters, including spaces (" ") are permitted 
 - The dot character (".") is the decimal separator (used if necessary) and may only have a single instance present in the payload
@@ -347,7 +348,8 @@ Recommended unit strings:
 
 * `°C`: Degree Celsius
 * `°F`: Degree Fahrenheit
-* `°`: Degree (UTF-16: `U+00B0`, Hex: `0xc2 0xb0`, Dec: `194 176`)
+* `°`: Degree
+  * Character '°' is [Unicode: `U+00B0`](https://www.compart.com/en/unicode/U+00B0), Hex: `0xc2 0xb0`, Dec: `194 176`
 * `L`: Liter
 * `gal`: Galon
 * `V`: Volts
@@ -358,7 +360,8 @@ Recommended unit strings:
 * `Hz`: Hertz
 * `%`: Percent
 * `m`: Meter
-* `m³`: Cubic meter ('³' is UTF-16: `U+00B3`, Hex: `0xc2 0xb3`, Dec: `194 179`)
+* `m³`: Cubic meter
+  * Character '³' is [Unicode: `U+00B3`](https://www.compart.com/en/unicode/U+00B3), Hex: `0xc2 0xb3`, Dec: `194 179`
 * `ft`: Feet
 * `Pa`: Pascal
 * `psi`: PSI
@@ -367,8 +370,12 @@ Recommended unit strings:
 * `h`: Hours
 * `lx`: Lux
 * `K`: Kelvin
-* `MK⁻¹`: Mired ('⁻' is UTF-16: `0x207B`, Hex: `0xe2 0x81 0xbb`, Dec: `226 129 187` | '¹' is UTF-16: `0x00B9`, Hex: `0xc2 0xb9`, Dec: `194 185` )
+* `MK⁻¹`: Mired
+  * Character '⁻' is [Unicode: `U+207B`](https://www.compart.com/en/unicode/U+207B), Hex: `0xe2 0x81 0xbb`, Dec: `226 129 187`
+  * Character '¹' is [Unicode: `U+00B9`](https://www.compart.com/en/unicode/U+00B9), Hex: `0xc2 0xb9`, Dec: `194 185`
 * `#`: Count or Amount
+
+The non-ASCII characters are specified as Unicode codepoints, and the UTF-8 byte sequence that represents them. Since the same characters can be created in many ways that are visually similar it is important to stick to the exact byte-sequences to enable proper interoperability.
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
 
