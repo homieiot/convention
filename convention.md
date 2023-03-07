@@ -346,8 +346,8 @@ The format attribute specifies restrictions or options for the given data type.
 
 Recommended unit strings:
 
-* `°C`: Degree Celsius
-* `°F`: Degree Fahrenheit
+* `°C`: Degree Celsius (see 'Degree' for encoding)
+* `°F`: Degree Fahrenheit (see 'Degree' for encoding)
 * `°`: Degree
   * Character '°' is [Unicode: `U+00B0`](https://www.compart.com/en/unicode/U+00B0), Hex: `0xc2 0xb0`, Dec: `194 176`
 * `L`: Liter
@@ -363,6 +363,8 @@ Recommended unit strings:
 * `m³`: Cubic meter
   * Character '³' is [Unicode: `U+00B3`](https://www.compart.com/en/unicode/U+00B3), Hex: `0xc2 0xb3`, Dec: `194 179`
 * `ft`: Feet
+* `m/s`: Meters per Second
+* `kn` : Knots
 * `Pa`: Pascal
 * `psi`: PSI
 * `s`: Seconds
