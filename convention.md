@@ -367,6 +367,7 @@ Recommended unit strings:
 * `kn` : Knots
 * `Pa`: Pascal
 * `psi`: PSI
+* `ppm`: Parts Per Million
 * `s`: Seconds
 * `min`: Minutes
 * `h`: Hours
