@@ -171,12 +171,12 @@ The JSON description document has the following format;
 |-----------|--------------|----------|----------|-------------|
 | homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
 | version   | integer      | yes      | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
-| nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. Should be omitted if empty. |
-| name      |string        | yes      | no       | Friendly name of the device |
-| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. Should be omitted if empty. |
-| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is not the root device, must be omitted otherwise. |
-| parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device, should be omitted otherwise. |
-| extensions|array-strings | no       | no       | Array of supported extensions. Should be omitted if empty. |
+| nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. |
+| name      |string        | yes      | no       | Friendly name of the device. |
+| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. |
+| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is not the root device, MUST be omitted otherwise. |
+| parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device. |
+| extensions|array-strings | no       | no       | Array of supported extensions. |
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
 ```java
@@ -251,7 +251,7 @@ The Node object itself is described in the `homie` / `device ID` / `$description
 |-----------|--------------|----------|----------|-------------|
 | id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
 | name      |string        | yes      | no       | Friendly name of the Node. |
-| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. Should be omitted if empty. |
+| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. |
 
 For example, our `engine` node would look like this:
 
@@ -307,8 +307,8 @@ The Property object itself is described in the `homie` / `device ID` / `$descrip
 | name      | string       | yes      |          | Friendly name of the Property. |
 | datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
 | format    | string       | see [formats](#formats)   | see [formats](#formats) | Specifies restrictions or options for the given data type. |
-| settable  | boolean      | no       | `false`  | Whether the Property is settable. Should be omitted if `false`. |
-| retained  | boolean      | no       | `true`   | Whether the Property is retained. Should be omitted if `true`. |
+| settable  | boolean      | no       | `false`  | Whether the Property is settable. |
+| retained  | boolean      | no       | `true`   | Whether the Property is retained. |
 | unit      | string       | no       |          | Unit of this property. See [units](#units). |
 
 
