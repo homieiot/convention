@@ -28,7 +28,7 @@ For QoS details see [the explanation](#qos-choices-explained).
 
 ### Last will
 
-Homie requires the last will (LWT) to set the `homie` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
+Homie requires the last will (LWT) to set the `homie` / `5` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
 MQTT only allows one last will message per connection, but since a device can have children, the LWT message MUST be set on the
 root device (the device at the root of the parent-child tree).
 
@@ -152,12 +152,12 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 
 ### Devices
 
-* `homie` / **`device ID`**: this is the base topic of a device.
+* `homie` / `5` / **`device ID`**: this is the base topic of a device.
 Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
 
 #### Device Attributes
 
-* `homie` / `device ID` / **`$device-attribute`**:
+* `homie` / `5` / `device ID` / **`$device-attribute`**:
 
 The following device attributes are mandatory and MUST be sent.
 
@@ -239,14 +239,14 @@ You have to send this message when something is wrong.
 
 ### Nodes
 
-* `homie` / `device ID` / **`node ID`**: this is the base topic of a node.
+* `homie` / `5` / `device ID` / **`node ID`**: this is the base topic of a node.
 Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
 
 #### Node Attributes
 
 There are no node properties in MQTT topics for this level.
 
-The Node object itself is described in the `homie` / `device ID` / `$description` JSON document. The Node object has the following fields:
+The Node object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Node object has the following fields:
 
 |Property   | Type         | Required | Nullable | Description |
 |-----------|--------------|----------|----------|-------------|
@@ -270,7 +270,7 @@ For example, our `engine` node would look like this:
 
 ### Properties
 
-* `homie` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
+* `homie` / `5` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
 Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
 
 * A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
@@ -300,7 +300,7 @@ A combination of those flags compiles into this list:
 
 There are no properties in MQTT topics for this level.
 
-The Property object itself is described in the `homie` / `device ID` / `$description` JSON document. The Property object has the following fields:
+The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
 |Property   | Type         | Required | Default | Description |
 |-----------|--------------|----------|----------|-------------|
@@ -384,11 +384,11 @@ You are not limited to the recommended values, although they are the only well k
 
 #### Property command topic
 
-* `homie` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
+* `homie` / `5` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
 
 A Homie controller publishes to the `set` command topic with non-retained messages only. See [retained messages](#qos-and-retained-messages).
 
-The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `device ID` / `node ID` / `property ID` as soon as possible.
+The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `5` / `device ID` / `node ID` / `property ID` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
 To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/set` for commands:
@@ -407,7 +407,7 @@ homie/5/kitchen-light/light/power → "true"
 
 Homie defines a broadcast topic, so a controller is able to broadcast a message to all Homie devices:
 
-* `homie` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels.
+* `homie` / `5` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels.
 It must adhere to the [ID format](#topic-ids).
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload.
