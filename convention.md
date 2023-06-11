@@ -12,7 +12,6 @@ Homie communicates through [MQTT](http://mqtt.org) and is hence based on the bas
 An MQTT topic consists of one or more topic levels, separated by the slash character (`/`).
 A topic level ID MAY ONLY contain lowercase letters from `a` to `z`, numbers from `0` to `9` as well as the hyphen character (`-`).
 
-A topic level ID MUST NOT start or end with a hyphen (`-`).
 The special character `$` is used and reserved for Homie *attributes*.
 
 ### QoS and retained messages
