@@ -26,7 +26,7 @@ The recommended QoS level is **Exactly once (QoS 2)** (except for non-retained, 
 
 For QoS details see [the explanation](#qos-choices-explained).
 
-### Last will
+### Last Will
 
 Homie requires the last will (LWT) to set the `homie` / `5` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
 MQTT only allows one last will message per connection, but since a device can have children, the LWT message MUST be set on the
@@ -34,16 +34,16 @@ root device (the device at the root of the parent-child tree).
 
 ### Empty string values
 
-MQTT will treat an empty string payload as a "delete" instruction for the topic. Therefor an
-empty string value is represented by a 1 character string containing a single byte value 0 (Hex: `0x00`, Dec: `0`).
+MQTT will treat an empty string payload as a "delete" instruction for the topic, therefor an
+empty string value is represented by a 1-character string containing a single byte value 0 (Hex: `0x00`, Dec: `0`).
 
 The empty string (passed as an MQTT payload) can only occur in 2 places;
 
 - `homie5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
 - `homie5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
 
-This convention specifies no way to represent an actual value of a 1 character string with a single byte 0. If a device
-needs this, then it should provide for an escape mechanism on application level.
+This convention specifies no way to represent an actual value of a 1-character string with a single byte 0. If a device
+needs this, then it should provide an escape mechanism on the application level.
 
 ### Payload
 
@@ -84,16 +84,16 @@ needs this, then it should provide for an escape mechanism on application level.
 
 - Enum payloads must be one of the values specified in the format definition of the property
 - Enum payloads are case sensitive, e.g. "Car" will not match a format definition of "car"
-- Payloads should have leading and trailing whitespace removed
+- Payloads should have leading- and trailing-whitespace removed
 - An empty string ("") is not a valid payload
  
 #### Color
 
 - Color payload validity varies depending on the property format definition of either "rgb" or "hsv"
-- Both payload types contain comma separated numbers of differing restricted ranges. The numbers must conform to the [float](#float) format
+- Both payload types contain comma-separated numbers of differing restricted ranges. The numbers must conform to the [float](#float) format
 - The encoded string may only contain the [float](#float) numbers and the comma character ",", no other characters are permitted, including spaces (" ")
-- Payloads for type "rgb" contain 3 comma separated values of [floats](#float) with a valid range between 0 and 255 (inclusive). e.g. 100,100,100
-- Payloads for type "hsv" contain 3 comma separated values of [floats](#float). The first number has a range of 0 to 360 (inclusive), the second and third numbers have a range of 0 to 100 (inclusive).  e.g. 300,50,75
+- Payloads for type "rgb" contain 3 comma-separated values of [floats](#float) with a valid range between 0 and 255 (inclusive). e.g. 100,100,100
+- Payloads for type "hsv" contain 3 comma-separated values of [floats](#float). The first number has a range of 0 to 360 (inclusive), and the second and third numbers have a range of 0 to 100 (inclusive).  e.g. 300,50,75
 - An empty string ("") is not a valid payload
 
 #### DateTime
@@ -126,26 +126,26 @@ Controllers are free to restrict discovery to a specific root topic, configurabl
 
 **Devices:**
 An instance of a physical piece of hardware is called a *device*.
-For example, a car, an Arduino/ESP8266 or a coffee machine.
-Within the convention devices can be modelled to have children. For example bridge
-devices; a zwave bridge device (the parent) exposing many child devices (the
+For example, a car, an Arduino/ESP8266, or a coffee machine.
+Within the convention devices can be modelled to have children. For example, bridge
+devices; a zwave bridge device (the parent) exposes many child devices (the
 zwave devices). There is no depth limit set on additionally nested children.
 
 **Nodes:**
 A *device* can expose multiple *nodes*.
 Nodes are independent or logically separable parts of a device.
-For example, a car might expose a `wheels` node, an `engine` node and a `lights` node.
+For example, a car might expose a `wheels` node, an `engine` node, and a `lights` node.
 
 **Properties:**
 A *node* can have multiple *properties*.
 Properties represent basic characteristics of the node/device, often given as numbers or finite states.
-For example the `wheels` node might expose an `angle` property.
-The `engine` node might expose a `speed`, `direction` and `temperature` property.
+For example, the `wheels` node might expose an `angle` property.
+The `engine` node might expose a `speed`, `direction`, and `temperature` property.
 The `lights` node might expose an `intensity` and a `color` property.
 
 **Attributes:**
 *Devices, nodes and properties* have specific *attributes* characterizing them.
-Attributes are represented by topic identifier starting with `$`.
+Attributes are represented by a topic identifier starting with `$`.
 The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
@@ -153,7 +153,7 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 ### Devices
 
 * `homie` / `5` / **`device ID`**: this is the base topic of a device.
-Each device must have a unique device ID which adhere to the [ID format](#topic-ids).
+Each device must have a unique device ID that adheres to the [ID format](#topic-ids).
 
 #### Device Attributes
 
@@ -164,7 +164,7 @@ The following device attributes are mandatory and MUST be sent.
 | Topic       |                                                    Description            |
 |-------------|--------------------------------------------------------------------------|
 | $state      | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
-| $description| The description document (JSON), describing the device, nodes and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
+| $description| The description document (JSON), describing the device, nodes, and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
 
 The JSON description document has the following format;
 
@@ -179,7 +179,7 @@ The JSON description document has the following format;
 | parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device. |
 | extensions|array-strings | no       | no       | Array of supported extensions. |
 
-For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine` and a `lights` node would send:
+For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine`, and a `lights` node would send:
 ```java
 homie/5/super-car/$state → "ready"
 homie/5/super-car/$description → following JSON document;
@@ -187,7 +187,7 @@ homie/5/super-car/$description → following JSON document;
 ```json
       {
         "homie": "5.0",
-        "name": "Super car",
+        "name": "Supercar",
         "version": 7,
         "nodes": [ 
           { "id": "wheels", ... },
@@ -200,8 +200,8 @@ homie/5/super-car/$description → following JSON document;
 #### Device hierarchy
 
 Devices can be organized in parent-child relationships. These are expressed via the device
-attributes `root`, `parent`, and `children`. In any parent-child tree there is only one
-"root" device, which is the top level device that has no parent, but only children.
+attributes `root`, `parent`, and `children`. In any parent-child tree, there is only one
+"root" device, which is the top-level device that has no parent, but only children.
 
 Example: a ZWave bridge (`id = "bridge"`), which exposes a ZWave device with a dual-relay (`id = "dualrelay"`),
 which respectively control Light1 (`id = "light1"`) and Light2 (`id = "light2"`). So there are 4 devices in total.
@@ -215,7 +215,7 @@ Then these are the attribute values:
 | parent    |                |                      | "dualrelay" | "dualrelay"  |
 
 To monitor the `state` of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
-Because if the root device looses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
+Because if the root device loses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
 
 #### Device Lifecycle
 
@@ -224,23 +224,23 @@ The `$state` device attribute represents the current state of the device. **Impo
 There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
-This state is optional, and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
+This state is optional and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
 A device may fall back into this state to do some reconfiguration.
-* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages for describing the device attributes, nodes, properties and their values. The device has subscribed to all appropriate `/set` topics and is ready to receive messages. 
+* **`ready`**: this is the state the device is in when it is connected to the MQTT broker and has sent all Homie messages describing the device attributes, nodes, properties, and their values. The device has subscribed to all appropriate `/set` topics and is ready to receive messages. 
 * **`disconnected`**: this is the state the device is in when it is cleanly disconnected from the MQTT broker.
 You must send this message before cleanly disconnecting.
 * **`sleeping`**: this is the state the device is in when the device is sleeping.
 You have to send this message before sleeping.
 * **`lost`**: this is the state the device is in when the device has been "badly" disconnected. **Important**: If a root-device `$state` is `"lost"` then the state of **every child device in its tree** is also `"lost"`.
-You must define this message as last will (LWT) for root devices.
-* **`alert`**: this is the state the device is when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
+You must define this message as the last will (LWT) for root devices.
+* **`alert`**: this is the state the device is in when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
 You have to send this message when something is wrong.
 
 
 ### Nodes
 
 * `homie` / `5` / `device ID` / **`node ID`**: this is the base topic of a node.
-Each node must have a unique node ID on a per-device basis which adhere to the [ID format](#topic-ids).
+Each node must have a unique node ID on a per-device basis which adheres to the [ID format](#topic-ids).
 
 #### Node Attributes
 
@@ -271,7 +271,7 @@ For example, our `engine` node would look like this:
 ### Properties
 
 * `homie` / `5` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
-Each property must have a unique property ID on a per-node basis which adhere to the [ID format](#topic-ids).
+Each property must have a unique property ID on a per-node basis which adheres to the [ID format](#topic-ids).
 
 * A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
   ```java
@@ -280,20 +280,20 @@ Each property must have a unique property ID on a per-node basis which adhere to
   
 * Properties can be **settable**.
   For example, you don't want your `temperature` property to be settable in case of a temperature sensor
-  (like the car example), but to be settable in case of a thermostat.
+  (like the car example), but to be settable in the case of a thermostat.
 
 * Properties can be **retained**.
-  A property is retained by default. A non-retained property would be useful for momentary events (door bell pressed).
+  A property is retained by default. A non-retained property would be useful for momentary events (doorbell pressed).
   See also [QoS settings](#qos-and-retained-messages).
 
 A combination of those flags compiles into this list:
 
 | retained | settable | description |
 |----------|----------|-------------|
-| yes      | yes      | The node publishes a property state, and can receive commands for the property (by controller or other party) (lamp power)
+| yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
 | yes      | no       | (default) The node publishes a property state (temperature sensor)
-| no       | yes      | The node publishes momentary events, and can receive commands for the property (by controller or other party) (brew coffee)
-| no       | no       | The node publishes momentary events (door bell pressed)
+| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
+| no       | no       | The node publishes momentary events (doorbell pressed)
 
 
 #### Property Attributes
@@ -335,11 +335,11 @@ The format attribute specifies restrictions or options for the given data type.
 
 | Type         | Required | Default | Description |
 |--------------|----------|----------|-------------|
-| float        | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.<br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max` or the current property value (in that order). To prevent floating point issues, the implementation should round property values to the nearest valid step. |
-| integer      | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max` or the current property value (in that order). |
+| float        | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.<br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). To prevent floating point issues, the implementation should round property values to the nearest valid step. |
+| integer      | no       | `:`      | `min:max` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). |
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. If quotes or whitespace are used adjacent of the '`,`' (comma), then they are part of the value. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
 | color        | yes      |          | `rgb` or `hsv`. See the [color type](#color) for the resulting value formats. |
-| boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represent the `false` value and the second the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
+| boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 
 
 #### Units
@@ -364,7 +364,7 @@ Recommended unit strings:
   * Character '³' is [Unicode: `U+00B3`](https://www.compart.com/en/unicode/U+00B3), Hex: `0xc2 0xb3`, Dec: `194 179`
 * `ft`: Feet
 * `m/s`: Meters per Second
-* `kn` : Knots
+* `kn`: Knots
 * `Pa`: Pascal
 * `psi`: PSI
 * `ppm`: Parts Per Million
@@ -378,13 +378,13 @@ Recommended unit strings:
   * Character '¹' is [Unicode: `U+00B9`](https://www.compart.com/en/unicode/U+00B9), Hex: `0xc2 0xb9`, Dec: `194 185`
 * `#`: Count or Amount
 
-The non-ASCII characters are specified as Unicode codepoints, and the UTF-8 byte sequence that represents them. Since the same characters can be created in many ways that are visually similar it is important to stick to the exact byte-sequences to enable proper interoperability.
+The non-ASCII characters are specified as Unicode codepoints and the UTF-8 byte sequence that represents them. Since the same characters can be created in many visually similar ways it is important to stick to the exact byte sequences to enable proper interoperability.
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
 
 #### Property command topic
 
-* `homie` / `5` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in case of actuators for example).
+* `homie` / `5` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in the case of actuators for example).
 
 A Homie controller publishes to the `set` command topic with non-retained messages only. See [retained messages](#qos-and-retained-messages).
 
@@ -397,7 +397,7 @@ To give an example: A `kitchen-light` device exposing the `light` node with a se
 homie/5/kitchen-light/light/power/set ← "true"
 ```
 
-In response the device will turn on the light and upon success update its `power` property state accordingly:
+In response, the device will turn on the light and upon success update its `power` property state accordingly:
 
 ```java
 homie/5/kitchen-light/light/power → "true"
@@ -405,7 +405,7 @@ homie/5/kitchen-light/light/power → "true"
 
 ## Broadcast Topic
 
-Homie defines a broadcast topic, so a controller is able to broadcast a message to all Homie devices:
+Homie defines a broadcast topic, so a controller can broadcast a message to all Homie devices:
 
 * `homie` / `5` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels.
 It must adhere to the [ID format](#topic-ids).
@@ -423,19 +423,19 @@ Any other topic is not part of the Homie convention.
 
 ## Extensions
 
-This convention only covers discoverability of devices and its capabilities.
-The aim is to have standardized MQTT topics for all kind of complex scenarios.
+This convention only covers the discoverability of devices and their capabilities.
+The aim is to have standardized MQTT topics for all kinds of complex scenarios.
 A Homie device may therefore support extensions, defined in separate documents.
 Every extension is identified by a unique ID.
 
 The ID consists of the reverse domain name and a freely chosen suffix.
-The proper term `homie` is reserved and must not be used as the suffix or as part of the domain name.
+The proper term `homie` is reserved and must not be used as a suffix or as part of the domain name.
 
 For example, an organization `example.org` wanting to add a feature `our-feature` would choose the extension ID `org.example.our-feature`.
 
 Every extension must be published using a license.
 The license can be chosen freely, even proprietary licenses are possible.
-The recommended license is the [CCA 4.0](https://homieiot.github.io/license), since this is the license Homie itself uses.
+The recommended license is the [CCA 4.0](https://homieiot.github.io/license) since this is the license Homie itself uses.
 
 ## Versioning
 
@@ -449,14 +449,14 @@ compatible with.
 
 * backward compatibility: a v5 controller controlling a v5 device with a smaller minor version. Eg. a v5.3 
 controller sending commands to a v5.0 device.
-* Controllers should be aware of unsupported features in older major or minor versions they subscribe to, because the spec for that version is known.
+* Controllers should be aware of unsupported features in older major or minor versions they subscribe to because the spec for that version is known.
 
 ### Forward compatibility
 
-* forward comaptibility: a v5 controller controlling a v5 device with a higher minor version. Eg. a v5.0
+* forward compatibility: a v5 controller controlling a v5 device with a higher minor version. Eg. a v5.0
 controller sending commands to a v5.2 device.
 * Controllers should ignore unknown fields, properties, attributes, etc. within an object (device, node, or property), but keep the object itself.
-* Controllers should ignore the entire object (device, node, or property) if in a known field, property, or attribute an illegal value is encountred. For example;
+* Controllers should ignore the entire object (device, node, or property) if in a known field, property, or attribute an illegal value is encountered. For example;
   * illegal characters in a topic or name
   * unknown data type
   * unknown/illegal format
@@ -473,10 +473,10 @@ A few common approaches are:
 
 * A device can simply load default values from some configuration file.
 * A device can restore its previous state from some local storage. This is the recommended way.
-* A device may try to restore its state using MQTT. This can be done by subcribing to the respective channels.
+* A device may try to restore its state using MQTT. This can be done by subscribing to the respective channels.
   The controller could set all properties of a device once it becomes `ready`.
   An alternative way is to recover the state from other MQTT channels that are external to the Homie specification.
-* If a property is not critical for correct function, there is no need to recover it.
+* If a property is not critical for correctly functioning, there is no need to recover it.
 
 ### Device reconfiguration
 
@@ -490,10 +490,10 @@ Devices can remove old properties and nodes by publishing a zero-length payload 
 ## QoS choices explained
 
 The nature of the Homie convention makes it safe about duplicate messages, so QoS levels for reliability **At least once (QoS 1)** 
-and **Exactly once (QoS 2)** should both be fine. The recommended level is **Exactly once (QoS 2)**, since a resend on QoS 1 might have a different order, and hence is slightly less reliable, in case another device send a new message that lands in between the 'send' and 'resend' of the first message. However, the probability of that happening is most likely negligible.
+and **Exactly once (QoS 2)** should both be fine. The recommended level is **Exactly once (QoS 2)**, since a resend on QoS 1 might have a different order, and hence is slightly less reliable, in case another device sends a new message that lands in between the 'send' and 'resend' of the first message. However, the probability of that happening is most likely negligible.
 
 Keep in mind that if you change the QoS level to **At least once (QoS 1)**, then it should be done so for the entire Homie network.
-Because MQTT ordering will not hold if QoS levels of messages are different. That said; anyone who accepts the lesser reliability of
+Because the MQTT order will not hold if the QoS levels of messages are different. That said; anyone who accepts the lesser reliability of
 **At least once (QoS 1)**, will most likely also not care about the potential ordering issue of mixed QoS levels.
 
-For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
+For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time-sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
