@@ -158,14 +158,17 @@ Each device must have a unique device ID that adheres to the [ID format](#topic-
 
 #### Device Attributes
 
+The following topic structure will be used to expose the device attributes:
+
 * `homie` / `5` / `device ID` / **`$device-attribute`**:
 
-The following device attributes are mandatory and MUST be sent.
+Devices have the following attributes:
 
-| Topic       |                                                    Description            |
-|-------------|--------------------------------------------------------------------------|
-| $state      | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
-| $description| The description document (JSON), describing the device, nodes, and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
+| Topic       | Required |                                                    Description            |
+|-------------|----------|----------------------------------------------------------------|
+| $state      | yes | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
+| $description| yes | The description document (JSON), describing the device, nodes, and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
+| $log        | no | A topic that allows devices to log messages. See [Logging](#logging) |
 
 The JSON description document has the following format;
 
@@ -222,7 +225,7 @@ Because if the root device loses its connection to the MQTT server, the last wil
 
 The `$state` device attribute represents the current state of the device. **Important**: for child devices also the root-device state should be taken into account.
 
-There are 6 different states:
+There are 5 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
@@ -234,9 +237,6 @@ You must send this message before cleanly disconnecting.
 You have to send this message before sleeping.
 * **`lost`**: this is the state the device is in when the device has been "badly" disconnected. **Important**: If a root-device `$state` is `"lost"` then the state of **every child device in its tree** is also `"lost"`.
 You must define this message as the last will (LWT) for root devices.
-* **`alert`**: this is the state the device is in when connected to the MQTT broker, but something wrong is happening. E.g. a sensor is not providing data and needs human intervention.
-You have to send this message when something is wrong.
-
 
 ### Nodes
 
@@ -441,6 +441,32 @@ homie/5/$broadcast/security/alert ← "Intruder detected"
 ```
 
 Any other topic is not part of the Homie convention.
+
+### Logging
+
+Since devices may be resource constraint they might not have logging capabilities. Homie provides a specific
+topic where devices can send log messages. The topic is defined as;
+
+* `homie` / `5` / `device ID` / `$log` / `level` 
+
+The topic-value is the logged message, no sub-topics are allowed. The `level` is set according to the following table:
+
+level   | description
+--------|------------
+`debug` | detailed information for troubleshooting purposes
+`info`  | informational message, device is working as expected
+`warn`  | something potentially harmful happened
+`error` | an error happened, the device will continue to operate but functionality might be impaired
+`fatal` | a non-recoverable error occured, operation of the device is likely suspended/stopped
+
+```java
+homie/5/my-device/$log/warn → "battery low"
+homie/5/my-device/$log/error → "sensor value is out of range"
+```
+
+Note that MQTT is not meant to be a logging solution, and hence it should be used with care. The implementation should
+try and limit the traffic on the MQTT bus. If devices implement messages and levels that can be "noisy", then the
+device should provide a configuration option to turn them off, to limit the bandwidth consumed.
 
 ## Extensions
 
