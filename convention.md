@@ -181,7 +181,7 @@ The JSON description document has the following format;
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine`, and a `lights` node would send:
 ```java
-homie/5/super-car/$state → "ready"
+homie/5/super-car/$state → "init"
 homie/5/super-car/$description → following JSON document;
 ```
 ```json
