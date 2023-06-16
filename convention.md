@@ -168,16 +168,16 @@ The following device attributes are mandatory and MUST be sent.
 
 The JSON description document has the following format;
 
-|Property   | Type         | Required | Nullable | Description |
-|-----------|--------------|----------|----------|-------------|
-| homie     |string        | yes      | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
-| version   | integer      | yes      | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
-| nodes     |array-objects | no       | no       | Array of [Nodes](#nodes) the device exposes. |
-| name      |string        | yes      | no       | Friendly name of the device. |
-| children  |array-strings | no       | no       | Array of [ID](#topic-ids)'s of child devices. |
-| root      |string        | yes/no   | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is not the root device, MUST be omitted otherwise. |
-| parent    |string        | yes/no   | no       | [ID](#topic-ids) of the parent device. Defaults to the `root` ID. **Required** if the parent is NOT the root device. |
-| extensions|array-strings | no       | no       | Array of supported extensions. |
+| Property  | Type         | Required | Default | Nullable | Description |
+|-----------|--------------|----------|---------|----------|-------------|
+| homie     |string        | yes      |         | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
+| version   | integer      | yes      |         | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
+| nodes     |array-objects | no       | `[]`    | no       | Array of [Nodes](#nodes) the device exposes. Defaults to an empty array.|
+| name      |string        | yes      |         | no       | Friendly name of the device. |
+| children  |array-strings | no       | `[]`    | no       | Array of [ID](#topic-ids)'s of child devices. Defaults to an empty array.|
+| root      |string        | yes/no   |         | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is NOT the root device, MUST be omitted otherwise. |
+| parent    |string        | yes/no   | same as `root`| no | [ID](#topic-ids) of the parent device. **Required** if the parent is NOT the root device. Defaults to the value of the `root` property. |
+| extensions|array-strings | no       | `[]`    | no       | Array of supported extensions. Defaults to an empty array.|
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine`, and a `lights` node would send:
 ```java
@@ -248,11 +248,11 @@ There are no node properties in MQTT topics for this level.
 
 The Node object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Node object has the following fields:
 
-|Property   | Type         | Required | Nullable | Description |
-|-----------|--------------|----------|----------|-------------|
-| id        |string        | yes      | no       | [ID](#topic-ids) of the Node. |
-| name      |string        | yes      | no       | Friendly name of the Node. |
-| properties|array-objects | no       | no       | Array of [Properties](#properties) the Node exposes. |
+|Property   | Type         | Required | Default | Nullable | Description |
+|-----------|--------------|----------|---------|----------|-------------|
+| id        |string        | yes      |         | no       | [ID](#topic-ids) of the Node. |
+| name      |string        | yes      |         | no       | Friendly name of the Node. |
+| properties|array-objects | no       | `[]`    | no       | Array of [Properties](#properties) the Node exposes. Defaults to an empty array. |
 
 For example, our `engine` node would look like this:
 
@@ -302,15 +302,15 @@ There are no properties in MQTT topics for this level.
 
 The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
-|Property   | Type         | Required | Default | Description |
-|-----------|--------------|----------|----------|-------------|
-| id        | string       | yes      |          | [ID](#topic-ids) of the Property. |
-| name      | string       | yes      |          | Friendly name of the Property. |
-| datatype  | string       | yes      |          | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
-| format    | string       | see [formats](#formats)   | see [formats](#formats) | Specifies restrictions or options for the given data type. |
-| settable  | boolean      | no       | `false`  | Whether the Property is settable. |
-| retained  | boolean      | no       | `true`   | Whether the Property is retained. |
-| unit      | string       | no       |          | Unit of this property. See [units](#units). |
+|Property   | Type         | Required | Default  | Nullable | Description |
+|-----------|--------------|----------|----------|----|---------|
+| id        | string       | yes      |          | no | [ID](#topic-ids) of the Property. |
+| name      | string       | yes      |          | no | Friendly name of the Property. |
+| datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
+| format    | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
+| settable  | boolean      | no       | `false`  | no | Whether the Property is settable. |
+| retained  | boolean      | no       | `true`   | no | Whether the Property is retained. |
+| unit      | string       | no       |          | no | Unit of this property. See [units](#units). |
 
 
 For example, our `temperature` property would look like this in the device/node description document:
