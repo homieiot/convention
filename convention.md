@@ -207,12 +207,12 @@ Example: a ZWave bridge (`id = "bridge"`), which exposes a ZWave device with a d
 which respectively control Light1 (`id = "light1"`) and Light2 (`id = "light2"`). So there are 4 devices in total.
 Then these are the attribute values:
 
-|Attribute  | Zwave bridge   | Relay                | first light | second light |
-|-----------|----------------|----------------------|-------------|--------------|
-| id        | "bridge"       | "dualrelay"          | "light1"    | "light2"     |
-| children  | ["dualrelay"]  | ["light1", "light2"] |             |              |
-| root      |                | "bridge"             | "bridge"    | "bridge"     |
-| parent    |                |                      | "dualrelay" | "dualrelay"  |
+|              | id          | children             | root     | parent      |
+|--------------|-------------|----------------------|----------|-------------|
+| Zwave bridge | "bridge"    | ["dualrelay"]        | "bridge" |             |
+| Zwave relay  | "dualrelay" | ["light1", "light2"] | "bridge" |             |
+| First light  | "light1"    |                      | "bridge" | "dualrelay" |
+| Second light | "light2"    |                      | "bridge" | "dualrelay" |
 
 To monitor the `state` of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
 Because if the root device loses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
