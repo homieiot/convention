@@ -209,7 +209,7 @@ Then these are the attribute values:
 
 |              | id          | children             | root     | parent      |
 |--------------|-------------|----------------------|----------|-------------|
-| Zwave bridge | "bridge"    | ["dualrelay"]        | "bridge" |             |
+| Zwave bridge | "bridge"    | ["dualrelay"]        |          |             |
 | Zwave relay  | "dualrelay" | ["light1", "light2"] | "bridge" |             |
 | First light  | "light1"    |                      | "bridge" | "dualrelay" |
 | Second light | "light2"    |                      | "bridge" | "dualrelay" |
