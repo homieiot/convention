@@ -172,7 +172,7 @@ The JSON description document has the following format;
 |-----------|--------------|----------|---------|----------|-------------|
 | homie     |string        | yes      |         | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
 | version   | integer      | yes      |         | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
-| nodes     |array-objects | no       | `[]`    | no       | Array of [Nodes](#nodes) the device exposes. Defaults to an empty array.|
+| nodes     |object        | no       | `{}`    | no       | The [Nodes](#nodes) the device exposes. An object containing the [Nodes](#nodes), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 | name      |string        | yes      |         | no       | Friendly name of the device. |
 | children  |array-strings | no       | `[]`    | no       | Array of [ID](#topic-ids)'s of child devices. Defaults to an empty array.|
 | root      |string        | yes/no   |         | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is NOT the root device, MUST be omitted otherwise. |
@@ -189,11 +189,11 @@ homie/5/super-car/$description → following JSON document;
         "homie": "5.0",
         "name": "Supercar",
         "version": 7,
-        "nodes": [ 
-          { "id": "wheels", ... },
-          { "id": "engine", ... },
-          { "id": "lights", ... }
-        ]
+        "nodes": { 
+          "wheels": { ... },
+          "engine": { ... },
+          "lights": { ... }
+        }
       }
 ```
 
@@ -250,22 +250,22 @@ The Node object itself is described in the `homie` / `5` / `device ID` / `$descr
 
 |Property   | Type         | Required | Default | Nullable | Description |
 |-----------|--------------|----------|---------|----------|-------------|
-| id        |string        | yes      |         | no       | [ID](#topic-ids) of the Node. |
 | name      |string        | yes      |         | no       | Friendly name of the Node. |
-| properties|array-objects | no       | `[]`    | no       | Array of [Properties](#properties) the Node exposes. Defaults to an empty array. |
+| properties|object        | no       | `{}`    | no       | The [Properties](#properties) the Node exposes. An object containing the [Properties](#properties), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 
 For example, our `engine` node would look like this:
 
 ```json
-      {
-        "id": "engine",
+      ...
+      "engine": {
         "name": "Car engine",
-        "properties": [ 
-          { "id": "speed", ... },
-          { "id": "direction", ... },
-          { "id": "temperature", ... }
-        ]
+        "properties": {
+          "speed": { ... },
+          "direction": { ... },
+          "temperature": { ... }
+        }
       }
+      ...
 ```
 
 ### Properties
@@ -304,7 +304,6 @@ The Property object itself is described in the `homie` / `5` / `device ID` / `$d
 
 |Property   | Type         | Required | Default  | Nullable | Description |
 |-----------|--------------|----------|----------|----|---------|
-| id        | string       | yes      |          | no | [ID](#topic-ids) of the Property. |
 | name      | string       | yes      |          | no | Friendly name of the Property. |
 | datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
 | format    | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
@@ -316,13 +315,14 @@ The Property object itself is described in the `homie` / `5` / `device ID` / `$d
 For example, our `temperature` property would look like this in the device/node description document:
 
 ```json
-      {
-        "id": "temperature",
+      ...
+      "temperature": {
         "name": "Engine temperature",
         "unit": "°C",
         "datatype": "float",
         "format": "-20:120"
       }
+      ...
 ```
 And the following MQTT topic with the reported property value:
 ```java
