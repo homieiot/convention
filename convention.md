@@ -113,6 +113,11 @@ M: Indicates minutes, and is preceded by the number of minutes, if minutes are s
 S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
 - An empty string ("") is not a valid payload
 
+#### JSON
+
+- Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes.
+- The payload MUST be either a JSON-Array or JSON-Object type, for other types the standard Homie types should be used.
+
 ## Base Topic
 
 The root topic in this document is `"homie/5/"`.
@@ -314,7 +319,7 @@ The Property object itself is described in the `homie` / `5` / `device ID` / `$d
 |Property   | Type         | Required | Default  | Nullable | Description |
 |-----------|--------------|----------|----------|----|---------|
 | name      | string       | yes      |          | no | Friendly name of the Property. |
-| datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration"`. |
+| datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration", "json"`. |
 | format    | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
 | settable  | boolean      | no       | `false`  | no | Whether the Property is settable. |
 | retained  | boolean      | no       | `true`   | no | Whether the Property is retained. |
@@ -350,6 +355,7 @@ the formats for displaying values.
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
+| json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONSchema](http://json-schema.org/) definition. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse the JSONschema, then it should ignore the given schema and fall back to the default schema.
 
 
 #### Units
@@ -545,3 +551,19 @@ Because the MQTT order will not hold if the QoS levels of messages are different
 **At least once (QoS 1)**, will most likely also not care about the potential ordering issue of mixed QoS levels.
 
 For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time-sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
+
+## JSON considerations
+
+Validation of JSON payloads is hard. The most common approach to validate JSON data is to use [JSONSchema](http://json-schema.org/).
+Unfortunately JSONschema is not a standard, it is a long list of mostly incompatible drafts of a potential standard. And as such one
+has to take into account the potential differences in implementations. This is about the JSONschema specifics itself as well as its reliance on RegEx engines for string validations, which are also known to be riddled with incompatibilities (typically language/platform specific).
+
+The most popular JSONschema versions over time tend to be [`draft 4`](http://json-schema.org/specification-links.html#draft-4), [`draft 7`](http://json-schema.org/specification-links.html#draft-7) and the latest (at the time of writing) [`2020-12`](http://json-schema.org/specification-links.html#2020-12).
+
+General recommendations;
+- If possible use a library that implements the latest JSONschema version available
+- When writing schema's make sure they are compatible with the popular versions mentioned above
+- Try to avoid RegEx'es, if you have to use them, then;
+  - restrict them to character classes and modifiers (`"+", "-", "*", "?"`)
+  - do not use back-tracking and OR (`"|"`) constructs (the OR construct can typically be handled on the JSONschema level using an `anyOf` construct)
+- If a device fails to parse the JSONschema, or a RegEx, then by default it should skip validation and assume the payload is valid.
