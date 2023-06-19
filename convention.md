@@ -320,7 +320,7 @@ The Property object itself is described in the `homie` / `5` / `device ID` / `$d
 |-----------|--------------|----------|----------|----|---------|
 | name      | string       | yes      |          | no | Friendly name of the Property. |
 | datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration", "json"`. |
-| format    | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
+| format    | string or object | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. Type `object` is only used for datatype `json`. |
 | settable  | boolean      | no       | `false`  | no | Whether the Property is settable. |
 | retained  | boolean      | no       | `true`   | no | Whether the Property is retained. |
 | unit      | string       | no       |          | no | Unit of this property. See [units](#units). |
@@ -355,7 +355,7 @@ the formats for displaying values.
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
-| json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONSchema](http://json-schema.org/) definition. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse the JSONschema, then it should ignore the given schema and fall back to the default schema.
+| json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONSchema](http://json-schema.org/) definition, which is added as a nested json-object, NOT as a string. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
 
 
 #### Units
