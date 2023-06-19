@@ -90,11 +90,11 @@ needs this, then it should provide an escape mechanism on the application level.
 #### Color
 
 - Color payload validity varies depending on the property format definition of either "rgb", "hsv", or "xyz"
-- All payload types contain comma-separated numbers of differing restricted ranges. The numbers must conform to the [float](#float) format
+- All payload types contain comma-separated data of differing restricted ranges. The first being the type, followed by numbers. The numbers must conform to the [float](#float) format
 - The encoded string may only contain the [float](#float) numbers and the comma character ",", no other characters are permitted, including spaces (" ")
-- Payloads for type "rgb" contain 3 comma-separated values of [floats](#float) (`r`, `g`, `b`) with a valid range between 0 and 255 (inclusive). e.g. `"100,100,100"`
-- Payloads for type "hsv" contain 3 comma-separated values of [floats](#float). The first number (`h`) has a range of 0 to 360 (inclusive), and the second and third numbers (`s` and `v`) have a range of 0 to 100 (inclusive).  e.g. `"300,50,75"`
-- Payloads for type "xyz" contain 2 comma separated values of [floats](#float) (`x`, `y`) with a valid range between 0 and 1 (inclusive). The "z" value can be calculated via `z=1-x-y` and is therefore not transmitted. (see [CIE_1931_color_space](https://en.wikipedia.org/wiki/CIE_1931_color_space)). e.g. `"0.25,0.34"`
+- Payloads for type "rgb" contain 3 comma-separated values of [floats](#float) (`r`, `g`, `b`) with a valid range between 0 and 255 (inclusive). e.g. `"rgb,100,100,100"`
+- Payloads for type "hsv" contain 3 comma-separated values of [floats](#float). The first number (`h`) has a range of 0 to 360 (inclusive), and the second and third numbers (`s` and `v`) have a range of 0 to 100 (inclusive).  e.g. `"hsv,300,50,75"`
+- Payloads for type "xyz" contain 2 comma separated values of [floats](#float) (`x`, `y`) with a valid range between 0 and 1 (inclusive). The "z" value can be calculated via `z=1-x-y` and is therefore not transmitted. (see [CIE_1931_color_space](https://en.wikipedia.org/wiki/CIE_1931_color_space)). e.g. `"xyz,0.25,0.34"`
 - An empty string ("") is not a valid payload
 
 #### DateTime
@@ -340,7 +340,7 @@ the formats for displaying values.
 | float        | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.<br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). The implementation should round property values to the nearest step (which can be outside the min/max range). The min/max validation must be done after rounding. |
 | integer      | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). The implementation should round property values to the nearest step (which can be outside the min/max range). The min/max validation must be done after rounding. |
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. If quotes or whitespace are used adjacent of the '`,`' (comma), then they are part of the value. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
-| color        | yes      |          | `rgb`, `hsv`, or `xyz`. See the [color type](#color) for the resulting value formats. |
+| color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 
 
