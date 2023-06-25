@@ -225,7 +225,7 @@ Because if the root device loses its connection to the MQTT server, the last wil
 
 The `$state` device attribute represents the current state of the device. **Important**: for child devices also the root-device state should be taken into account.
 
-There are 5 different states:
+There are 6 different states:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
@@ -237,6 +237,7 @@ You must send this message before cleanly disconnecting.
 You have to send this message before sleeping.
 * **`lost`**: this is the state the device is in when the device has been "badly" disconnected. **Important**: If a root-device `$state` is `"lost"` then the state of **every child device in its tree** is also `"lost"`.
 You must define this message as the last will (LWT) for root devices.
+* **`alert`**: in this state the device is connected to the MQTT broker, but something is wrong and needs human intervention. The device should be considered inoperable similar to the `init` state. When in this state, it is encouraged to use the [`$log` topic](#logging) to provide details on what is wrong.
 
 ### Nodes
 
