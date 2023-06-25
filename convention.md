@@ -36,10 +36,11 @@ root device (the device at the root of the parent-child tree).
 MQTT will treat an empty string payload as a "delete" instruction for the topic, therefor an
 empty string value is represented by a 1-character string containing a single byte value 0 (Hex: `0x00`, Dec: `0`).
 
-The empty string (passed as an MQTT payload) can only occur in 2 places;
+The empty string (passed as an MQTT payload) can only occur in 3 places;
 
 - `homie5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
 - `homie5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
+- `homie5` / `device ID` / `node ID` / `property ID` / `$target`; the target property value (for string types)
 
 This convention specifies no way to represent an actual value of a 1-character string with a single byte 0. If a device
 needs this, then it should provide an escape mechanism on the application level.
@@ -286,7 +287,14 @@ Each property must have a unique property ID on a per-node basis which adheres t
   A property is retained by default. A non-retained property would be useful for momentary events (doorbell pressed).
   See also [QoS settings](#qos-and-retained-messages).
 
-A combination of those flags compiles into this list:
+* If a Property is **settable** and a state change is not instantaneous, the Property may publish a `$target` attribute;
+  `homie` / `5` / `device ID` / `node ID` / `property ID` / **`$target`** . If implemented, then a device should first
+  update the `$target` value, then start the transition (with optional state-value updates during the transition), and
+  when done update the property value to equal the `$target` value. Examples might be a light that slowly dimms over a
+  longer period, or a motorized valve that takes several minutes to fully open. The `$target` property must either be
+  used for every value update (including the initial one), or it must never be used.
+
+A combination of the **settable** and **retained** flags compiles into this list:
 
 | retained | settable | description |
 |----------|----------|-------------|
@@ -389,7 +397,7 @@ You are not limited to the recommended values, although they are the only well k
 
 A Homie controller publishes to the `set` command topic with non-retained messages only. See [retained messages](#qos-and-retained-messages).
 
-The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `5` / `device ID` / `node ID` / `property ID` as soon as possible.
+The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `5` / `device ID` / `node ID` / `property ID` or target property `homie` / `5` / `device ID` / `node ID` / `property ID` / `$target` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
 To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/set` for commands:
@@ -402,6 +410,18 @@ In response, the device will turn on the light and upon success update its `powe
 
 ```java
 homie/5/kitchen-light/light/power → "true"
+```
+
+If the `light` were a dimmable light with a `brightness` property (0-100%), and it would be set to slowly dimm over 5 seconds, then the `$target` attribute can be used (assuming once per second updates);
+
+```java
+homie/5/kitchen-light/light/brightness/set ← 100
+homie/5/kitchen-light/light/brightness/$target → 100
+homie/5/kitchen-light/light/brightness → 20  (after 1 second)
+homie/5/kitchen-light/light/brightness → 40  (after 2 seconds)
+homie/5/kitchen-light/light/brightness → 60  (after 3 seconds)
+homie/5/kitchen-light/light/brightness → 80  (after 4 seconds)
+homie/5/kitchen-light/light/brightness → 100  (after 5 seconds)
 ```
 
 ## Broadcast Topic
