@@ -456,7 +456,9 @@ topic where devices can send log messages. The topic is defined as;
 
 * `homie` / `5` / `device ID` / `$log` / `level` 
 
-The topic-value is the logged message, no sub-topics are allowed. The `level` is set according to the following table:
+The topic-value is the logged message, no sub-topics are allowed.
+All log messages send should be non-retained.
+The `level` is set according to the following table:
 
 level   | description
 --------|------------
