@@ -297,33 +297,11 @@ For example, our `engine` node would look like this:
 * `homie` / `5` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
 Each property must have a unique property ID on a per-node basis which adheres to the [ID format](#topic-ids).
 
-* A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
-  ```java
-  homie/5/super-car/engine/temperature → "21.5"
-  ```
-  
-* Properties can be **settable**.
-  For example, you don't want your `temperature` property to be settable in case of a temperature sensor
-  (like the car example), but to be settable in the case of a thermostat.
-
-* Properties can be **retained**.
-  A property is retained by default. A non-retained property would be useful for momentary events (doorbell pressed).
-  See also [QoS settings](#qos-and-retained-messages).
-
-A combination of the **settable** and **retained** flags compiles into this list:
-
-| retained | settable | description |
-|----------|----------|-------------|
-| yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
-| yes      | no       | (default) The node publishes a property state (temperature sensor)
-| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
-| no       | no       | The node publishes momentary events (doorbell pressed)
-
-
 #### Property Attributes
 
 | Topic   | Required |   Description            |
 |---------|----------|----------------------------------------------------------------|
+|         | yes      | A property value (e.g. a sensor reading) is directly published to the property topic, e.g.: `homie/5/super-car/engine/temperature → "21.5"` |
 | $target | no       | Describes an intended state change. The `$target` property must either be used for every value update (including the initial one), or it must never be used. |
 
 The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
@@ -354,6 +332,25 @@ And the following MQTT topic with the reported property value:
 ```java
 homie/5/super-car/engine/temperature → "21.5"
 ```
+
+#### Settable and retained properties
+
+Properties can be **settable** and/or **retained**. For example, you don't want your `temperature`
+property to be settable in case of a temperature sensor (like the car example), but it should be
+settable in the case of a thermostat.
+
+A property is retained by default. A non-retained property would be useful for momentary events
+(e.g. doorbell pressed). See also [QoS settings](#qos-and-retained-messages).
+
+A combination of the **settable** and **retained** flags compiles into this list:
+
+| retained | settable | description |
+|----------|----------|-------------|
+| yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
+| yes      | no       | (**default**) The node publishes a property state (temperature sensor)
+| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
+| no       | no       | The node publishes momentary events (doorbell pressed)
+
 
 #### Formats
 
