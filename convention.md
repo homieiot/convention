@@ -310,13 +310,6 @@ Each property must have a unique property ID on a per-node basis which adheres t
   A property is retained by default. A non-retained property would be useful for momentary events (doorbell pressed).
   See also [QoS settings](#qos-and-retained-messages).
 
-* If a Property is **settable** and a state change is not instantaneous, the Property may publish a `$target` attribute;
-  `homie` / `5` / `device ID` / `node ID` / `property ID` / **`$target`** . If implemented, then a device should first
-  update the `$target` value, then start the transition (with optional state-value updates during the transition), and
-  when done update the property value to equal the `$target` value. Examples might be a light that slowly dimms over a
-  longer period, or a motorized valve that takes several minutes to fully open. The `$target` property must either be
-  used for every value update (including the initial one), or it must never be used.
-
 A combination of the **settable** and **retained** flags compiles into this list:
 
 | retained | settable | description |
@@ -329,7 +322,9 @@ A combination of the **settable** and **retained** flags compiles into this list
 
 #### Property Attributes
 
-There are no properties in MQTT topics for this level.
+| Topic   | Required |   Description            |
+|---------|----------|----------------------------------------------------------------|
+| $target | no       | Describes an intended state change. The `$target` property must either be used for every value update (including the initial one), or it must never be used. |
 
 The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
@@ -415,6 +410,21 @@ Recommended unit strings:
 The non-ASCII characters are specified as Unicode codepoints and the UTF-8 byte sequence that represents them. Since the same characters can be created in many visually similar ways it is important to stick to the exact byte sequences to enable proper interoperability.
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
+
+#### Target attribute
+
+This attribute allows a device to communicate an intended state change of a property. This serves 2 main
+purposes;
+
+1. closing the control loop for a controller setting a value (if the property is settable).
+2. feedback in case a change is not instantaneous (e.g. a light that slowly dimms over a longer period, or a
+   motorized valve that takes several minutes to fully open)
+
+If implemented, then a device must first update the `$target` value, then start the transition (with
+optional state-value updates during the transition), and when done update the property value to match the
+`$target` value (functional equivalent, not necessarily a byte-by-byte equality).
+
+If a new target is received (and accepted) from a controller by publishing to the property's `set` topic, then the exact value received must be published to the `$target` topic (byte-by-byte equality). To allow for closing the control loop.
 
 #### Property command topic
 
