@@ -249,7 +249,7 @@ You must define this message as the last will (LWT) for root devices.
 
 In order to unpublish / remove a device the following steps should be performed in order:
 1. remove the retained `$state` attribute from the broker by publishing a zero length payload message to its topic
-2. any other retained attributes or property values can be cleared via the same method afterwards
+2. any other retained attributes or property values should be cleared via the same method afterwards
 
 ### Nodes
 
