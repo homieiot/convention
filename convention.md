@@ -248,7 +248,7 @@ You must define this message as the last will (LWT) for root devices.
 * **`alert`**: in this state the device is connected to the MQTT broker, but something is wrong and needs human intervention. The device should be considered inoperable similar to the `init` state. When in this state, it is encouraged to use the [`$log` topic](#logging) to provide details on what is wrong.
 
 In order to unpublish / remove a device the following steps should be performed in order:
-1. remove the retained `$state` attribute from the broker by publishing a zero length payload message to it's topic
+1. remove the retained `$state` attribute from the broker by publishing a zero length payload message to its topic
 2. any other retained attributes or property values can be cleared via the same method afterwards
 
 ### Nodes
