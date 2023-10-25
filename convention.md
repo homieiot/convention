@@ -435,8 +435,9 @@ homie/5/kitchen-light/light/brightness → 100  (after 5 seconds)
 
 Homie defines a broadcast topic, so a controller can broadcast a message to all Homie devices:
 
-* `homie` / `5` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels.
-It must adhere to the [ID format](#topic-ids).
+* `homie` / `5` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels. It must adhere to the [ID format](#topic-ids).
+
+The messages SHOULD be non-retained.
 
 For example, you might want to broadcast an `alert` event with the alert reason as the payload.
 Devices are then free to react or not.
