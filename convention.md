@@ -497,31 +497,26 @@ If a device wishes to modify any of its nodes or properties, it can
 Devices can remove old properties and nodes by deleting the respective MQTT topics by publishing an empty message
 to those topics (an actual empty string on MQTT level, so NOT the escaped `0x00` byte, see also [empty string values](#empty-string-values)).
 
-To safely add/remove child-devices in a dynamic way, whilst keeping the parent-child tree consistent in
-any stage of the changes use the following approach;
+The recommended way to add/remove child device is as follows (note: due to MQTT message ordering consistency at any stage in this process cannot be guaranteed):
 
-* Adding:
-  * set child-device state to `"init"`
-  * set parent state to `"init"`
-  * update parent description (add the child ID to its `children` array)
-  * set parent state to `"ready"`
-  * publish device details
-  * set child-device state to `"ready"`
+#### Adding:
 
-* Removing, whilst leaving the device on the Homie network:
-  * set child-device state to `"disconnected"`
-  * set parent state to `"init"`
-  * update parent description (remove the child ID from its `children` array)
-  * update child-device description with cleared `"root"` and `"parent"` attributes
-  * set parent state to `"ready"`
+1. first publish the child-device(s), as any other device
+    1. set child-device state to `"init"`
+    1. publish child-device details (including parent details in `root` and `parent` fields)
+    1. set child-device state to `"ready"`
+1. update the parent device, as any other change
+    1. set parent state to `"init"`
+    1. update parent description (add the child ID to its `children` array)
+    1. set parent state to `"ready"`
 
-* Removing, permanently:
-  * set child-device state to `"disconnected"`
-  * set parent state to `"init"`
-  * update parent description (remove the child ID from its `children` array)
-  * clear child-device desciption (clear the `$description` attribute topic)
-  * set parent state to `"ready"`
-  * clear all child-device topics, removing `$state` last
+#### Removing:
+
+1. update the parent device
+    1. set parent state to `"init"`
+    1. update parent description (remove the child ID from its `children` array)
+    1. set parent state to `"ready"`
+1. clear child-device(s) topics, starting with the `$state` topic
 
 ## QoS choices explained
 
