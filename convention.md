@@ -125,8 +125,11 @@ If this root topic does not suit your needs (in case of, e.g., a public broker o
 you can change the first segment, but the `"/5/"` segment must be retained. This allows controllers
 to subscribe to only the devices they are compatible with.
 
+## Auto-Discovery
+
 Homie 5 controllers must by default perform auto-discovery on the wildcard topic `"+/5/+/$state"`.
 Controllers are free to restrict discovery to a specific root topic, configurable by the user.
+A zero length payload published on the $state topic indicates a device removal.
 
 ## Topology
 
@@ -228,9 +231,9 @@ Because if the root device loses its connection to the MQTT server, the last wil
 
 #### Device Lifecycle
 
-The `$state` device attribute represents the current state of the device. **Important**: for child devices also the root-device state should be taken into account.
+The `$state` device attribute represents the current state of the device. A device exists once a valid value is set in the `$state` property. It doesn't mean the device is complete and valid (yet), but it does mean it exists.
 
-There are 6 different states:
+There are 6 possible state values:
 
 * **`init`**: this is the state the device is in when it is connected to the MQTT broker, but has not yet sent all Homie messages and is not yet ready to operate.
 This state is optional and may be sent if the device takes a long time to initialize, but wishes to announce to consumers that it is coming online. 
@@ -243,6 +246,10 @@ You have to send this message before sleeping.
 * **`lost`**: this is the state the device is in when the device has been "badly" disconnected. **Important**: If a root-device `$state` is `"lost"` then the state of **every child device in its tree** is also `"lost"`.
 You must define this message as the last will (LWT) for root devices.
 * **`alert`**: in this state the device is connected to the MQTT broker, but something is wrong and needs human intervention. The device should be considered inoperable similar to the `init` state. When in this state, it is encouraged to use the [`$log` topic](#logging) to provide details on what is wrong.
+
+In order to permanently remove a device the following steps should be performed in order:
+1. remove the retained `$state` attribute from the broker by publishing a zero length payload message to its topic. The device will cease to exist.
+2. any other retained attributes or property values should be cleared via the same method afterwards.
 
 ### Nodes
 
