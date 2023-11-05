@@ -183,6 +183,7 @@ The JSON description document has the following format;
 | version   | integer      | yes      |         | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
 | nodes     |object        | no       | `{}`    | no       | The [Nodes](#nodes) the device exposes. An object containing the [Nodes](#nodes), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 | name      |string        | yes      |         | no       | Friendly name of the device. |
+| type      |string        | no       |         | no       | Type of Device. Please ensure proper namespacing to prevent naming collisions. |
 | children  |array-strings | no       | `[]`    | no       | Array of [ID](#topic-ids)'s of child devices. Defaults to an empty array.|
 | root      |string        | yes/no   |         | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is NOT the root device, MUST be omitted otherwise. |
 | parent    |string        | yes/no   | same as `root`| no | [ID](#topic-ids) of the parent device. **Required** if the parent is NOT the root device. Defaults to the value of the `root` property. |
@@ -258,6 +259,7 @@ The Node object itself is described in the `homie` / `5` / `device ID` / `$descr
 |Property   | Type         | Required | Default | Nullable | Description |
 |-----------|--------------|----------|---------|----------|-------------|
 | name      |string        | yes      |         | no       | Friendly name of the Node. |
+| type      |string        | no       |         | no       | Type of Node. Please ensure proper namespacing to prevent naming collisions. |
 | properties|object        | no       | `{}`    | no       | The [Properties](#properties) the Node exposes. An object containing the [Properties](#properties), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 
 For example, our `engine` node would look like this:
