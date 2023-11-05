@@ -229,6 +229,14 @@ Then these are the attribute values:
 To monitor the `state` of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
 Because if the root device loses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
 
+The `state` of any device should be determined as follows:
+| has a `root` set | `root` state | device state |
+|------------------|--------------|--------------|
+| no               | n.a.         | device state is the `state` property of the device itself
+| yes              | not `"lost"` | device state is the `state` property of the device itself
+| yes              | `"lost"`     | device state is `"lost"` (`state` property of the root device)
+
+
 #### Device Lifecycle
 
 The `$state` device attribute represents the current state of the device. A device exists once a valid value is set in the `$state` property. It doesn't mean the device is complete and valid (yet), but it does mean it exists.
@@ -550,7 +558,31 @@ If a device wishes to modify any of its nodes or properties, it can
 * disconnect and reconnect with other values, or
 * set `$state=init` and then modify any of the attributes.
 
-Devices can remove old properties and nodes by publishing a zero-length payload on the respective topics.
+Devices can remove old properties and nodes by deleting the respective MQTT topics by publishing an empty message
+to those topics (an actual empty string on MQTT level, so NOT the escaped `0x00` byte, see also [empty string values](#empty-string-values)).
+
+When adding many child devices, implementations should take care of not publishing too many parent-updates, since every controller would have to parse the description again and again.
+
+The recommended way to add/remove child device is as follows (note: due to MQTT message ordering consistency at any stage in this process cannot be guaranteed):
+
+#### Adding:
+
+1. first publish any child-devices, as any other device
+    1. set child-device state to `"init"`
+    1. publish child-device details (including parent details in `root` and `parent` fields)
+    1. set child-device state to `"ready"`
+1. update the parent device, as any other change
+    1. set parent state to `"init"`
+    1. update parent description (add any child IDs to its `children` array)
+    1. set parent state to `"ready"`
+
+#### Removing:
+
+1. update the parent device
+    1. set parent state to `"init"`
+    1. update parent description (remove any child IDs from its `children` array)
+    1. set parent state to `"ready"`
+1. clear any child-device(s) topics, starting with the `$state` topic
 
 ## QoS choices explained
 
