@@ -381,6 +381,7 @@ Recommended unit strings:
 * `kWh`: Kilowatt-hour
 * `A`: Ampere
 * `Hz`: Hertz
+* `rpm`: Revolutions per minute
 * `%`: Percent
 * `m`: Meter
 * `m³`: Cubic meter
