@@ -423,6 +423,13 @@ optional state-value updates during the transition), and when done update the pr
 
 If a new target is received (and accepted) from a controller by publishing to the property's `set` topic, then the exact value received must be published to the `$target` topic (byte-by-byte equality). To allow for closing the control loop.
 
+**Notes:**
+
+- a controller can only assume that the command it send to the `set` topic was received and accepted. Not necessarily that it will ever reach the target state, since if another controller updates the property again, it might never reach the target state.
+- The same goes for possible conversions (colors), rounding (number formats), etc. it will be very hard to check functional equivalence, since the value published may have a different format. So a controller should NOT implement a retry loop checking the final value. At best they should implement retries until the value set is being accepted.
+- Homie devices representing remote hardware (typically when bridging) should NOT set the `$target` attribute upon receiving a change from the hardware device. This is only allowed if the hardware explicitly distinguishes between current value and target value. This is to prevent a loop; e.g. a homie controller sets 100% as target, software instructs hardware to change, intermediate updates received from hardware; 20%, 40%, etc, should NOT overwrite the `$target` value, since that still is 100.
+
+
 #### Property command topic
 
 * `homie` / `5` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in the case of actuators for example).
