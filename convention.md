@@ -297,39 +297,12 @@ For example, our `engine` node would look like this:
 * `homie` / `5` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
 Each property must have a unique property ID on a per-node basis which adheres to the [ID format](#topic-ids).
 
-* A property payload (e.g. a sensor reading) is directly published to the property topic, e.g.:
-  ```java
-  homie/5/super-car/engine/temperature → "21.5"
-  ```
-  
-* Properties can be **settable**.
-  For example, you don't want your `temperature` property to be settable in case of a temperature sensor
-  (like the car example), but to be settable in the case of a thermostat.
-
-* Properties can be **retained**.
-  A property is retained by default. A non-retained property would be useful for momentary events (doorbell pressed).
-  See also [QoS settings](#qos-and-retained-messages).
-
-* If a Property is **settable** and a state change is not instantaneous, the Property may publish a `$target` attribute;
-  `homie` / `5` / `device ID` / `node ID` / `property ID` / **`$target`** . If implemented, then a device should first
-  update the `$target` value, then start the transition (with optional state-value updates during the transition), and
-  when done update the property value to equal the `$target` value. Examples might be a light that slowly dimms over a
-  longer period, or a motorized valve that takes several minutes to fully open. The `$target` property must either be
-  used for every value update (including the initial one), or it must never be used.
-
-A combination of the **settable** and **retained** flags compiles into this list:
-
-| retained | settable | description |
-|----------|----------|-------------|
-| yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
-| yes      | no       | (default) The node publishes a property state (temperature sensor)
-| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
-| no       | no       | The node publishes momentary events (doorbell pressed)
-
-
 #### Property Attributes
 
-There are no properties in MQTT topics for this level.
+| Topic   | Required |   Description            |
+|---------|----------|----------------------------------------------------------------|
+|         | yes      | A property value (e.g. a sensor reading) is directly published to the property topic, e.g.: `homie/5/super-car/engine/temperature → "21.5"` |
+| $target | no       | Describes an intended state change. The `$target` property must either be used for every value update (including the initial one), or it must never be used. |
 
 The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
@@ -359,6 +332,25 @@ And the following MQTT topic with the reported property value:
 ```java
 homie/5/super-car/engine/temperature → "21.5"
 ```
+
+#### Settable and retained properties
+
+Properties can be **settable** and/or **retained**. For example, you don't want your `temperature`
+property to be settable in case of a temperature sensor (like the car example), but it should be
+settable in the case of a thermostat.
+
+A property is retained by default. A non-retained property would be useful for momentary events
+(e.g. doorbell pressed). See also [QoS settings](#qos-and-retained-messages).
+
+A combination of the **settable** and **retained** flags compiles into this list:
+
+| retained | settable | description |
+|----------|----------|-------------|
+| yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
+| yes      | no       | (**default**) The node publishes a property state (temperature sensor)
+| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
+| no       | no       | The node publishes momentary events (doorbell pressed)
+
 
 #### Formats
 
@@ -415,6 +407,28 @@ Recommended unit strings:
 The non-ASCII characters are specified as Unicode codepoints and the UTF-8 byte sequence that represents them. Since the same characters can be created in many visually similar ways it is important to stick to the exact byte sequences to enable proper interoperability.
 
 You are not limited to the recommended values, although they are the only well known ones that will have to be recognized by any Homie consumer.
+
+#### Target attribute
+
+This attribute allows a device to communicate an intended state change of a property. This serves 2 main
+purposes;
+
+1. closing the control loop for a controller setting a value (if the property is settable).
+2. feedback in case a change is not instantaneous (e.g. a light that slowly dimms over a longer period, or a
+   motorized valve that takes several minutes to fully open)
+
+If implemented, then a device must first update the `$target` value, then start the transition (with
+optional state-value updates during the transition), and when done update the property value to match the
+`$target` value (functional equivalent, not necessarily a byte-by-byte equality).
+
+If a new target is received (and accepted) from a controller by publishing to the property's `set` topic, then the exact value received must be published to the `$target` topic (byte-by-byte equality). To allow for closing the control loop.
+
+**Notes:**
+
+- a controller can only assume that the command it send to the `set` topic was received and accepted. Not necessarily that it will ever reach the target state, since if another controller updates the property again, it might never reach the target state.
+- The same goes for possible conversions (colors), rounding (number formats), etc. it will be very hard to check functional equivalence, since the value published may have a different format. So a controller should NOT implement a retry loop checking the final value. At best they should implement retries until the value set is being accepted.
+- Homie devices representing remote hardware (typically when bridging) should NOT set the `$target` attribute upon receiving a change from the hardware device. This is only allowed if the hardware explicitly distinguishes between current value and target value. This is to prevent a loop; e.g. a homie controller sets 100% as target, software instructs hardware to change, intermediate updates received from hardware; 20%, 40%, etc, should NOT overwrite the `$target` value, since that still is 100.
+
 
 #### Property command topic
 
