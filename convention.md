@@ -118,6 +118,12 @@ S: Indicates seconds, preceded by the number of seconds, if seconds are specifie
 - Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes.
 - The payload MUST be either a JSON-Array or JSON-Object type, for other types the standard Homie types should be used.
 
+#### Binary
+
+- Contains raw bytes of data.
+- Recommended for data that cannot be efficiently represented as string like pictures or audio samples.
+- More information about the data can be provided in the format.
+
 ## Base Topic
 
 The root topic in this document is `"homie/5/"`.
@@ -364,7 +370,7 @@ the formats for displaying values.
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. The formats should be listed in order of preference (most preferred first, least preferred last). See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV, where RGB is preferred, would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 | json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONSchema](http://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
-
+| binary       | no       |  `application/octet-stream` | Any media type (also known as MIME type) that indicates the nature and the format of the data. [IANA Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml) is the standardized and official data source for possible values. 
 
 #### Units
 
