@@ -38,9 +38,9 @@ empty string value is represented by a 1-character string containing a single by
 
 The empty string (passed as an MQTT payload) can only occur in 3 places;
 
-- `homie5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
-- `homie5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
-- `homie5` / `device ID` / `node ID` / `property ID` / `$target`; the target property value (for string types)
+- `homie` / `5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
+- `homie` / `5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
+- `homie` / `5` / `device ID` / `node ID` / `property ID` / `$target`; the target property value (for string types)
 
 This convention specifies no way to represent an actual value of a 1-character string with a single byte 0. If a device
 needs this, then it should provide an escape mechanism on the application level.
