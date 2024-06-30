@@ -45,26 +45,26 @@ The empty string (passed as an MQTT payload) can only occur in 3 places;
 This convention specifies no way to represent an actual value of a 1-character string with a single byte 0. If a device
 needs this, then it should provide an escape mechanism on the application level.
 
-### Payload
+## Payloads
 
 - Every MQTT message payload MUST be sent as a UTF-8 encoded string
 - The message MUST NOT include the UTF-8 [BOM](https://en.wikipedia.org/wiki/Byte_order_mark)
 - The value published as payload MUST be valid for the respective property/attribute type as per the list below
  
-#### String
+### String
 
 - String types are limited to 268,435,456 characters 
-- An empty string ("") is a valid payload
+- An [empty string](#empty-string-values) ("") is a valid payload
  
-#### Integer
+### Integer
 
 - Integer types are string literal representations of 64-bit signed whole numbers
 - Integers range from -9,223,372,036,854,775,808 (-2<sup>63</sup>) to 9,223,372,036,854,775,807 (2<sup>63</sup>-1)
 - The payload may only contain whole numbers and the negation character "-". No other characters including spaces (" ") are permitted 
 - A string with just a negation sign ("-") is not a valid payload
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
  
-#### Float
+### Float
 
 - Float types are string literal representations of 64-bit signed floating point numbers
 - Floats range from +/-(2^-1074) to +/-((2 - 2^-52) * 2^1023)
@@ -72,22 +72,22 @@ needs this, then it should provide an escape mechanism on the application level.
 - The dot character (".") is the decimal separator (used if necessary) and may only have a single instance present in the payload
 - Representations of numeric concepts such as "NaN" (Not a Number) and "Infinity" are not a valid payload
 - A string with just a negation sign ("-") is not a valid payload
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
  
-#### Boolean
+### Boolean
 
 - Booleans must be converted to the string literals "true" or "false"
 - Representation is case sensitive, e.g. "TRUE" or "FALSE" are not valid payloads.
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
  
-#### Enum
+### Enum
 
 - Enum payloads must be one of the values specified in the format definition of the property
 - Enum payloads are case sensitive, e.g. "Car" will not match a format definition of "car"
 - Leading- and trailing-whitespace is significant, e.g. "Car" will not match " Car".
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
  
-#### Color
+### Color
 
 - Color payload validity varies depending on the property format definition of either "rgb", "hsv", or "xyz"
 - All payload types contain comma-separated data of differing restricted ranges. The first being the type, followed by numbers. The numbers must conform to the [float](#float) format
@@ -95,14 +95,14 @@ needs this, then it should provide an escape mechanism on the application level.
 - Payloads for type "rgb" contain 3 comma-separated values of [floats](#float) (`r`, `g`, `b`) with a valid range between 0 and 255 (inclusive). e.g. `"rgb,100,100,100"`
 - Payloads for type "hsv" contain 3 comma-separated values of [floats](#float). The first number (`h`) has a range of 0 to 360 (inclusive), and the second and third numbers (`s` and `v`) have a range of 0 to 100 (inclusive).  e.g. `"hsv,300,50,75"`
 - Payloads for type "xyz" contain 2 comma separated values of [floats](#float) (`x`, `y`) with a valid range between 0 and 1 (inclusive). The "z" value can be calculated via `z=1-x-y` and is therefore not transmitted. (see [CIE_1931_color_space](https://en.wikipedia.org/wiki/CIE_1931_color_space)). e.g. `"xyz,0.25,0.34"`
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
 
-#### DateTime
+### DateTime
 
 - DateTime payloads must use the ISO [8601 format](https://en.wikipedia.org/wiki/ISO_8601). 
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
 
-#### Duration
+### Duration
 
 - Duration payloads must use the [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations)
 - The format is PTHHMMSSS, where:
@@ -111,16 +111,16 @@ T: Required and indicates a time.
 H: Indicates hour and is preceded by the number of hours, if hours are specified.
 M: Indicates minutes, and is preceded by the number of minutes, if minutes are specified.
 S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
-- An empty string ("") is not a valid payload
+- An [empty string](#empty-string-values) ("") is not a valid payload
 
-#### JSON
+### JSON
 
 - Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes.
 - The payload MUST be either a JSON-Array or JSON-Object type, for other types the standard Homie types should be used.
 
 ## Base Topic
 
-The root topic in this document is `"homie/5/"`.
+The root topic in this convention is `"homie/5/"`.
 If this root topic does not suit your needs (in case of, e.g., a public broker or because of branding),
 you can change the first segment, but the `"/5/"` segment must be retained. This allows controllers
 to subscribe to only the devices they are compatible with.
@@ -129,9 +129,9 @@ to subscribe to only the devices they are compatible with.
 
 Homie 5 controllers must by default perform auto-discovery on the wildcard topic `"+/5/+/$state"`.
 Controllers are free to restrict discovery to a specific root topic, configurable by the user.
-A zero length payload published on the $state topic indicates a device removal.
+A zero length payload published on the `$state` topic indicates a device removal, see [device lifecycle](#device-lifecycle).
 
-## Topology
+## Topology and structure
 
 **Devices:**
 An instance of a physical piece of hardware is called a *device*.
@@ -363,7 +363,7 @@ the formats for displaying values.
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. The formats should be listed in order of preference (most preferred first, least preferred last). See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV, where RGB is preferred, would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
-| json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONSchema](http://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
+| json         | no       | `{"anyOf": [{"type": "array"},{"type": "object"}]}` | A [JSONschema](http://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
 
 
 #### Units
@@ -375,7 +375,7 @@ Recommended unit strings:
 * `°`: Degree
   * Character '°' is [Unicode: `U+00B0`](https://www.compart.com/en/unicode/U+00B0), Hex: `0xc2 0xb0`, Dec: `194 176`
 * `L`: Liter
-* `gal`: Galon
+* `gal`: Gallon
 * `V`: Volts
 * `W`: Watt
 * `kW`: Kilowatt
@@ -483,7 +483,7 @@ In the examples above, once the situation is resolved (the sensor comes back to 
 
 Homie defines a broadcast topic, so a controller can broadcast a message to all Homie devices:
 
-* `homie` / `5` / `$broadcast` / **`subtopic`**: `subtopic` can be any topic with single or multiple levels. It must adhere to the [ID format](#topic-ids).
+* `homie` / `5` / `$broadcast` / **`subtopic`**: where `subtopic` can be any topic with single or multiple levels. Each segement must adhere to the [ID format](#topic-ids).
 
 The messages SHOULD be non-retained.
 
@@ -495,8 +495,6 @@ In our case, every buzzer of your home automation system would start buzzing.
 homie/5/$broadcast/alert ← "Intruder detected"
 homie/5/$broadcast/security/alert ← "Intruder detected"
 ```
-
-Any other topic is not part of the Homie convention.
 
 ### Logging
 
@@ -542,31 +540,6 @@ Every extension must be published using a license.
 The license can be chosen freely, even proprietary licenses are possible.
 The recommended license is the [CCA 4.0](https://homieiot.github.io/license) since this is the license Homie itself uses.
 
-## Versioning
-
-Some considerations related to versioning in this specification;
-
-* compatibility is assumed to be major version only, so version 5 for this spec.
-* the base topic includes the major version. This allows controllers to only subscribe to devices they are
-compatible with.
-
-### Backward compatibility
-
-* backward compatibility: a v5 controller controlling a v5 device with a smaller minor version. Eg. a v5.3 
-controller sending commands to a v5.0 device.
-* Controllers should be aware of unsupported features in older major or minor versions they subscribe to because the spec for that version is known.
-
-### Forward compatibility
-
-* forward compatibility: a v5 controller controlling a v5 device with a higher minor version. Eg. a v5.0
-controller sending commands to a v5.2 device.
-* Controllers should ignore unknown fields, properties, attributes, etc. within an object (device, node, or property), but keep the object itself.
-* Controllers should ignore the entire object (device, node, or property) if in a known field, property, or attribute an illegal value is encountered. For example;
-  * illegal characters in a topic or name
-  * unknown data type
-  * unknown/illegal format
-  * required element missing
-
 
 ## Implementation notes
 
@@ -597,7 +570,7 @@ When adding many child devices, implementations should take care of not publishi
 
 The recommended way to add/remove child device is as follows (note: due to MQTT message ordering consistency at any stage in this process cannot be guaranteed):
 
-#### Adding:
+#### Adding children
 
 1. first publish any child-devices, as any other device
     1. set child-device state to `"init"`
@@ -608,7 +581,7 @@ The recommended way to add/remove child device is as follows (note: due to MQTT 
     1. update parent description (add any child IDs to its `children` array)
     1. set parent state to `"ready"`
 
-#### Removing:
+#### Removing children
 
 1. update the parent device
     1. set parent state to `"init"`
@@ -616,20 +589,34 @@ The recommended way to add/remove child device is as follows (note: due to MQTT 
     1. set parent state to `"ready"`
 1. clear any child-device(s) topics, starting with the `$state` topic
 
-## QoS choices explained
+### Versioning
 
-The nature of the Homie convention makes it safe about duplicate messages, so QoS levels for reliability **At least once (QoS 1)** 
-and **Exactly once (QoS 2)** should both be fine. The recommended level is **Exactly once (QoS 2)**, since a resend on QoS 1 might have a different order, and hence is slightly less reliable, in case another device sends a new message that lands in between the 'send' and 'resend' of the first message. However, the probability of that happening is most likely negligible.
+Some considerations related to versioning in this specification;
 
-Keep in mind that if you change the QoS level to **At least once (QoS 1)**, then it should be done so for the entire Homie network.
-Because the MQTT order will not hold if the QoS levels of messages are different. That said; anyone who accepts the lesser reliability of
-**At least once (QoS 1)**, will most likely also not care about the potential ordering issue of mixed QoS levels.
+* compatibility is assumed to be major version only, so version 5 for this spec.
+* the base topic includes the major version. This allows controllers to only subscribe to devices they are
+compatible with.
 
-For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time-sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
+#### Backward compatibility
 
-## JSON considerations
+* backward compatibility: a v5 controller controlling a v5 device with a smaller minor version. Eg. a v5.3 
+controller sending commands to a v5.0 device.
+* Controllers should be aware of unsupported features in older major or minor versions they subscribe to because the spec for that version is known.
 
-Validation of JSON payloads is hard. The most common approach to validate JSON data is to use [JSONSchema](http://json-schema.org/).
+#### Forward compatibility
+
+* forward compatibility: a v5 controller controlling a v5 device with a higher minor version. Eg. a v5.0
+controller sending commands to a v5.2 device.
+* Controllers should ignore unknown fields, properties, attributes, etc. within an object (device, node, or property), but keep the object itself.
+* Controllers should ignore the entire object (device, node, or property) if in a known field, property, or attribute an illegal value is encountered. For example;
+  * illegal characters in a topic or name
+  * unknown data type
+  * unknown/illegal format
+  * required element missing
+
+### JSON considerations
+
+Validation of JSON payloads is hard. The most common approach to validate JSON data is to use [JSONschema](http://json-schema.org/).
 Unfortunately JSONschema is not a standard, it is a long list of mostly incompatible drafts of a potential standard. And as such one
 has to take into account the potential differences in implementations. This is about the JSONschema specifics itself as well as its reliance on RegEx engines for string validations, which are also known to be riddled with incompatibilities (typically language/platform specific).
 
@@ -642,3 +629,14 @@ General recommendations;
   - restrict them to character classes and modifiers (`"+", "-", "*", "?"`)
   - do not use back-tracking and OR (`"|"`) constructs (the OR construct can typically be handled on the JSONschema level using an `anyOf` construct)
 - If a device fails to parse the JSONschema, or a RegEx, then by default it should skip validation and assume the payload is valid.
+
+### QoS choices explained
+
+The nature of the Homie convention makes it safe about duplicate messages, so QoS levels for reliability **At least once (QoS 1)** 
+and **Exactly once (QoS 2)** should both be fine. The recommended level is **Exactly once (QoS 2)**, since a resend on QoS 1 might have a different order, and hence is slightly less reliable, in case another device sends a new message that lands in between the 'send' and 'resend' of the first message. However, the probability of that happening is most likely negligible.
+
+Keep in mind that if you change the QoS level to **At least once (QoS 1)**, then it should be done so for the entire Homie network.
+Because the MQTT order will not hold if the QoS levels of messages are different. That said; anyone who accepts the lesser reliability of
+**At least once (QoS 1)**, will most likely also not care about the potential ordering issue of mixed QoS levels.
+
+For **non-retained** properties the QoS level is **At most once (QoS 0)** to ensure that events don't arrive late or multiple times. Because the events and commands are time-sensitive. With **At most once (QoS 0)** messages will not be queued by the broker for delivery if the subscriber (a device or controller) is currently disconnected. Which effectively translates to "either you get it now, or you don't get it at all".
