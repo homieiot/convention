@@ -496,7 +496,7 @@ homie/5/$broadcast/alert ← "Intruder detected"
 homie/5/$broadcast/security/alert ← "Intruder detected"
 ```
 
-### Logging
+## Logging
 
 Since devices may be resource constraint they might not have logging capabilities. Homie provides a specific
 topic where devices can send log messages. The topic is defined as;
