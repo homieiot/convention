@@ -1,0 +1,17 @@
+name: Trigger Website CI
+
+on:
+  push:
+    branches: [develop]
+    tags: ['**']
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.WEBSITE_DISPATCH_PAT }}
+          repository: homieiot/homieiot.github.io
+          event-type: website-deploy
