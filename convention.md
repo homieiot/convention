@@ -27,7 +27,7 @@ For QoS details see [the explanation](#qos-choices-explained).
 
 ### Last Will
 
-Homie requires the last will (LWT) to set the `homie` / `5` / `device ID` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
+Homie requires the last will (LWT) to set the `homie` / `5` / `[device ID]` / `$state` attribute to the value **`lost`**, see [Device Lifecycle](#device-lifecycle).
 MQTT only allows one last will message per connection, but since a device can have children, the LWT message MUST be set on the
 root device (the device at the root of the parent-child tree).
 
@@ -38,9 +38,9 @@ empty string value is represented by a 1-character string containing a single by
 
 The empty string (passed as an MQTT payload) can only occur in 3 places;
 
-- `homie` / `5` / `device ID` / `node ID` / `property ID`; reported property values (for string types)
-- `homie` / `5` / `device ID` / `node ID` / `property ID` / `set`; the topic to set properties (of string types)
-- `homie` / `5` / `device ID` / `node ID` / `property ID` / `$target`; the target property value (for string types)
+- `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]`; reported property values (for string types)
+- `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]` / `set`; the topic to set properties (of string types)
+- `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]` / `$target`; the target property value (for string types)
 
 This convention specifies no way to represent an actual value of a 1-character string with a single byte 0. If a device
 needs this, then it should provide an escape mechanism on the application level.
@@ -105,12 +105,13 @@ needs this, then it should provide an escape mechanism on the application level.
 ### Duration
 
 - Duration payloads must use the [ISO 8601 duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations)
-- The format is PTHHMMSSS, where:
-P: Required and indicates a duration.
-T: Required and indicates a time.
-H: Indicates hour and is preceded by the number of hours, if hours are specified.
-M: Indicates minutes, and is preceded by the number of minutes, if minutes are specified.
-S: Indicates seconds, preceded by the number of seconds, if seconds are specified.
+- The format is `PTxHxMxS`, where:
+`P`: Indicates a period/duration (required).
+`T`: Indicates a time (required).
+`xH`: Hours, where `x` represents the number of hours (optional).
+`xM`: Minutes, where `x` represents the number of minutes (optional).
+`xS`: Seconds, where `x` represents the number of seconds (optional).
+- Examples: `PT12H5M46S` (12 hours, 5 minutes, 46 seconds), `PT5M` (5 minutes)
 - An [empty string](#empty-string-values) ("") is not a valid payload
 
 ### JSON
@@ -161,36 +162,36 @@ Examples: A device might have an `IP` attribute, a node will have a `name` attri
 
 ### Devices
 
-* `homie` / `5` / **`device ID`**: this is the base topic of a device.
+* `homie` / `5` / **`[device ID]`**: this is the base topic of a device.
 Each device must have a unique device ID that adheres to the [ID format](#topic-ids).
 
 #### Device Attributes
 
 The following topic structure will be used to expose the device attributes:
 
-* `homie` / `5` / `device ID` / **`$device-attribute`**:
+* `homie` / `5` / `[device ID]` / **`[$device-attribute]`**:
 
 Devices have the following attributes:
 
-| Topic       | Required |                                                    Description            |
+| Attribute   | Required |                                                    Description            |
 |-------------|----------|----------------------------------------------------------------|
-| $state      | yes | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
-| $description| yes | The description document (JSON), describing the device, nodes, and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
-| $log        | no | A topic that allows devices to log messages. See [Logging](#logging) |
+| `$state`      | yes | Reflects the current state of the device. See [Device Lifecycle](#device-lifecycle) |
+| `$description`| yes | The description document (JSON), describing the device, nodes, and properties of this device. **Important**: this value may only change when the device `$state` is either `init`, `disconnected`, or `lost`. |
+| `$log`        | no | A topic that allows devices to log messages. See [Logging](#logging) |
 
-The JSON description document has the following format;
+The JSON description document is a JSON object with the following fields;
 
-| Property  | Type         | Required | Default | Nullable | Description |
+| Field     | Type         | Required | Default | Nullable | Description |
 |-----------|--------------|----------|---------|----------|-------------|
-| homie     |string        | yes      |         | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
-| version   | integer      | yes      |         | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
-| nodes     |object        | no       | `{}`    | no       | The [Nodes](#nodes) the device exposes. An object containing the [Nodes](#nodes), indexed by their [ID](#topic-ids). Defaults to an empty object.|
-| name      |string        | yes      |         | no       | Friendly name of the device. |
-| type      |string        | no       |         | no       | Type of Device. Please ensure proper namespacing to prevent naming collisions. |
-| children  |array-strings | no       | `[]`    | no       | Array of [ID](#topic-ids)'s of child devices. Defaults to an empty array.|
-| root      |string        | yes/no   |         | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is NOT the root device, MUST be omitted otherwise. |
-| parent    |string        | yes/no   | same as `root`| no | [ID](#topic-ids) of the parent device. **Required** if the parent is NOT the root device. Defaults to the value of the `root` property. |
-| extensions|array-strings | no       | `[]`    | no       | Array of supported extensions. Defaults to an empty array.|
+| `homie`     |string        | yes      |         | no       | The implemented Homie convention version, without the "patch" level. So the format is `"5.x"`, where the `'x'` is the minor version. |
+| `version`   | integer      | yes      |         | no       | The version of the description document. Whenever the document changes, a new higher version must be assigned. This does not need to be sequential, eg. a timestamp could be used. |
+| `nodes`     |object        | no       | `{}`    | no       | The [Nodes](#nodes) the device exposes. An object containing the [Nodes](#nodes), indexed by their [ID](#topic-ids). Defaults to an empty object.|
+| `name`      |string        | yes      |         | no       | Friendly name of the device. |
+| `type`      |string        | no       |         | no       | Type of Device. Please ensure proper namespacing to prevent naming collisions. |
+| `children`  |array-strings | no       | `[]`    | no       | Array of [ID](#topic-ids)'s of child devices. Defaults to an empty array.|
+| `root`      |string        | yes/no   |         | no       | [ID](#topic-ids) of the root parent device. **Required** if the device is NOT the root device, MUST be omitted otherwise. |
+| `parent`    |string        | yes/no   | same as `root`| no | [ID](#topic-ids) of the parent device. **Required** if the parent is NOT the root device. Defaults to the value of the `root` property. |
+| `extensions`|array-strings | no       | `[]`    | no       | Array of supported extensions. Defaults to an empty array.|
 
 For example, a device with an ID of `super-car` that comprises of a `wheels`, `engine`, and a `lights` node would send:
 ```java
@@ -227,20 +228,20 @@ Then these are the attribute values:
 | First light  | "light1"    |                      | "bridge" | "dualrelay" |
 | Second light | "light2"    |                      | "bridge" | "dualrelay" |
 
-To monitor the `state` of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
+To monitor the state of child devices in this tree 2 topic subscriptions are needed. The `$state` attribute of the device itself, as well as the `$state` attribute of its root device.
 Because if the root device loses its connection to the MQTT server, the last will (LWT), will set its `$state` attribute to `"lost"`, but it will not update the child-device states. Hence the need for 2 topic subscriptions.
 
 The `state` of any device should be determined as follows:
 | has a `root` set | `root` state | device state |
 |------------------|--------------|--------------|
-| no               | n.a.         | device state is the `state` property of the device itself
-| yes              | not `"lost"` | device state is the `state` property of the device itself
-| yes              | `"lost"`     | device state is `"lost"` (`state` property of the root device)
+| no               | n.a.         | device state is the `$state` attribute of the device itself
+| yes              | not `"lost"` | device state is the `$state` attribute of the device itself
+| yes              | `"lost"`     | device state is `"lost"` (`$state` attribute of the root device)
 
 
 #### Device Lifecycle
 
-The `$state` device attribute represents the current state of the device. A device exists once a valid value is set in the `$state` property. It doesn't mean the device is complete and valid (yet), but it does mean it exists.
+The `$state` device attribute represents the current state of the device. A device exists once a valid value is set in the `$state` attribute. It doesn't mean the device is complete and valid (yet), but it does mean it exists.
 
 There are 5 possible state values:
 
@@ -261,20 +262,20 @@ In order to permanently remove a device the following steps should be performed 
 
 ### Nodes
 
-* `homie` / `5` / `device ID` / **`node ID`**: this is the base topic of a node.
+* `homie` / `5` / `[device ID]` / **`[node ID]`**: this is the base topic of a node.
 Each node must have a unique node ID on a per-device basis which adheres to the [ID format](#topic-ids).
 
 #### Node Attributes
 
-There are no node properties in MQTT topics for this level.
+There are no node attributes in MQTT topics for this level.
 
-The Node object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Node object has the following fields:
+The Node object itself is described in the `homie` / `5` / `[device ID]` / `$description` JSON document. The Node object has the following fields:
 
-|Property   | Type         | Required | Default | Nullable | Description |
-|-----------|--------------|----------|---------|----------|-------------|
-| name      |string        | yes      |         | no       | Friendly name of the Node. |
-| type      |string        | no       |         | no       | Type of Node. Please ensure proper namespacing to prevent naming collisions. |
-| properties|object        | no       | `{}`    | no       | The [Properties](#properties) the Node exposes. An object containing the [Properties](#properties), indexed by their [ID](#topic-ids). Defaults to an empty object.|
+| Field       | Type         | Required | Default | Nullable | Description |
+|-------------|--------------|----------|---------|----------|-------------|
+| `name`      |string        | yes      |         | no       | Friendly name of the Node. |
+| `type`      |string        | no       |         | no       | Type of Node. Please ensure proper namespacing to prevent naming collisions. |
+| `properties`|object        | no       | `{}`    | no       | The [Properties](#properties) the Node exposes. An object containing the [Properties](#properties), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 
 For example, our `engine` node would look like this:
 
@@ -293,26 +294,26 @@ For example, our `engine` node would look like this:
 
 ### Properties
 
-* `homie` / `5` / `device ID` / `node ID` / **`property ID`**: this is the base topic of a property.
+* `homie` / `5` / `[device ID]` / `[node ID]` / **`[property ID]`**: this is the base topic of a property.
 Each property must have a unique property ID on a per-node basis which adheres to the [ID format](#topic-ids).
 
 #### Property Attributes
 
-| Topic   | Required |   Description            |
-|---------|----------|----------------------------------------------------------------|
-|         | yes      | A property value (e.g. a sensor reading) is directly published to the property topic, e.g.: `homie/5/super-car/engine/temperature → "21.5"` |
-| $target | no       | Describes an intended state change. The `$target` property must either be used for every value update (including the initial one), or it must never be used. |
+| Attribute | Required |   Description            |
+|-----------|----------|----------------------------------------------------------------|
+|           | yes      | A property value (e.g. a sensor reading) is directly published to the property topic, e.g.: `homie/5/super-car/engine/temperature → "21.5"` |
+| `$target` | no       | Describes an intended state change. The `$target` attribute must either be used for every value update (including the initial one), or it must never be used. |
 
 The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
 
-|Property   | Type         | Required | Default  | Nullable | Description |
+| Field     | Type         | Required | Default  | Nullable | Description |
 |-----------|--------------|----------|----------|----|---------|
-| name      | string       | yes      |          | no | Friendly name of the Property. |
-| datatype  | string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration", "json"`. |
-| format    | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
-| settable  | boolean      | no       | `false`  | no | Whether the Property is settable. |
-| retained  | boolean      | no       | `true`   | no | Whether the Property is retained. |
-| unit      | string       | no       |          | no | Unit of this property. See [units](#units). |
+| `name`    | string       | yes      |          | no | Friendly name of the Property. |
+| `datatype`| string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration", "json"`. |
+| `format`  | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
+| `settable`| boolean      | no       | `false`  | no | Whether the Property is settable. |
+| `retained`| boolean      | no       | `true`   | no | Whether the Property is retained. |
+| `unit`    | string       | no       |          | no | Unit of this property. See [units](#units). |
 
 
 For example, our `temperature` property would look like this in the device/node description document:
@@ -336,7 +337,7 @@ homie/5/super-car/engine/temperature → "21.5"
 
 Properties can be **settable** and/or **retained**. For example, you don't want your `temperature`
 property to be settable in case of a temperature sensor (like the car example), but it should be
-settable in the case of a thermostat.
+settable in the case of a thermostat setpoint.
 
 A property is retained by default. A non-retained property would be useful for momentary events
 (e.g. doorbell pressed). See also [QoS settings](#qos-and-retained-messages).
@@ -347,7 +348,7 @@ A combination of the **settable** and **retained** flags compiles into this list
 |----------|----------|-------------|
 | yes      | yes      | The node publishes a property state and can receive commands for the property (by a controller or other party) (lamp power)
 | yes      | no       | (**default**) The node publishes a property state (temperature sensor)
-| no       | yes      | The node publishes momentary events and can receive commands for the property (by a controller or other party) (brew coffee)
+| no       | yes      | The node publishes momentary events and can receive commands for the property from a controller (brew coffee)
 | no       | no       | The node publishes momentary events (doorbell pressed)
 
 
@@ -409,14 +410,14 @@ You are not limited to the recommended values, although they are the only well k
 
 #### Target attribute
 
-This attribute allows a device to communicate an intended state change of a property. This serves 2 main
+The `$target` attribute for properties allows a device to communicate an intended state change of a property. This serves 2 main
 purposes;
 
 1. closing the control loop for a controller setting a value (if the property is settable).
 2. feedback in case a change is not instantaneous (e.g. a light that slowly dimms over a longer period, or a
    motorized valve that takes several minutes to fully open)
 
-If implemented, then a device must first update the `$target` value, then start the transition (with
+If implemented, then a device must first update the `$target` attribute, then start the transition (with
 optional state-value updates during the transition), and when done update the property value to match the
 `$target` value (functional equivalent, not necessarily a byte-by-byte equality).
 
@@ -431,11 +432,11 @@ If a new target is received (and accepted) from a controller by publishing to th
 
 #### Property command topic
 
-* `homie` / `5` / `device ID` / `node ID` / `property ID` / **`set`**: The device must subscribe to this topic if the property is **settable** (in the case of actuators for example).
+* `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]` / **`set`**: The device must subscribe to this topic if the property is **settable** (in the case of actuators for example).
 
 A Homie controller publishes to the `set` command topic with non-retained messages only. See [retained messages](#qos-and-retained-messages).
 
-The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `5` / `device ID` / `node ID` / `property ID` or target property `homie` / `5` / `device ID` / `node ID` / `property ID` / `$target` as soon as possible.
+The assigned and processed payload must be reflected by the Homie device in the property topic `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]` or target attribute `homie` / `5` / `[device ID]` / `[node ID]` / `[property ID]` / `$target` as soon as possible.
 This property state update not only informs other devices about the change but closes the control loop for the commanding controller, important for deterministic interaction with the client device.
 
 To give an example: A `kitchen-light` device exposing the `light` node with a settable `power` property subscribes to the topic `homie/5/kitchen-light/light/power/set` for commands:
@@ -450,7 +451,7 @@ In response, the device will turn on the light and upon success update its `powe
 homie/5/kitchen-light/light/power → "true"
 ```
 
-If the `light` were a dimmable light with a `brightness` property (0-100%), and it would be set to slowly dimm over 5 seconds, then the `$target` attribute can be used (assuming once per second updates);
+If the `light` were a dimmable light with a `brightness` property (0-100%), and it would be set to slowly dim over 5 seconds, then the `$target` attribute can be used (assuming once per second updates);
 
 ```java
 homie/5/kitchen-light/light/brightness/set ← 100
@@ -467,7 +468,7 @@ homie/5/kitchen-light/light/brightness → 100  (after 5 seconds)
 Devices can raise alerts. Alerts are user facing messages that have an ID, they can be set and removed.
 The alert topic is defined as;
 
-* `homie` / `5` / `device ID` / `$alert` / `alert ID` → "alert message"
+* `homie` / `5` / `[device ID]` / `$alert` / `[alert ID]` → "alert message"
 
 A device can raise a message on a specific ID. Once the alert is no longer usefull or has been resolved, it can be removed by deleting the topic. Alerts must be send as retained messages. The alert ID must have a valid [ID format](#topic-ids), where topic ID's starting with `$` are reserved for Homie usage.
 
@@ -483,7 +484,7 @@ In the examples above, once the situation is resolved (the sensor comes back to 
 
 Homie defines a broadcast topic, so a controller can broadcast a message to all Homie devices:
 
-* `homie` / `5` / `$broadcast` / **`subtopic`**: where `subtopic` can be any topic with single or multiple levels. Each segement must adhere to the [ID format](#topic-ids).
+* `homie` / `5` / `$broadcast` / **`[subtopic]`**: where `subtopic` can be any topic with single or multiple levels. Each segement must adhere to the [ID format](#topic-ids).
 
 The messages SHOULD be non-retained.
 
@@ -501,7 +502,7 @@ homie/5/$broadcast/security/alert ← "Intruder detected"
 Since devices may be resource constraint they might not have logging capabilities. Homie provides a specific
 topic where devices can send log messages. The topic is defined as;
 
-* `homie` / `5` / `device ID` / `$log` / `level` 
+* `homie` / `5` / `[device ID]` / `$log` / `[level]` 
 
 The topic-value is the logged message, no sub-topics are allowed.
 All log messages send should be non-retained.
@@ -568,9 +569,9 @@ to those topics (an actual empty string on MQTT level, so NOT the escaped `0x00`
 
 When adding many child devices, implementations should take care of not publishing too many parent-updates, since every controller would have to parse the description again and again.
 
-The recommended way to add/remove child device is as follows (note: due to MQTT message ordering consistency at any stage in this process cannot be guaranteed):
-
 #### Adding children
+
+The recommended way to add child device is as follows:
 
 1. first publish any child-devices, as any other device
     1. set child-device state to `"init"`
@@ -581,13 +582,19 @@ The recommended way to add/remove child device is as follows (note: due to MQTT 
     1. update parent description (add any child IDs to its `children` array)
     1. set parent state to `"ready"`
 
+Be aware that due to MQTT message ordering the consistency at any stage in this process cannot be guaranteed.
+
 #### Removing children
+
+The recommended way to remove child device is as follows:
 
 1. update the parent device
     1. set parent state to `"init"`
     1. update parent description (remove any child IDs from its `children` array)
     1. set parent state to `"ready"`
 1. clear any child-device(s) topics, starting with the `$state` topic
+
+Be aware that due to MQTT message ordering the consistency at any stage in this process cannot be guaranteed.
 
 ### Versioning
 
