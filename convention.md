@@ -96,8 +96,8 @@ needs this, then it should provide an escape mechanism on the application level.
 - Payloads for type "hsv" contain 3 comma-separated values of [floats](#float). The first number (`h`) has a range of 0 to 360 (inclusive), and the second and third numbers (`s` and `v`) have a range of 0 to 100 (inclusive).  e.g. `"hsv,300,50,75"`
 - Payloads for type "xyz" contain 2 comma separated values of [floats](#float) (`x`, `y`) with a valid range between 0 and 1 (inclusive). The "z" value can be calculated via `z=1-x-y` and is therefore not transmitted. (see [CIE_1931_color_space](https://en.wikipedia.org/wiki/CIE_1931_color_space)). e.g. `"xyz,0.25,0.34"`
 - *Note*: The `rgb` and `hsv` formats encode both color and brightness, whereas `xyz` only encodes the color, so;
-  - when brightness encoding is required: do not use `xyz`
-  - if color only is encoded: ignore the `v` value in `hsv`, and use the relative colors of `rgb` 
+  - when brightness encoding is required: do not use `xyz`, or optionally add another property for the brightness (such that setting `hsv` and `rgb` values changes both the color property and the brightness one if required)
+  - if color only is encoded: ignore the `v` value in `hsv`, and use the relative colors of `rgb`
     eg. `color_only_r = 255 * r / max(r, g, b)`, etc.
 - An [empty string](#empty-string-values) ("") is not a valid payload
 
