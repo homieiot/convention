@@ -277,7 +277,7 @@ The Node object itself is described in the `homie` / `5` / `[device ID]` / `$des
 
 | Field       | Type         | Required | Default | Nullable | Description |
 |-------------|--------------|----------|---------|----------|-------------|
-| `name`      |string        | yes      |         | no       | Friendly name of the Node. |
+| `name`      |string        | no       | [node-id] | no       | Friendly name of the Node. Defaults to the [ID](#topic-ids) of the node. |
 | `type`      |string        | no       |         | no       | Type of Node. Please ensure proper namespacing to prevent naming collisions. |
 | `properties`|object        | no       | `{}`    | no       | The [Properties](#properties) the Node exposes. An object containing the [Properties](#properties), indexed by their [ID](#topic-ids). Defaults to an empty object.|
 
@@ -312,7 +312,7 @@ The Property object itself is described in the `homie` / `5` / `device ID` / `$d
 
 | Field     | Type         | Required | Default  | Nullable | Description |
 |-----------|--------------|----------|----------|----|---------|
-| `name`    | string       | yes      |          | no | Friendly name of the Property. |
+| `name`    | string       | no       | [property-id] | no | Friendly name of the Property. Defaults to the [ID](#topic-ids) of the property. |
 | `datatype`| string       | yes      |          | no | The data type. See [Payloads](#payload). Any of the following values: `"integer", "float", "boolean", "string", "enum", "color", "datetime", "duration", "json"`. |
 | `format`  | string       | see [formats](#formats)    | see [formats](#formats) | no | Specifies restrictions or options for the given data type. |
 | `settable`| boolean      | no       | `false`  | no | Whether the Property is settable. |
