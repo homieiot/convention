@@ -123,17 +123,17 @@ needs this, then it should provide an escape mechanism on the application level.
 - Contains a JSON string for transporting complex data formats that cannot be exposed as single value attributes.
 - The payload MUST be either a JSON-Array or JSON-Object type, for other types the standard Homie types should be used.
 
-## Base Topic
+## Domain and Root Topic
 
-The root topic in this convention is `"homie/5/"`.
-If this root topic does not suit your needs (in case of, e.g., a public broker or because of branding),
-you can change the first segment, but the `"/5/"` segment must be retained. This allows controllers
-to subscribe to only the devices they are compatible with.
+The root topic in this convention is `"homie/5/"`. It consists of 2 segments, the first being the homie-domain,
+and the second indicating the major version number of this convention.
+The homie-domain must be a single segment and defaults to `"homie"`. If it does not suit your needs (in case of,
+e.g., a public broker or because of branding), you can change the domain part. The second segment, containing the version, may not be customized. This allows controllers to subscribe to only the devices they are compatible with.
 
 ## Auto-Discovery
 
 Homie 5 controllers must by default perform auto-discovery on the wildcard topic `"+/5/+/$state"`.
-Controllers are free to restrict discovery to a specific root topic, configurable by the user.
+Controllers are free to restrict discovery to a specific homie-domain, configurable by the user.
 A zero length payload published on the `$state` topic indicates a device removal, see [device lifecycle](#device-lifecycle).
 
 ## Topology and structure
