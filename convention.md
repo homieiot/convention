@@ -363,12 +363,30 @@ the formats for displaying values.
 
 | Type         | Required | Default | Description |
 |--------------|----------|----------|-------------|
-| float        | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.<br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). The implementation should round property values to the nearest step (which can be outside the min/max range). The min/max validation must be done after rounding. |
-| integer      | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). The implementation should round property values to the nearest step (which can be outside the min/max range). The min/max validation must be done after rounding. |
+| float        | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [float types](#float). Eg. `10.123:15.123`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `0:` allows a value >= 0.<br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. See notes below this table on calculations. |
+| integer      | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. See notes below this table on calculations. |
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. Duplicates are not allowed. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. The formats should be listed in order of preference (most preferred first, least preferred last). See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV, where RGB is preferred, would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 | json         | no       | `{\"anyOf\": [{\"type\": \"array\"},{\"type\": \"object\"}]}` | A [JSONschema](http://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
+
+**Note on numeric formats and step-sizes**:
+
+The base for calculating a proper value based on `step` should be `min`, `max`, or the current property value (in that order). The implementation should round property values to the nearest step (which can be outside the min/max range). The min/max validation must be done after rounding. In case of integers, the input MUST already be a valid integer, before rounding to a step.
+
+There is a caveat when rounding towards a step: if the value to be rounded, is less than the base then the intermediate values might round differently since proper mathematical rounding is done "away from 0". A positive 1.5 rounds to 2 (so up), and negative -1.5 rounds to -2 (so down), but both round "away from 0". Example showing the unexpected effect:
+
+input | format | result | explanation
+-|-|-|-
+`5` | `"0:10:2"` | `6` | base = 0; result = round((5-base)/stepsize) * stepsize + base = 6
+`5` | `":10:2"` | `4` | base = 10; result = round((5-base)/stepsize) * stepsize + base = 4
+
+To mitigate this do not use `round(x)`, but use `floor(x + 0.5)` instead. Such that rounding always goes up:
+
+input | format | result | explanation
+-|-|-|-
+`5` | `"0:10:2"` | `6` | base = 0; result = floor((5-base)/stepsize + 0.5) * stepsize + base = 6
+`5` | `":10:2"`  | `6` | base = 10; result = floor((5-base)/stepsize + 0.5) * stepsize + base = 6
 
 
 #### Units
