@@ -3,9 +3,18 @@
 Version: **<!--VERSION-->x.x.x<!--VERSION-->**
 Date: **<!--DATE-->01. Jan 2000<!--DATE-->**
 
+## Definitions
+
+- **Device**: an instance of a physical piece of hardware that publishes Nodes and Properties to a MQTT broker. For example, a car, an Arduino/ESP8266 or a coffee machine.
+- **Node**: an independent or logically separable part of a device. For example, a car might expose a wheels node, an engine node, and a lights node.
+- **Property**: a basic characteristics of the node/device. For example, the wheels node might expose an angle property. The engine node might expose a speed, direction, and temperature property. The lights node might expose an intensity and a color property.
+- **Controller**: a software solution that discovers and interacts with Devices through one or more MQTT brokers but does not, by itself, publish MQTT messages.
+
 ## MQTT Restrictions
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
+
+Note that there can be more than one Controller interacting with Devices afferent to the same broker.
 
 ### Topic IDs
 
