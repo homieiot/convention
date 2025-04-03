@@ -147,29 +147,17 @@ A zero length payload published on the `$state` topic indicates a device removal
 
 ## Topology and structure
 
-**Devices:**
-An instance of a physical piece of hardware is called a *device*.
-For example, a car, an Arduino/ESP8266, or a coffee machine.
-Within the convention devices can be modelled to have children. For example, bridge
-devices; a zwave bridge device (the parent) exposes many child devices (the
-zwave devices). There is no depth limit set on additionally nested children.
+The topology of Devices, Nodes and Properties is defined by the following rules:
 
-**Nodes:**
-A *device* can expose multiple *nodes*.
-Nodes are independent or logically separable parts of a device.
-For example, a car might expose a `wheels` node, an `engine` node, and a `lights` node.
+- Within the convention, *devices* can be modelled to have children (**Child Devices**). For example, bridge devices; a zwave bridge device (the parent) exposes many child devices (the zwave devices). There is no depth limit set on additionally nested children.
+- A *device* can expose multiple *nodes*.
+- A *node* can have multiple *properties*.
 
-**Properties:**
-A *node* can have multiple *properties*.
-Properties represent basic characteristics of the node/device, often given as numbers or finite states.
-For example, the `wheels` node might expose an `angle` property.
-The `engine` node might expose a `speed`, `direction`, and `temperature` property.
-The `lights` node might expose an `intensity` and a `color` property.
+### Attributes
 
-**Attributes:**
-*Devices, nodes and properties* have specific *attributes* characterizing them.
-Attributes are represented by a topic identifier starting with `$`.
-The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
+An **Attribute** is a specific aspect of a *device*, *node* or *property* that is modelled by and directly maps to an MQTT topic. The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
+
+The convention defines different sets of attributes for *devices*, *nodes* and *properties* respectively. MQTT topic identifiers for topics mapping to attributes always start with `$`.
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
