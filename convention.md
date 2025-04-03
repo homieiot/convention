@@ -153,7 +153,7 @@ The topology of Devices, Nodes and Properties is defined by the following rules:
 - A *device* can expose multiple *nodes*.
 - A *node* can have multiple *properties*.
 
-### Attributes
+### Attributes
 
 An **Attribute** is a specific aspect of a *device*, *node* or *property* that is modelled by and directly maps to an MQTT topic. The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
 
