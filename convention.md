@@ -11,7 +11,7 @@ communication and integration of Internet of Things (IoT) devices using the
 
 In particular, the Homie convention defines a consistent topic structure and
 messaging format that enables devices to represent themselves, their data and
-their supported controls/commands in a uniform manner, supporting automatic
+their supported controls/commands in a uniform manner, enabling automatic
 discovery.
 
 ## Definitions
