@@ -3,6 +3,17 @@
 Version: **<!--VERSION-->x.x.x<!--VERSION-->**
 Date: **<!--DATE-->01. Jan 2000<!--DATE-->**
 
+## Introduction
+
+​The Homie convention is a standardized framework designed to facilitate the
+communication and integration of Internet of Things (IoT) devices using the
+[MQTT protocol](https://mqtt.org).
+
+In particular, the Homie convention defines a consistent topic structure and
+messaging format that enables devices and services to announce themselves and
+their data on an MQTT broker in a uniform manner, supporting automatic device
+discovery.
+
 ## Definitions
 
 - **Device**: an instance of a physical piece of hardware that publishes Nodes and Properties to a MQTT broker. For example, a car, an Arduino/ESP8266 or a coffee machine.
