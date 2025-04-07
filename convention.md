@@ -10,8 +10,8 @@ communication and integration of Internet of Things (IoT) devices using the
 [MQTT protocol](https://mqtt.org).
 
 In particular, the Homie convention defines a consistent topic structure and
-messaging format that enables devices and services to announce themselves and
-their data on an MQTT broker in a uniform manner, supporting automatic device
+messaging format that enables devices to represent themselves, their data and
+their supported controls/commands in a uniform manner, supporting automatic
 discovery.
 
 ## Definitions
