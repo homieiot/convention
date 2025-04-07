@@ -5,7 +5,7 @@ Date: **<!--DATE-->01. Jan 2000<!--DATE-->**
 
 ## Introduction
 
-​The Homie convention is a standardized framework designed to facilitate the
+​The Homie convention is an open standard framework designed to facilitate the
 communication and integration of Internet of Things (IoT) devices using the
 [MQTT protocol](https://mqtt.org).
 
