@@ -16,10 +16,15 @@ discovery.
 
 ## Definitions
 
-- **Device**: an instance of a physical piece of hardware that publishes Nodes and Properties to a MQTT broker. For example, a car, an Arduino/ESP8266 or a coffee machine.
-- **Node**: an independent or logically separable part of a device. For example, a car might expose a wheels node, an engine node, and a lights node.
-- **Property**: a basic characteristic of a node. For example, the wheels node might expose an angle property. The engine node might expose a speed, direction, and temperature property. The lights node might expose an intensity and a color property.
-- **Controller**: a software solution that discovers and interacts with Devices through one or more MQTT brokers but does not, by itself, publish MQTT messages.
+- **Device**: a physical appliance or logical entity, such as a car, a coffee
+  machine or a protocol bridge, whose representation is published to an MQTT
+  broker.
+- **Controller**: a software solution that discovers and interacts with
+  *devices* through one or more MQTT brokers.
+
+Note that, for brevity and simplicity, the word &quot;device&quot; is often used
+to denote the combination of an appliance, the computer managing the appliance's
+MQTT representation and the representation itself.
 
 ## MQTT Restrictions
 
@@ -158,17 +163,27 @@ A zero length payload published on the `$state` topic indicates a device removal
 
 ## Topology and structure
 
-The topology of Devices, Nodes and Properties is defined by the following rules:
+**Devices:**
+Within the convention devices can be modelled to have children. For example, bridge
+devices; a zwave bridge device (the parent) exposes many child devices (the
+zwave devices). There is no depth limit set on additionally nested children.
 
-- Within the convention, *devices* can be modelled to have children (**Child Devices**). For example, bridge devices; a zwave bridge device (the parent) exposes many child devices (the zwave devices). There is no depth limit set on additionally nested children.
-- A *device* can expose multiple *nodes*.
-- A *node* can have multiple *properties*.
+**Nodes:**
+A *device* can expose multiple *nodes*.
+Nodes are independent or logically separable parts of a device.
+For example, a car might expose a `wheels` node, an `engine` node, and a `lights` node.
 
-### Attributes
+**Properties:**
+A *node* can have multiple *properties*.
+Properties represent basic characteristics of a node/device, often given as numbers or finite states.
+For example, the `wheels` node might expose an `angle` property.
+The `engine` node might expose a `speed`, `direction`, and `temperature` property.
+The `lights` node might expose an `intensity` and a `color` property.
 
-An **Attribute** is a specific aspect of a *device*, *node* or *property* that is modelled by and directly maps to an MQTT topic. The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
-
-The convention defines different sets of attributes for *devices*, *nodes* and *properties* respectively. MQTT topic identifiers for topics mapping to attributes always start with `$`.
+**Attributes:**
+*Devices, nodes and properties* have specific *attributes* characterizing them.
+Attributes are represented by a topic identifier starting with `$`.
+The precise definition of attributes is important for the automatic discovery of devices following the Homie convention.
 
 Examples: A device might have an `IP` attribute, a node will have a `name` attribute, and a property will have a `unit` attribute.
 
