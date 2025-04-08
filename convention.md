@@ -175,7 +175,7 @@ For example, a car might expose a `wheels` node, an `engine` node, and a `lights
 
 **Properties:**
 A *node* can have multiple *properties*.
-Properties represent basic characteristics of a node/device, often given as numbers or finite states.
+Properties represent basic characteristics of the node, often given as numbers or finite states.
 For example, the `wheels` node might expose an `angle` property.
 The `engine` node might expose a `speed`, `direction`, and `temperature` property.
 The `lights` node might expose an `intensity` and a `color` property.
