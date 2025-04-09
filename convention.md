@@ -23,7 +23,7 @@ convention can take on one or both of the following roles simultaneously:
   appliance or logical entity, such as a car, a coffee machine or a protocol
   bridge, to an MQTT broker.
 - **Controller**: an implementation that discovers and interacts with *devices*
-  through one or more MQTT brokers.
+  over MQTT. For example a mobile app, or an if-this-then-that rules engine.
 
 Note that, for brevity and simplicity, the word &quot;device&quot; is often used
 to denote the combination of an appliance, the computer managing the appliance's
