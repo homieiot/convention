@@ -30,8 +30,6 @@ MQTT representation and the representation itself.
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
-Note that there can be more than one Controller interacting with Devices afferent to the same broker.
-
 ### Topic IDs
 
 An MQTT topic consists of one or more topic levels, separated by the slash character (`/`).
