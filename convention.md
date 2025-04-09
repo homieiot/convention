@@ -14,13 +14,16 @@ messaging format that enables devices to represent themselves, their data and
 their supported controls/commands in a uniform manner, enabling automatic
 discovery.
 
-## Definitions
+## Roles
 
-- **Device**: a physical appliance or logical entity, such as a car, a coffee
-  machine or a protocol bridge, whose representation is published to an MQTT
-  broker.
-- **Controller**: a software solution that discovers and interacts with
-  *devices* through one or more MQTT brokers.
+When interacting through a shared MQTT broker, implementations of the Homie
+convention can take on one or both of the following roles simultaneously:
+
+- **Device**: an implementation that publishes the representation of a physical
+  appliance or logical entity, such as a car, a coffee machine or a protocol
+  bridge, to an MQTT broker.
+- **Controller**: an implementation that discovers and interacts with *devices*
+  through one or more MQTT brokers.
 
 Note that, for brevity and simplicity, the word &quot;device&quot; is often used
 to denote the combination of an appliance, the computer managing the appliance's
