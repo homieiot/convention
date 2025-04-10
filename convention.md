@@ -3,6 +3,32 @@
 Version: **<!--VERSION-->x.x.x<!--VERSION-->**
 Date: **<!--DATE-->01. Jan 2000<!--DATE-->**
 
+## Introduction
+
+​The Homie convention is an open standard framework designed to facilitate the
+communication and integration of Internet of Things (IoT) devices using the
+[MQTT protocol](https://mqtt.org).
+
+In particular, the Homie convention defines a consistent topic structure and
+messaging format that enables devices to represent themselves, their data and
+their supported controls/commands in a uniform manner, enabling automatic
+discovery.
+
+## Roles
+
+When interacting through a shared MQTT broker, implementations of the Homie
+convention can take on one or both of the following roles simultaneously:
+
+- **Device**: an implementation that publishes the representation of a physical
+  appliance or logical entity, such as a car, a coffee machine or a protocol
+  bridge, to an MQTT broker.
+- **Controller**: an implementation that discovers and interacts with *devices*
+  over MQTT. For example a mobile app, or an if-this-then-that rules engine.
+
+Note that, for brevity and simplicity, the word &quot;device&quot; is often used
+to denote the combination of an appliance, the computer managing the appliance's
+MQTT representation and the representation itself.
+
 ## MQTT Restrictions
 
 Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
@@ -139,8 +165,6 @@ A zero length payload published on the `$state` topic indicates a device removal
 ## Topology and structure
 
 **Devices:**
-An instance of a physical piece of hardware is called a *device*.
-For example, a car, an Arduino/ESP8266, or a coffee machine.
 Within the convention devices can be modelled to have children. For example, bridge
 devices; a zwave bridge device (the parent) exposes many child devices (the
 zwave devices). There is no depth limit set on additionally nested children.
@@ -152,7 +176,7 @@ For example, a car might expose a `wheels` node, an `engine` node, and a `lights
 
 **Properties:**
 A *node* can have multiple *properties*.
-Properties represent basic characteristics of the node/device, often given as numbers or finite states.
+Properties represent basic characteristics of the node, often given as numbers or finite states.
 For example, the `wheels` node might expose an `angle` property.
 The `engine` node might expose a `speed`, `direction`, and `temperature` property.
 The `lights` node might expose an `intensity` and a `color` property.
