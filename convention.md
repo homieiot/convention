@@ -31,7 +31,7 @@ MQTT representation and the representation itself.
 
 ## MQTT Restrictions
 
-Homie communicates through [MQTT](http://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
+Homie communicates through [MQTT](https://mqtt.org) and is hence based on the basic principles of MQTT topic publication and subscription.
 
 ### Topic IDs
 
@@ -392,7 +392,7 @@ the formats for displaying values.
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. Duplicates are not allowed. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. The formats should be listed in order of preference (most preferred first, least preferred last). See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV, where RGB is preferred, would have its format set to `"rgb,hsv"`. |
 | boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
-| json         | no       | `{\"anyOf\": [{\"type\": \"array\"},{\"type\": \"object\"}]}` | A [JSONschema](http://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
+| json         | no       | `{\"anyOf\": [{\"type\": \"array\"},{\"type\": \"object\"}]}` | A [JSONschema](https://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
 
 **Note on numeric formats and step-sizes**:
 
@@ -669,11 +669,11 @@ controller sending commands to a v5.2 device.
 
 ### JSON considerations
 
-Validation of JSON payloads is hard. The most common approach to validate JSON data is to use [JSONschema](http://json-schema.org/).
+Validation of JSON payloads is hard. The most common approach to validate JSON data is to use [JSONschema](https://json-schema.org/).
 Unfortunately JSONschema is not a standard, it is a long list of mostly incompatible drafts of a potential standard. And as such one
 has to take into account the potential differences in implementations. This is about the JSONschema specifics itself as well as its reliance on RegEx engines for string validations, which are also known to be riddled with incompatibilities (typically language/platform specific).
 
-The most popular JSONschema versions over time tend to be [`draft 4`](http://json-schema.org/specification-links.html#draft-4), [`draft 7`](http://json-schema.org/specification-links.html#draft-7) and the latest (at the time of writing) [`2020-12`](http://json-schema.org/specification-links.html#2020-12).
+The most popular JSONschema versions over time tend to be [`draft 4`](https://json-schema.org/specification-links.html#draft-4), [`draft 7`](https://json-schema.org/specification-links.html#draft-7) and the latest (at the time of writing) [`2020-12`](https://json-schema.org/specification-links.html#2020-12).
 
 General recommendations;
 - If possible use a library that implements the latest JSONschema version available
