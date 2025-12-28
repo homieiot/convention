@@ -59,7 +59,7 @@ root device (the device at the root of the parent-child tree).
 
 ### Empty string values
 
-MQTT will treat an empty string payload as a "delete" instruction for the topic, therefor an
+MQTT will treat an empty string payload as a "delete" instruction for the topic, therefore an
 empty string value is represented by a 1-character string containing a single byte value 0 (Hex: `0x00`, Dec: `0`).
 
 The empty string (passed as an MQTT payload) can only occur in 3 places;
@@ -160,9 +160,9 @@ e.g., a public broker or because of branding), you can change the domain part. T
 
 Homie 5 controllers must by default perform auto-discovery on the wildcard topic `"+/5/+/$state"`.
 Controllers are free to restrict discovery to a specific homie-domain, configurable by the user.
-A zero length payload published on the `$state` topic indicates a device removal, see [device lifecycle](#device-lifecycle).
+A zero length payload published on the `$state` topic indicates a device removal, see [Device Lifecycle](#device-lifecycle).
 
-## Topology and structure
+## Topology and Structure
 
 **Devices:**
 Within the convention devices can be modelled to have children. For example, bridge
@@ -332,7 +332,7 @@ Each property must have a unique property ID on a per-node basis which adheres t
 |           | yes      | A property value (e.g. a sensor reading) is directly published to the property topic, e.g.: `homie/5/super-car/engine/temperature → "21.5"` |
 | `$target` | no       | Describes an intended state change. The `$target` attribute must either be used for every value update (including the initial one), or it must never be used. |
 
-The Property object itself is described in the `homie` / `5` / `device ID` / `$description` JSON document. The Property object has the following fields:
+The Property object itself is described in the `homie` / `5` / `[device ID]` / `$description` JSON document. The Property object has the following fields:
 
 | Field     | Type         | Required | Default  | Nullable | Description |
 |-----------|--------------|----------|----------|----|---------|
@@ -391,7 +391,7 @@ the formats for displaying values.
 | integer      | no       | `:`      | `[min]:[max][:step]` where min and max are the respective minimum and maximum (inclusive) allowed values, both represented in the format for [integer types](#integer). Eg. `5:35`. If the minimum and/or maximum are missing from the format, then they are open-ended, so `:10` allows a value <= 10. <br/>The optional `step` determines the step size, eg. `2:6:2` will allow values `2`, `4`, and `6`. It must be greater than 0. See notes below this table on calculations. |
 | enum         | yes      |          | A comma-separated list of non-quoted values. Eg. `value1,value2,value3`. Leading- and trailing whitespace is significant. Individual values can not be an empty string, hence at least 1 value must be specified in the format. Duplicates are not allowed. |
 | color        | yes      |          | A comma-separated list of color formats supported; `rgb`, `hsv`, and/or `xyz`. The formats should be listed in order of preference (most preferred first, least preferred last). See the [color type](#color) for the resulting value formats. E.g. a device supporting RGB and HSV, where RGB is preferred, would have its format set to `"rgb,hsv"`. |
-| boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**:  the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
+| boolean      | no       | `false,true` | Identical to an enum with 2 entries. The first represents the `false` value and the second is the `true` value. Eg. `close,open` or `off,on`. If provided, then both entries must be specified. **Important**: the format does NOT specify valid payloads, they are descriptions of the valid payloads `false` and `true`. |
 | json         | no       | `{\"anyOf\": [{\"type\": \"array\"},{\"type\": \"object\"}]}` | A [JSONschema](https://json-schema.org/) definition, which is added as a string (escaped), NOT as a nested json-object. See [JSON considerations](#json-considerations), for some ideas wrt compatibility. If a client fails to parse/compile the JSONschema, then it should ignore the given schema and fall back to the default schema.
 
 **Note on numeric formats and step-sizes**:
@@ -460,7 +460,7 @@ The `$target` attribute for properties allows a device to communicate an intende
 purposes;
 
 1. closing the control loop for a controller setting a value (if the property is settable).
-2. feedback in case a change is not instantaneous (e.g. a light that slowly dimms over a longer period, or a
+2. feedback in case a change is not instantaneous (e.g. a light that slowly dims over a longer period, or a
    motorized valve that takes several minutes to fully open)
 
 If implemented, then a device must first update the `$target` attribute, then start the transition (with
@@ -471,7 +471,7 @@ If a new target is received (and accepted) from a controller by publishing to th
 
 **Notes:**
 
-- a controller can only assume that the command it send to the `set` topic was received and accepted. Not necessarily that it will ever reach the target state, since if another controller updates the property again, it might never reach the target state.
+- a controller can only assume that the command it sent to the `set` topic was received and accepted. Not necessarily that it will ever reach the target state, since if another controller updates the property again, it might never reach the target state.
 - The same goes for possible conversions (colors), rounding (number formats), etc. it will be very hard to check functional equivalence, since the value published may have a different format. So a controller should NOT implement a retry loop checking the final value. At best they should implement retries until the value set is being accepted.
 - Homie devices representing remote hardware (typically when bridging) should NOT set the `$target` attribute upon receiving a change from the hardware device. This is only allowed if the hardware explicitly distinguishes between current value and target value. This is to prevent a loop; e.g. a homie controller sets 100% as target, software instructs hardware to change, intermediate updates received from hardware; 20%, 40%, etc, should NOT overwrite the `$target` value, since that still is 100.
 
@@ -509,19 +509,19 @@ homie/5/kitchen-light/light/brightness → 80  (after 4 seconds)
 homie/5/kitchen-light/light/brightness → 100  (after 5 seconds)
 ```
 
-## Alert topic
+## Alert Topic
 
 Devices can raise alerts. Alerts are user facing messages that have an ID, they can be set and removed.
 The alert topic is defined as;
 
 * `homie` / `5` / `[device ID]` / `$alert` / `[alert ID]` → "alert message"
 
-A device can raise a message on a specific ID. Once the alert is no longer usefull or has been resolved, it can be removed by deleting the topic. Alerts must be send as retained messages. The alert ID must have a valid [ID format](#topic-ids), where topic ID's starting with `$` are reserved for Homie usage.
+A device can raise a message on a specific ID. Once the alert is no longer useful or has been resolved, it can be removed by deleting the topic. Alerts must be sent as retained messages. The alert ID must have a valid [ID format](#topic-ids), where topic ID's starting with `$` are reserved for Homie usage.
 
 Examples;
 ```java
-/homie/5/mydevid/$alert/childlost = "Sensor xyz in livingroom hasn't reported updates for 3 hours"
-/homie/5/mydevid/$alert/battery = "Battery is low, at 8%"
+homie/5/mydevid/$alert/childlost = "Sensor xyz in livingroom hasn't reported updates for 3 hours"
+homie/5/mydevid/$alert/battery = "Battery is low, at 8%"
 ```
 
 In the examples above, once the situation is resolved (the sensor comes back to live, or the batteries are replaced), the device will delete the topics again, indicating the alerts have been handled.
@@ -530,7 +530,7 @@ In the examples above, once the situation is resolved (the sensor comes back to 
 
 Homie defines a broadcast topic, so a controller can broadcast a message to all Homie devices:
 
-* `homie` / `5` / `$broadcast` / **`[subtopic]`**: where `subtopic` can be any topic with single or multiple levels. Each segement must adhere to the [ID format](#topic-ids).
+* `homie` / `5` / `$broadcast` / **`[subtopic]`**: where `subtopic` can be any topic with single or multiple levels. Each segment must adhere to the [ID format](#topic-ids).
 
 The messages SHOULD be non-retained.
 
@@ -551,7 +551,7 @@ topic where devices can send log messages. The topic is defined as;
 * `homie` / `5` / `[device ID]` / `$log` / `[level]` 
 
 The topic-value is the logged message, no sub-topics are allowed.
-All log messages send should be non-retained.
+All log messages sent should be non-retained.
 The `level` is set according to the following table:
 
 level   | description
@@ -560,7 +560,7 @@ level   | description
 `info`  | informational message, device is working as expected
 `warn`  | something potentially harmful happened
 `error` | an error happened, the device will continue to operate but functionality might be impaired
-`fatal` | a non-recoverable error occured, operation of the device is likely suspended/stopped
+`fatal` | a non-recoverable error occurred, operation of the device is likely suspended/stopped
 
 ```java
 homie/5/my-device/$log/warn → "battery low"
