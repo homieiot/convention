@@ -137,7 +137,7 @@ Exactly one equals sign (`=`) separates the key and value. Everything after the 
 $label=My Sensor
 ```
 ```
-vendor:source=home-assistant
+vendor:source=some-value
 ```
 ```
 note=Installed 2025-01-15 (revision=3)
@@ -197,11 +197,9 @@ A key MUST satisfy all of the following rules:
 
 - MUST NOT be empty.
 - MUST NOT exceed 128 characters in length.
-- The first character MUST be either `$` (for reserved keys) or an ASCII letter (`a–z`, `A–Z`).
-- Subsequent characters MUST be drawn from: `a–z`, `A–Z`, `0–9`, `-` (hyphen), `_` (underscore), `:` (colon).
-- The colon (`:`) is RECOMMENDED as a namespace separator for vendor-specific keys (e.g., `homeassistant:entity-id`). At most one namespace prefix is expected (i.e., only one `:` is typical, though multiple are not forbidden).
-- Keys are **case-sensitive**.
-- Keys beginning with `$` are reserved (see §6).
+- MUST consist entirely of characters drawn from: `a–z`, `0–9`, `-` (hyphen), `:` (colon) — or `$` as the first character for reserved keys. Uppercase letters are not permitted.
+- The colon (`:`) is RECOMMENDED as a namespace separator for vendor-specific keys (e.g., `acme:entity-id`). The vendor namespace is all text up to the first colon; everything after is the local key name. Multiple colons are not forbidden but carry no additional semantic meaning.
+- Keys beginning with `$` are reserved (see §7).
 
 **Valid key examples:**
 
@@ -210,16 +208,16 @@ $label
 $room
 vendor:source
 my-custom-key
-integration_tag
+123key
 ```
 
 **Invalid key examples:**
 
 ```
 =value          (contains =)
- label          (leading space)
-123key          (starts with digit)
-$              (only the $ character, no name)
+MyKey           (uppercase not permitted)
+my key          (contains space)
+my_key          (underscore not permitted)
 ```
 
 ### 8.2 Value Constraints
@@ -291,18 +289,20 @@ The following JSON Schema (Draft 2020-12) describes a valid `$meta` payload:
   "type": "object",
   "required": ["$md-owner"],
   "additionalProperties": {
-    "type": "string"
+    "type": "string",
+    "maxLength": 1024,
+    "pattern": "^[^\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F]*$"
   },
   "properties": {
     "$md-owner": {
       "type": "string",
       "minLength": 1,
-      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$",
+      "pattern": "^[a-z0-9-]+$",
       "description": "Homie device ID of the owning service"
     }
   },
   "propertyNames": {
-    "pattern": "^(\\$[a-zA-Z][a-zA-Z0-9\\-_]*|[a-zA-Z][a-zA-Z0-9\\-_:]*)$",
+    "pattern": "^\\$?[a-z0-9\\-:]+$",
     "maxLength": 128
   }
 }
@@ -372,7 +372,7 @@ $icon=
 - The owner service SHOULD debounce rapid successive `$meta/set` messages and publish a single consolidated `$meta` update to reduce MQTT traffic. The RECOMMENDED debounce window is **5 seconds**. This is intentionally higher than typical IoT debounce values: metadata (labels, room assignments, tags) is expected to change rarely, and a longer window prevents unnecessary retained-message churn when multiple keys are updated in quick succession (e.g., during initial provisioning).
 - Implementations that persist metadata across restarts SHOULD use the `$md-owner` value to prevent accidental import of metadata from a different service.
 - The `$meta/set` protocol is intentionally simple (no authentication, no ACKs). For environments requiring access control, MQTT ACL rules on the broker are the appropriate mechanism to restrict who may publish to `$meta/set`.
-- The flat structure is a deliberate design constraint. If structured or nested data is needed, it is RECOMMENDED to serialize it as a JSON string in a single value, with the key naming the structure (e.g., `ha:config={"entity_id":"climate.living_room"}`).
+- The flat structure is a deliberate design constraint. If structured or nested data is needed, it is RECOMMENDED to serialize it as a JSON string in a single value, with the key naming the structure (e.g., `acme:config={"entity_id":"climate.living_room"}`).
 
 ---
 
